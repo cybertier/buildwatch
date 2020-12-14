@@ -1,3 +1,5 @@
 *.sql
 venv
 .idea
+storage
+*.db
