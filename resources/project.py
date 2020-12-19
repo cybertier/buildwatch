@@ -20,7 +20,6 @@ class Project(Resource):
         model = ProjectModel(**args)
         db.session.add(model)
         db.session.commit()
-        # TODO: hook for project created
         return jsonify(model.json())
 
     def get(self):
