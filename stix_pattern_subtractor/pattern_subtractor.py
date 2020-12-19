@@ -113,7 +113,7 @@ def find_all_objects_to_delete(
         if objects_to_delete:
             all_objects_to_delete.extend(objects_to_delete)
         else:
-            raise ValueError(
+            print(
                 f"Pattern could not be matched on any STIX object: {pattern}"
             )
     return all_objects_to_delete
