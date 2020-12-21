@@ -1,4 +1,9 @@
-from .pattern_subtractor import (
+import json
+from pathlib import Path
+
+import stix2
+
+from stix_pattern_subtractor.pattern_subtractor import (
     parse_stix_objects,
     pattern_is_one_expression,
     split_pattern,
@@ -7,10 +12,6 @@ from .pattern_subtractor import (
     find_stix_object_by_type,
     remove_matching_objects,
 )
-from pathlib import Path
-import json
-import stix2
-from stix2 import DomainName, Process, File
 
 
 def test_parse_stix_objects():
@@ -55,7 +56,17 @@ def test_find_stix_objects():
 
 
 def test_split_pattern():
-    pattern = "[file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'evil1.BOduQP'] AND [file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'runc.BOduQP']"
+    pattern = (
+        "["
+        "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' "
+        "AND "
+        "file:name MATCHES 'evil1.BOduQP'"
+        "] AND ["
+        "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' "
+        "AND "
+        "file:name MATCHES 'runc.BOduQP'"
+        "]"
+    )
     patterns = split_pattern(pattern)
     assert patterns == [
         "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'evil1.BOduQP'",
@@ -64,7 +75,17 @@ def test_split_pattern():
 
 
 def test_find_all_objects_to_delete():
-    patterns = "[file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'evil1.BOduQP'] AND [file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'runc.BOduQP']"
+    patterns = (
+        "["
+        "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' "
+        "AND "
+        "file:name MATCHES 'evil1.BOduQP'"
+        "] AND ["
+        "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' "
+        "AND "
+        "file:name MATCHES 'runc.BOduQP'"
+        "]"
+    )
     patterns = split_pattern(patterns)
     stix_report_file = Path(__file__).with_name("stix2.json")
     stix_report = stix2.parse(json.load(stix_report_file.open()), allow_custom=True)
@@ -82,7 +103,10 @@ def test_find_all_objects_to_delete():
 
 
 def test_find_stix_object_by_type():
-    pattern = "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' AND file:name MATCHES 'evil1.BOduQP'"
+    pattern = (
+        "file:parent_directory_str MATCHES '/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1' "
+        "AND file:name MATCHES 'evil1.BOduQP'"
+    )
     stix_report_file = Path(__file__).with_name("stix2.json")
     stix_report = stix2.parse(json.load(stix_report_file.open()), allow_custom=True)
     stix_objects = parse_stix_objects(stix_report.objects)
