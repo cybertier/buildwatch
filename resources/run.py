@@ -51,7 +51,8 @@ class Run(Resource):
         file = next(iter(request.files.values()))
         zip_file_name = str(uuid.uuid4()) + '.zip'
         target_dir = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'zips_uploaded')
-        os.makedirs(target_dir)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
         target_file = os.path.join(target_dir, zip_file_name)
         file.save(target_file)
         return zip_file_name
