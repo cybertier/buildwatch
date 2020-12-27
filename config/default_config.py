@@ -2,3 +2,5 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///sql_lite.db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRETE_KEY = 'secret'
 PROJECT_STORAGE_DIRECTORY = './storage'
+DEBUG = True
+AUTH_TOKEN = 'filloutinprod'
