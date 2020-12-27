@@ -11,6 +11,10 @@ from models.project import Project as ProjectModel
 from db import db
 from flask import request
 from app import app
+from cuckoo_runner.starter import start
+
+
+
 
 class Run(Resource):
     post_parser = reqparse.RequestParser()
@@ -31,10 +35,15 @@ class Run(Resource):
         self._validate_custom_constraints(model)
         db.session.add(model)
         db.session.commit()
-        # TODO: hook for run created
+        self._run_created(model.id)
         return jsonify(model.json())
 
-    def _validate_custom_constraints(self, model):
+    @staticmethod
+    def _run_created(run_id):
+        start(run_id)
+
+    @staticmethod
+    def _validate_custom_constraints(model):
         project = ProjectModel.query.filter(ProjectModel.id == model.project_id)[0]
         if project.git_managed:
             if not re.match("[0-9a-f]{5,40}", model.user_set_identifier):
