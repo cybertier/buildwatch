@@ -5,4 +5,4 @@ PROJECT_STORAGE_DIRECTORY = './storage'
 DEBUG = True
 AUTH_TOKEN = 'filloutinprod'
 CUCKOO_API_URL = 'http://localhost:8090'
-CUCKOO_API_TOKEN = 'canbefoundinthecuckooconf'
+CUCKOO_API_TOKEN = '5Ql0ClpOzM9oot53daAIvA'

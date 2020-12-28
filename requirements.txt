@@ -2,3 +2,4 @@ flask_restful
 flask_sqlalchemy
 stix2
 gitpython
+requests

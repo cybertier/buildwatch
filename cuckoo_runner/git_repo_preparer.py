@@ -11,8 +11,6 @@ from app import app
 from models.project import Project
 from models.run import Run
 
-git_lock = None
-
 
 def checkout_correct_commit(repo: Repo, run: Run):
     repo.git.fetch()
@@ -21,7 +19,6 @@ def checkout_correct_commit(repo: Repo, run: Run):
 
 
 def zip_repo(repo: Repo, run: Run) -> str:
-
     target_zip = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'run', str(run.id), "input.zip")
     if not os.path.exists(os.path.dirname(target_zip)):
         os.makedirs(os.path.dirname(target_zip))
@@ -34,16 +31,14 @@ def zip_repo(repo: Repo, run: Run) -> str:
 
 
 def package_zip_for_upload(project: Project, run: Run, lock) -> str:
-    global git_lock
-    git_lock = lock
-    repo: Repo = initialize_git_if_needed(project)
-    git_lock.acquire()
+    lock.acquire()
     try:
+        repo: Repo = initialize_git_if_needed(project)
         checkout_correct_commit(repo, run)
         determine_previous_commit_for_git_run(run, repo)
         return zip_repo(repo, run)
     finally:
-        git_lock.release()
+        lock.release()
 
 
 def initialize_git_if_needed(project: Project) -> Repo:
@@ -65,7 +60,9 @@ def clone_repo(project: Project, repo_dir: str) -> Repo:
 
 def determine_previous_commit_for_git_run(run: Run, repo: Repo):
     commit_to_id_dictionary = get_id_and_commit_hash_for_runs_in_project(run.project)
-    for item in repo.iter_commits(rev='HEAD'):
+    commits = repo.iter_commits(rev='HEAD')
+    next(commits)
+    for item in commits:
         if str(item) in commit_to_id_dictionary:
             previous_run_id = commit_to_id_dictionary[str(item)]
             logging.info(f"Identified previous commit as {previous_run_id}")
