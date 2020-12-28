@@ -8,6 +8,7 @@ class Run(db.Model):
     previous_run_id = db.Column(db.Integer, db.ForeignKey('run.id'), nullable=True)
     user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
     finished = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    error = db.Column(db.String, unique=False, nullable=True)
 
     # Internal:
     cuckoo_output_path = db.Column(db.String(300), unique=True, nullable=True)
@@ -21,7 +22,6 @@ class Run(db.Model):
             "project_id": self.project_id,
             "previous_run_id": self.previous_run_id,
             "user_set_identifier": self.user_set_identifier,
-            "finished": self.finished
+            "finished": self.finished,
+            "error": self.error
         }
-
-
