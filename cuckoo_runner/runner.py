@@ -61,7 +61,7 @@ def set_run_status_to_cuckoo_running(run):
 
 def set_output_cuckoo_path(run: Run) -> str:
     output_dir = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'run', str(run.id), 'cuckoo')
-    if os.path.exists(output_dir):
+    if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     run.cuckoo_output_path = output_dir
     db.session.commit()

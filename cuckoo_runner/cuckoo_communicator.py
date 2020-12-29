@@ -65,7 +65,9 @@ def save_artifacts(task_id: int, output_folder: str):
     response = requests.get(url, headers=headers)
     if response.status_code == 404:
         raise Exception(f"No stix report for task{task_id} even after status was reported")
-    file = open(os.path.join(output_folder, f"stix_{task_id}.json", "wb"))
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    file = open(os.path.join(output_folder, f"stix_{task_id}.json"), "wb")
     file.write(response.content)
 
     url = f"{base_url}/tasks/report/{task_id}/programlog"
@@ -73,5 +75,5 @@ def save_artifacts(task_id: int, output_folder: str):
     if response.status_code == 404:
         logging.info(f"No program log found for task with id {task_id}")
         return
-    file = open(os.path.join(output_folder, f"program_log_{task_id}.log", "wb"))
+    file = open(os.path.join(output_folder, f"program_log_{task_id}.log"), "wb")
     file.write(response.content)
