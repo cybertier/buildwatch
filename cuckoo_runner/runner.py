@@ -19,14 +19,13 @@ def run(run_id: int, lock: Lock):
         run.status = "error"
         run.error = str(e)
         db.session.commit()
-        logging.error("Something went wrong in the cuckoo runner")
+        logging.error(f"Something went wrong in the cuckoo runner: {e}")
         raise Exception("cuckoo runner terminated") from e
 
 
 def actual_procedure(lock, run):
     project = run.project
     path_to_zip = get_zip_for_upload(project, run, lock)
-    wait_if_previous_commit_still_running(run)
     task_ids = cuckoo_communicator.start_run_for_zip_and_get_task_ids(path_to_zip, project)
     set_run_status_to_cuckoo_running(run)
     output_cuckoo_path = set_output_cuckoo_path(run)
@@ -53,12 +52,6 @@ def get_zip_for_upload(project: Project, run: Run, lock) -> str:
         return package_zip_for_upload(project, run, lock)
     else:
         return run.user_submitted_artifact_path
-
-
-def wait_if_previous_commit_still_running(run):
-    # TODO: wait until status of previous run reached finished_prepared
-    #  and error out if previous commit is of status error
-    pass
 
 
 def set_run_status_to_cuckoo_running(run):

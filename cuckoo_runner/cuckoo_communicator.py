@@ -57,10 +57,10 @@ def check_tasks_states_and_fetch_data_if_finished(pending_task_ids: List[int], o
         finished = is_task_finished(task_id)
         if finished:
             pending_task_ids.remove(task_id)
-            save_artefacts(task_id, output_folder)
+            save_artifacts(task_id, output_folder)
 
 
-def save_artefacts(task_id: int, output_folder: str):
+def save_artifacts(task_id: int, output_folder: str):
     url = f"{base_url}/tasks/report/{task_id}/stix"
     response = requests.get(url, headers=headers)
     if response.status_code == 404:
