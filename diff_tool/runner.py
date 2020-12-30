@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from db import db
 from app import app
+from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
 from models.run import Run
 
 
@@ -64,6 +65,7 @@ def get_path_current_report(run: Run):
 
 
 def subtract_pattern_from_old_run(pattern_path, path_of_reports):
+    # subtract_pattern_after_loading_files()
     pass
 
 

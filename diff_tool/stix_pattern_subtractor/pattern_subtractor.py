@@ -8,19 +8,26 @@ from typing import List, Tuple, Dict, Any
 
 
 def main():
-    stix_report, patterns = load_stix_report_and_patterns()
+    stix_report_path, patterns_path = parse_args()
+    subtract_pattern_after_loading_files(stix_report_path, patterns_path)
+
+
+def subtract_pattern_after_loading_files(stix_report_path, patterns_path):
+    stix_report, patterns = load_stix_report_and_patterns(stix_report_path, patterns_path)
+    mach_pattern_against_stix_report(patterns, stix_report)
+
+
+def mach_pattern_against_stix_report(patterns, stix_report):
     objects_by_type = parse_stix_objects(stix_report.objects)
     for indicator in patterns.objects:
         try:
             objects_by_type = match_pattern(objects_by_type, indicator)
         except Exception as e:
             print(str(e))
-
     print_results(objects_by_type)
 
 
-def load_stix_report_and_patterns() -> Tuple[stix2.Bundle, stix2.Bundle]:
-    stix_report_file, patterns_file = parse_args()
+def load_stix_report_and_patterns(stix_report_file, patterns_file) -> Tuple[stix2.Bundle, stix2.Bundle]:
     patterns = stix2.parse(json.load(patterns_file.open()), allow_custom=True)
     stix_report = stix2.parse(json.load(stix_report_file.open()), allow_custom=True)
     return stix_report, patterns
