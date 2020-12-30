@@ -8,6 +8,7 @@ from app import app
 from models.project import Project
 from models.run import Run
 from cuckoo_runner import cuckoo_communicator
+from diff_tool.starter import start as start_diff_tool
 
 
 def run(run_id: int, lock: Lock):
@@ -30,7 +31,7 @@ def actual_procedure(lock, run):
     set_run_status_to_cuckoo_running(run)
     output_cuckoo_path = set_output_cuckoo_path(run)
     cuckoo_communicator.busy_waiting_for_task_completion_and_fetch_results(task_ids, output_cuckoo_path)
-    start_diff_tool(run)
+    start_diff_tool(run.id)
     start_patterson_runner(run)
 
 
@@ -40,10 +41,6 @@ def init():
 
 
 def start_patterson_runner(run: Run):
-    pass
-
-
-def start_diff_tool(run: Run):
     pass
 
 

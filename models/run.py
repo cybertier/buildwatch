@@ -7,7 +7,7 @@ class Run(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
     previous_run_id = db.Column(db.Integer, db.ForeignKey('run.id'), nullable=True)
     user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
-    # created, cuckoo_running, diff_tool_running, error, finished_unprepared, finished_prepared
+    # error, created, cuckoo_running, diff_tool_running, finished_unprepared, finished_prepared
     status = db.Column(db.String, unique=False, nullable=False, default="created")
     error = db.Column(db.String, unique=False, nullable=True)
 
