@@ -4,6 +4,7 @@ import ntpath
 import os
 import shutil
 import time
+from pathlib import Path
 from typing import List, Optional
 
 from db import db
@@ -58,6 +59,7 @@ def assure_correct_status_of_previous_run(previous_run: Run):
     start_time = time.time()
     timeout: int = app.config['TIME_OUT_WAITING_FOR_PREVIOUS_COMMIT']
     while time.time() - start_time < timeout:
+        db.session.refresh(previous_run)
         if previous_run.status == "finished_prepared":
             return
         time.sleep(app.config['DELAY_CHECKING_PREVIOUS_TASK_STATUS'])
@@ -95,7 +97,7 @@ def get_path_current_report(run: Run):
         raise Exception(f"Found less than 3 json files in the cuckoo_output_path({cuckoo_output_path})."
                         f"Something is wrong with current run of id {run.id}."
                         f"Only found {all_json_files}")
-    input_report = cuckoo_output_path[0]
+    input_report = all_json_files[0]
     return create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run)
 
 
@@ -110,6 +112,5 @@ def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run
 
 
 def subtract_pattern_from_old_run(current_report_path, pattern_path):
-    result = subtract_pattern_after_loading_files(current_report_path, pattern_path)
-
-    # TODO: serialize result somehow
+    result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path))
+    logging.info(result)

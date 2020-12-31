@@ -6,6 +6,9 @@ class Run(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
     previous_run_id = db.Column(db.Integer, db.ForeignKey('run.id'), nullable=True)
+    children = db.relationship("Run",
+                backref=db.backref('previous_run', remote_side=[id])
+            )
     user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
     # error, created, cuckoo_running, diff_tool_running, finished_unprepared, finished_prepared
     status = db.Column(db.String, unique=False, nullable=False, default="created")
