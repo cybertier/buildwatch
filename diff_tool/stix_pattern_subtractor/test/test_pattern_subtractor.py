@@ -3,7 +3,7 @@ from pathlib import Path
 
 import stix2
 
-from diff_tool.stix_pattern_subtractor import (
+from diff_tool.stix_pattern_subtractor.pattern_subtractor import (
     parse_stix_objects,
     pattern_is_one_expression,
     split_pattern,
