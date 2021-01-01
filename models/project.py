@@ -13,7 +13,6 @@ class Project(db.Model):
     storage_path = db.Column(db.String(500), unique=False, nullable=True)
     runs = db.relationship('Run', backref='project', lazy=True)
 
-
     def json(self):
         return {
             "id": self.id,

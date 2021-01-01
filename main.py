@@ -31,6 +31,7 @@ def check_for_token():
             app.logger.warn("No auth possible", e)
             abort(403)
 
+
 if __name__ == '__main__':
     from db import db
 

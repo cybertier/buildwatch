@@ -3,3 +3,4 @@ venv
 .idea
 storage
 *.db
+**__pycache__**

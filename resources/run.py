@@ -14,8 +14,6 @@ from app import app
 from cuckoo_runner.starter import start
 
 
-
-
 class Run(Resource):
     post_parser = reqparse.RequestParser()
     post_parser.add_argument('project_id', type=str, help='The id of the project', required=True)
