@@ -2,6 +2,9 @@ import logging
 import os
 import time
 from typing import List
+
+from requests_toolbelt import MultipartEncoder
+
 from app import app
 from models.project import Project
 import requests
@@ -20,11 +23,15 @@ def start_run_for_zip_and_get_task_ids(zip_path: str, project: Project) -> List[
 
 def create_task(zip_path):
     url = base_url + "/tasks/create/file"
-    multipart_form_data = {
-        'file': ('custom_file_name.zip', zip_path),
-        'package': 'buildwatch'
-    }
-    result = requests.post(url, files=multipart_form_data, headers=headers)
+    m = MultipartEncoder(
+        fields={
+            'file': ('custom_file_name.zip', open(zip_path, 'rb')),
+            'package': 'buildwatch'
+        }
+    )
+    my_headers = headers
+    my_headers["Content-Type"] = m.content_type
+    result = requests.post(url, data=m, headers=my_headers)
     task_id: int = result.json()["task_id"]
     return task_id
 
