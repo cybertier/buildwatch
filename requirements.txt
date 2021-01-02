@@ -11,3 +11,4 @@ numpy
 pebble==4.3.10
 click==7.0
 ./patternson_runner/obspat/stix2-pattern-matcher
+requests_toolbelt
