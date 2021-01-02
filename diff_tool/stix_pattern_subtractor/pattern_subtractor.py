@@ -7,42 +7,62 @@ from argparse import ArgumentParser
 import stix2
 from typing import List, Tuple, Dict, Any
 
+from uuid import uuid1
+
 
 def main():
     stix_report_path, patterns_path = parse_args()
-    results = subtract_pattern_after_loading_files(stix_report_path, patterns_path)
-    print_results(results)
+    bundle = subtract_pattern_after_loading_files(stix_report_path, patterns_path)
+    print_results(bundle)
 
 
 def subtract_pattern_after_loading_files(stix_report_path, patterns_path):
-    stix_report, patterns = load_stix_report_and_patterns(stix_report_path, patterns_path)
-    return mach_pattern_against_stix_report(patterns, stix_report)
-
-
-def mach_pattern_against_stix_report(patterns, stix_report):
+    stix_report, patterns = load_stix_report_and_patterns(
+        stix_report_path, patterns_path
+    )
     objects_by_type = parse_stix_objects(stix_report.objects)
+    objects_to_delete = []
     for indicator in patterns.objects:
-        objects_by_type = match_pattern(objects_by_type, indicator)
-    return objects_by_type
+        objects_to_delete.extend(
+            match_pattern_and_return_objects_to_delete(objects_by_type, indicator)
+        )
+    # load groupings and malware analysis object
+    groupings, analysis = get_groupings_and_analysis(stix_report)
+
+    # check which object should be in which grouping
+    group_names = {}
+    for grouping in groupings:
+        group_names.update({grouping.name: []})
+    for _del in objects_to_delete:
+        for grouping in groupings:
+            if _del.id in grouping.object_refs:
+                group_names[grouping.name].append(_del)
+
+    # replace old references
+    all_stix_objects = []
+    for grouping in groupings:
+        if group_names[grouping.name]:
+            grouping.new_version(object_refs=group_names[grouping.name])
+            all_stix_objects.extend(group_names[grouping.name])
+
+    analysis.new_version(analysis_sco_refs=all_stix_objects)
+    for grouping in groupings:
+        all_stix_objects.append(grouping)
+    all_stix_objects.append(analysis)
+    return stix2.Bundle(
+        type="bundle",
+        id="bundle--" + str(uuid1()),
+        objects=all_stix_objects,
+        allow_custom=True,
+    )
 
 
-def load_stix_report_and_patterns(stix_report_file, patterns_file) -> Tuple[stix2.Bundle, stix2.Bundle]:
+def load_stix_report_and_patterns(
+    stix_report_file, patterns_file
+) -> Tuple[stix2.Bundle, stix2.Bundle]:
     patterns = stix2.parse(json.load(patterns_file.open()), allow_custom=True)
     stix_report = stix2.parse(json.load(stix_report_file.open()), allow_custom=True)
     return stix_report, patterns
-
-
-def parse_args() -> Tuple[Path, Path]:
-    parser = ArgumentParser()
-    parser.add_argument(
-        "report", help="A JSON file containing a STIX2 Bundle containing STIX2 Objects"
-    )
-    parser.add_argument(
-        "patterns",
-        help="A JSON file containing a STIX2 Bundle containing Indicator Objects",
-    )
-    args = parser.parse_args()
-    return Path(args.report), Path(args.patterns)
 
 
 def parse_stix_objects(stix_objects) -> Dict[str, Dict[str, Any]]:
@@ -66,39 +86,16 @@ def parse_stix_objects(stix_objects) -> Dict[str, Dict[str, Any]]:
     return objects_by_type
 
 
-def match_pattern(
+def match_pattern_and_return_objects_to_delete(
     objects_by_type: Dict[str, Dict[str, Any]], indicator: stix2.Indicator
-) -> Dict[str, Dict[str, Any]]:
+) -> List[Any]:
     if pattern_is_one_expression(indicator.pattern):
-        objects_by_type = delete_objects_matching_pattern(objects_by_type, indicator)
+        pattern = indicator.pattern.replace("[", "").replace("]", "")
+        objects_to_delete = find_stix_objects(objects_by_type, pattern)
     else:
-        objects_by_type = delete_objects_matching_patterns(objects_by_type, indicator)
-    return objects_by_type
-
-
-def pattern_is_one_expression(pattern: str) -> bool:
-    if len(pattern.split("] AND [")) > 1:
-        return False
-    return True
-
-
-def delete_objects_matching_pattern(
-    objects_by_type: Dict[str, Dict[str, Any]], indicator: stix2.Indicator
-):
-    pattern = indicator.pattern.replace("[", "").replace("]", "")
-    objects_to_delete = find_stix_objects(objects_by_type, pattern)
-    return remove_matching_objects(objects_by_type, objects_to_delete)
-
-
-def delete_objects_matching_patterns(
-    objects_by_type: Dict[str, Dict[str, Any]], indicator: stix2.Indicator
-):
-    patterns = split_pattern(indicator.pattern)
-    try:
+        patterns = split_pattern(indicator.pattern)
         objects_to_delete = find_all_objects_to_delete(objects_by_type, patterns)
-        return remove_matching_objects(objects_by_type, objects_to_delete)
-    except ValueError as e:
-        logging.debug(f"Failed to match pattern {indicator.pattern}\n{e}")
+    return objects_to_delete
 
 
 def split_pattern(pattern: str) -> List[str]:
@@ -110,22 +107,13 @@ def split_pattern(pattern: str) -> List[str]:
     return patterns
 
 
-def find_all_objects_to_delete(
-    objects_by_type: Dict[str, Dict[str, Any]], patterns
-) -> List[str]:
-    all_objects_to_delete = []
-    for pattern in patterns:
-        objects_to_delete = find_stix_objects(objects_by_type, pattern)
-        if objects_to_delete:
-            all_objects_to_delete.extend(objects_to_delete)
-        else:
-            logging.debug(
-                f"Pattern could not be matched on any STIX object: {pattern}"
-            )
-    return all_objects_to_delete
+def pattern_is_one_expression(pattern: str) -> bool:
+    if len(pattern.split("] AND [")) > 1:
+        return False
+    return True
 
 
-def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> List[str]:
+def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> List[Any]:
     objects_to_delete = []
     if "domain-name" in pattern:
         expressions = pattern.split(" OR ")
@@ -133,7 +121,7 @@ def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> Li
             for pattern in expressions:
                 regex = re.compile(pattern)
                 if re.search(regex, obj):
-                    objects_to_delete.append(obj)
+                    objects_to_delete.append(objects_by_type["domain-name"][obj])
     if "file" in pattern:
         return find_stix_object_by_type(objects_by_type, "file", pattern)
     if "process" in pattern:
@@ -143,34 +131,62 @@ def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> Li
 
 def find_stix_object_by_type(
     objects_by_type: Dict[str, Dict[str, Any]], type: str, pattern
-) -> List[str]:
+) -> List[Any]:
     objects_to_delete = []
     for obj in objects_by_type[type]:
         regex = re.compile(pattern)
         if re.search(regex, obj):
-            objects_to_delete.append(obj)
+            objects_to_delete.append(objects_by_type[type][obj])
     return objects_to_delete
 
 
-def remove_matching_objects(
-    objects_by_type: Dict[str, Dict[str, Any]], objects_to_delete: List[str]
-) -> Dict[str, Dict[str, Any]]:
-    temp = objects_by_type.copy()
-    for type, objects in temp.items():
-        tmp = objects.copy()
-        for object_str in tmp:
-            if object_str in objects_to_delete:
-                del temp[type][object_str]
-    return temp
+def find_all_objects_to_delete(
+    objects_by_type: Dict[str, Dict[str, Any]], patterns
+) -> List[str]:
+    all_objects_to_delete = []
+    for pattern in patterns:
+        objects_to_delete = find_stix_objects(objects_by_type, pattern)
+        if objects_to_delete:
+            all_objects_to_delete.extend(objects_to_delete)
+        else:
+            logging.debug(f"Pattern could not be matched on any STIX object: {pattern}")
+    return all_objects_to_delete
 
 
-def print_results(objects_by_type: Dict[str, Dict[str, Any]]):
-    print("Remaining Stix Objects by type:")
-    for type, objects in objects_by_type.items():
-        if objects:
-            print(f"\nType: {type}")
-            for object in objects.values():
-                print(object)
+def get_groupings_and_analysis(stix_report):
+    groupings = []
+    analysis = None
+
+    for object in stix_report.objects:
+        if object.type == "grouping":
+            groupings.append(object)
+        if object.type == "malware-analysis":
+            analysis = object
+    return groupings, analysis
+
+
+def print_results(bundle: stix2.Bundle):
+    print("Remaining Stix Objects:")
+    for obj in bundle.objects:
+        if obj.type == "file":
+            print(f"File: {obj.name}")
+        if obj.type == "process":
+            print(f"Process: {obj.command_line}")
+        if obj.type == "domain":
+            print(f"Domain: {obj.value}")
+
+
+def parse_args() -> Tuple[Path, Path]:
+    parser = ArgumentParser()
+    parser.add_argument(
+        "report", help="A JSON file containing a STIX2 Bundle containing STIX2 Objects"
+    )
+    parser.add_argument(
+        "patterns",
+        help="A JSON file containing a STIX2 Bundle containing Indicator Objects",
+    )
+    args = parser.parse_args()
+    return Path(args.report), Path(args.patterns)
 
 
 if __name__ == "__main__":
