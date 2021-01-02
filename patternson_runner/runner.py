@@ -30,8 +30,17 @@ def init():
 
 def actual_procedure(run: Run):
     path_of_current_reports: Path = Path(run.cuckoo_output_path)
+    create_patternson_path(run)
     start_patternson(path_of_current_reports, path_of_current_reports.with_name("patternson-output"))
     set_status_for_run_and_wait(run)
+
+
+def create_patternson_path(run: Run):
+    output_dir = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'run', str(run.id), 'patternson-output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    run.patterson_output_path = output_dir
+    db.session.commit()
 
 
 def set_status_for_run_and_wait(run):
