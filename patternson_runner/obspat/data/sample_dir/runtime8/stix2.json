@@ -1,0 +1,35 @@
+{
+    "objects": [
+        {
+            "timestamp": "Tue Dec  1 07:38:42 2020",
+            "spec_version": "2.1",
+            "path": "/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1",
+            "type": "directory",
+            "id": "directory--97cc66c7-33a8-11eb-86d3-d57ab09d280c"
+        },
+        {
+            "name": "runc.BOduQP",
+            "full_output": "Tue Dec  1 07:38:42 2020.288271 643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1|exe@7fd8ffa11d47[1512] unlink(\"/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1/runc.BOduQP\") = 0",
+            "timestamp": "Tue Dec  1 07:38:42 2020",
+            "parent_directory_ref": "directory--97cc66c7-33a8-11eb-86d3-d57ab09d280c",
+            "container_id": "643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1",
+            "spec_version": "2.1",
+            "type": "file",
+            "id": "file--97cc66c6-33a8-11eb-86d3-d57ab09d280c",
+            "parent_directory_str": "/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1"
+        },
+        {
+            "name": "evil1.BOduQP",
+            "full_output": "Tue Dec  1 07:38:42 2020.288271 643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1|exe@7fd8ffa11d47[1512] unlink(\"/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1/runc.BOduQP\") = 0",
+            "timestamp": "Tue Dec  1 07:38:42 2020",
+            "parent_directory_ref": "directory--97cc66c7-33a8-11eb-86d3-d57ab09d280c",
+            "container_id": "643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1",
+            "spec_version": "2.1",
+            "type": "file",
+            "id": "file--97cc66c6-33a8-11eb-86d3-d57ab09d280c",
+            "parent_directory_str": "/var/run/docker/runtime-runc/moby/643891a6098c437715d8cba505b2d49440f3d6e6c9da99400b1d4788bce5b6d1"
+        }
+    ],
+    "type": "bundle",
+    "id": "bundle--97cc678f-33a8-11eb-86d3-d57ab09d280c"
+}

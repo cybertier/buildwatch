@@ -1,0 +1,4 @@
+AppData
+Administrator
+Desktop
+SysWOW64
