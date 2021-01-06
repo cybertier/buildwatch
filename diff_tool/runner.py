@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
-from db import db
 from app import app
+from db import db
 from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
 from models.run import Run
 
@@ -36,7 +36,7 @@ def actual_procedure(run: Run):
     previous_run: Optional[Run] = run.previous_run
     if not previous_run:
         logging.info(f"There is no previous run, so no need for the diff tool to run")
-        set_run_status(run, "finished_unprepared")
+        set_run_status(run, "first_finished_unprepared")
         return
     assure_correct_status_of_previous_run(previous_run)
     path_of_current_report: str = get_path_current_report(run)

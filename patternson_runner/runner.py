@@ -1,13 +1,12 @@
 import logging
 import os
-from builtins import ValueError
-from typing import List, Optional
+import time
 from pathlib import Path
-from db import db
+
 from app import app
+from db import db
 from models.run import Run
 from patternson_runner.obspat.patternson import start_patternson
-import time
 
 
 def run(run_id: int):
@@ -51,9 +50,13 @@ def set_status_for_run_and_wait(run):
         run = Run.query.get(run.id)
         time.sleep(app.config['DELAY_CHECKING_CUCKOO_TASK_STATUS'])
         db.session.refresh(run)
-        if patterns_file.exists() and run.status == "finished_unprepared":
-            set_run_status(run, "finished_prepared")
-            break
+        if patterns_file.exists():
+            if run.status == "finished_unprepared":
+                set_run_status(run, "finished_prepared")
+                break
+            elif run.status == "first_finished_unprepared":
+                set_run_status(run, "first_finished_prepared")
+                break
 
 
 def set_run_status(run, status):

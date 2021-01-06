@@ -10,7 +10,15 @@ class Run(db.Model):
                 backref=db.backref('previous_run', remote_side=[id])
             )
     user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
-    # error, created, cuckoo_running, diff_tool_running, finished_unprepared, finished_prepared
+    # error: An error occured for this run
+    # created: Successfully created this run
+    # cuckoo_running: Cuckoo is analyzing
+    # diff_tool_running: Old observables get subtracted from current report
+    # first_finished_unprepared: If no previous runs are available, diff tool sets this status, patternson-runner waits for it
+    # first_finished_prepared: If no previous runs are available, patterson sets this once the pattern generation is complete
+    # finished_unprepared: diff tool sets this status, patternson-runner waits for it
+    # finished_prepared: patterson sets this once the pattern generation is complete
+
     status = db.Column(db.String, unique=False, nullable=False, default="created")
     error = db.Column(db.String, unique=False, nullable=True)
 
