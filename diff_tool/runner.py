@@ -1,6 +1,5 @@
 import glob
 import logging
-import ntpath
 import os
 import shutil
 import time
@@ -9,6 +8,7 @@ from typing import List, Optional
 
 from app import app
 from db import db
+from diff_tool.stix_from_stix_substractor.substrator import subtract as stix_from_stix_subtract
 from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
 from models.run import Run
 
@@ -42,8 +42,8 @@ def actual_procedure(run: Run):
     path_of_current_report: str = get_path_current_report(run)
     path_of_reports: List[str] = get_list_of_reports_from_previous_run(previous_run)
     pattern_path: str = get_pattern_of_previous_run(previous_run)
-    subtract_observables_from_old_run(path_of_current_report, path_of_reports)
-    subtract_pattern_from_old_run(path_of_current_report, pattern_path)
+    output_path = subtract_observables_from_old_run(path_of_current_report, path_of_reports, run)
+    subtract_pattern_from_old_run(output_path, pattern_path, run)
     set_run_status(run, "finished_unprepared")
 
 
@@ -85,9 +85,11 @@ def get_list_of_reports_from_previous_run(run: Run):
     return all_json_files
 
 
-def subtract_observables_from_old_run(path_of_current_reports, path_of_reports):
-    # TODO: implement
-    pass
+def subtract_observables_from_old_run(path_of_current_report, path_of_reports, run):
+    output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
+                               'run', str(run.id), 'diff_tool_out_put', 'simple_subtraction.json')
+    stix_from_stix_subtract(path_of_current_report, path_of_reports, output_path)
+    return output_path
 
 
 def get_path_current_report(run: Run):
@@ -106,11 +108,18 @@ def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run
                                         'run', str(run.id), 'diff_tool_out_put')
     if not os.path.exists(diff_tool_output_dir):
         os.makedirs(diff_tool_output_dir)
-    copied_to = os.path.join(diff_tool_output_dir, ntpath.basename(input_report))
+    copied_to = os.path.join(diff_tool_output_dir, "original_stix.json")
     shutil.copy2(input_report, copied_to)
     return copied_to
 
 
-def subtract_pattern_from_old_run(current_report_path, pattern_path):
+def subtract_pattern_from_old_run(current_report_path, pattern_path, run):
     result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path))
-    logging.info(result)
+    write_result(result, run)
+
+
+def write_result(result, run):
+    output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
+                               'run', str(run.id), 'diff_tool_out_put', 'stix_report.json')
+    with Path(output_path).open() as file:
+        file.write(result.serialize(pretty=False))
