@@ -53,15 +53,15 @@ def set_run_status(run, status):
 
 
 def assure_correct_status_of_previous_run(previous_run: Run):
-    if previous_run.status == "error" or previous_run.error:
-        raise Exception(
-            f"Previous run has an error '{previous_run.error}', therefore we can not built a report. Resolve the error in run {previous_run.id}")
     start_time = time.time()
     timeout: int = app.config['TIME_OUT_WAITING_FOR_PREVIOUS_COMMIT']
     while time.time() - start_time < timeout:
         db.session.refresh(previous_run)
-        if previous_run.status == "finished_prepared":
+        if previous_run.status == "finished_prepared" or previous_run.status == "first_finished_prepared":
             return
+        if previous_run.status == "error" or previous_run.error:
+            raise Exception(
+                f"Previous run has an error '{previous_run.error}', therefore we can not built a report. Resolve the error in run {previous_run.id}")
         time.sleep(app.config['DELAY_CHECKING_PREVIOUS_TASK_STATUS'])
         logging.info(f"Previous run has not yet finished, status:{previous_run.status}")
 
@@ -121,5 +121,5 @@ def subtract_pattern_from_old_run(current_report_path, pattern_path, run):
 def write_result(result, run):
     output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
                                'run', str(run.id), 'diff_tool_out_put', 'stix_report.json')
-    with Path(output_path).open() as file:
-        file.write(result.serialize(pretty=False))
+    with Path(output_path).open("w") as file:
+        file.write(result.serialize(pretty=False, indent=4))

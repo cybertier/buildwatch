@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 from typing import List
 
@@ -7,7 +8,7 @@ import stix2
 to_identifiers = {
     "process": lambda process: [process["command_line"]],
     "file": lambda file: [file["parent_directory_str"] + "/" + file["name"]],
-
+    # TODO: ip and domain
 }
 
 
@@ -57,15 +58,24 @@ def write_result(base: stix2.Bundle, out_put_file_path):
 
 def delete_not_found_in_index(base, index):
     all_objects = base["objects"]
-    for element in all_objects:
+    malware_object = None
+    for element in all_objects.copy():
+        if not element["type"] == "malware-analysis":
+            continue
+        malware_object = element
+        break
+    if not malware_object:
+        raise Exception("There was no malware analysis object on the report")
+    for element in all_objects.copy():
         if not element["type"] == "grouping":
             continue
-        delete_not_found_in_index_of_group(element, index, all_objects)
+        logging.debug(f"Looking at group {element.name}")
+        delete_not_found_in_index_of_group(element, index, all_objects, malware_object)
 
 
-def delete_not_found_in_index_of_group(group, index, all_objects):
+def delete_not_found_in_index_of_group(group, index, all_objects, malware_object):
     group_index = index[group.name]
-    for element in all_objects:
+    for element in all_objects.copy():
         if not element["id"] in group["object_refs"]:
             continue
         if not element["type"] in to_identifiers:
@@ -74,9 +84,11 @@ def delete_not_found_in_index_of_group(group, index, all_objects):
         identifiers = get_identifier_function(element)
         for identifier in identifiers:
             if identifier in group_index:
-                remove_element(element, group, all_objects)
+                logging.debug(f"Found object with identifier {identifier} and id {element.id} that can be filtered out")
+                remove_element(element, group, all_objects, malware_object)
 
 
-def remove_element(element, group, all_objects):
+def remove_element(element, group, all_objects, malware_object):
     group["object_refs"].remove(element.id)
     all_objects.remove(element)
+    malware_object["analysis_sco_refs"].remove(element.id)

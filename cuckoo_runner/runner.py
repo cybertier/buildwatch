@@ -1,15 +1,14 @@
 import logging
 import os
-from multiprocessing import Lock, synchronize
+from multiprocessing import Lock
 
+from app import app
 from cuckoo_runner.git_repo_preparer import package_zip_for_upload
 from db import db
-from app import app
+from diff_tool.starter import start as start_diff_tool
 from models.project import Project
 from models.run import Run
-from cuckoo_runner import cuckoo_communicator
-from diff_tool.starter import start as start_diff_tool
-from patternson_runner.runner import run as run_patternson
+from patternson_runner.starter import start as run_patternson
 
 
 def run(run_id: int, lock: Lock):
@@ -28,10 +27,10 @@ def run(run_id: int, lock: Lock):
 def actual_procedure(lock, run):
     project = run.project
     path_to_zip = get_zip_for_upload(project, run, lock)
-    task_ids = cuckoo_communicator.start_run_for_zip_and_get_task_ids(path_to_zip, project)
+    # task_ids = cuckoo_communicator.start_run_for_zip_and_get_task_ids(path_to_zip, project)
     set_run_status_to_cuckoo_running(run)
     output_cuckoo_path = set_output_cuckoo_path(run)
-    cuckoo_communicator.busy_waiting_for_task_completion_and_fetch_results(task_ids, output_cuckoo_path)
+    #cuckoo_communicator.busy_waiting_for_task_completion_and_fetch_results(task_ids, output_cuckoo_path)
     start_diff_tool(run.id)
     run_patternson(run.id)
 
