@@ -8,7 +8,7 @@ from typing import List, Optional
 
 from app import app
 from db import db
-from diff_tool.stix_from_stix_substractor.substrator import subtract as stix_from_stix_subtract
+from diff_tool.stix_from_stix_substractor.substractor import subtract as stix_from_stix_subtract
 from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
 from models.run import Run
 
