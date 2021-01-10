@@ -14,6 +14,11 @@ def check_constraints(model: ProjectModel):
 class Project(Resource):
     post_parser = reqparse.RequestParser()
     post_parser.add_argument('name', type=str, help='The name of the project', required=True)
+    post_parser.add_argument('old_runs_considered', type=int,
+                             help='The patterns and '
+                                  'reports of such many old runs are used '
+                                  'to subtract observables from the current run',
+                             required=True)
     post_parser.add_argument('git_url', type=str, help='The git url of the project', required=False)
     post_parser.add_argument('git_managed', type=bool, help='If project is managed by git', required=True)
     post_parser.add_argument('cuckoo_analysis_per_run', type=int, help='How many times a run is analysed in cuckoo',
