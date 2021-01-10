@@ -8,7 +8,9 @@ import stix2
 to_identifiers = {
     "process": lambda process: [process["command_line"]],
     "file": lambda file: [file["parent_directory_str"] + "/" + file["name"]],
-    # TODO: ip and domain
+    "domain-name": lambda domain: [domain["value"], domain["resolves_to_str"]],
+    "ipv6-addr": lambda ip: [ip["value"]],
+    "ipv4-addr": lambda ip: [ip["value"]]
 }
 
 
@@ -74,6 +76,8 @@ def delete_not_found_in_index(base, index):
 
 
 def delete_not_found_in_index_of_group(group, index, all_objects, malware_object):
+    if not (group.name in index):
+        return
     group_index = index[group.name]
     for element in all_objects.copy():
         if not element["id"] in group["object_refs"]:

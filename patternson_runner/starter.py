@@ -1,6 +1,6 @@
+import multiprocessing
 import os
 from multiprocessing import Process
-import multiprocessing
 
 
 def start(run_id: int):
@@ -11,7 +11,7 @@ def start(run_id: int):
 
 
 def child(run_id):
-    from diff_tool.runner import run
+    from patternson_runner.runner import run
     import logging
     from app import app
     target_dir = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'run', str(run_id))
