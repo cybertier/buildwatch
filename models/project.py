@@ -8,6 +8,7 @@ class Project(db.Model):
     git_url = db.Column(db.String(300), unique=False, nullable=True)
     git_managed = db.Column(db.Boolean(), unique=False, nullable=False)
     cuckoo_analysis_per_run = db.Column(db.Integer(), unique=False, nullable=False)
+    old_runs_considered = db.Column(db.Integer(), unique=False, nullable=False, default=1)
     # Internal:
     git_checkout_path = db.Column(db.String(500), unique=False, nullable=True)
     storage_path = db.Column(db.String(500), unique=False, nullable=True)
@@ -20,4 +21,5 @@ class Project(db.Model):
             "git_url": self.git_url,
             "git_managed": self.git_managed,
             "cuckoo_analysis_per_run": self.cuckoo_analysis_per_run,
+            "old_runs_considered": self.old_runs_considered,
         }

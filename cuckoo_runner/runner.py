@@ -1,15 +1,15 @@
 import logging
 import os
-from multiprocessing import Lock, synchronize
+from multiprocessing import Lock
 
+from app import app
+from cuckoo_runner import cuckoo_communicator
 from cuckoo_runner.git_repo_preparer import package_zip_for_upload
 from db import db
-from app import app
+from diff_tool.starter import start as start_diff_tool
 from models.project import Project
 from models.run import Run
-from cuckoo_runner import cuckoo_communicator
-from diff_tool.starter import start as start_diff_tool
-from patternson_runner.runner import run as run_patternson
+from patternson_runner.starter import start as run_patternson
 
 
 def run(run_id: int, lock: Lock):
