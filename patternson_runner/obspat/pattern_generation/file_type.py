@@ -136,7 +136,6 @@ def process_file_type(accumulated_objects, accumulated_reports):
             file_patterns.append(new_pattern)
 
     files = accumulated_objects["file"]
-    directories = accumulated_objects["directory"]
     finished_regexes = []
 
     # directly use file paths, if they are the same across multiple reports
@@ -153,7 +152,7 @@ def process_file_type(accumulated_objects, accumulated_reports):
     finished_regexes = list(set(finished_regexes))
 
     # get secondary features
-    file_sizes, file_hashes, str_lengths = get_file_features(finished_regexes, files, directories)
+    file_sizes, file_hashes, str_lengths = get_file_features(finished_regexes, files)
 
     for i, regex in enumerate(finished_regexes):
         finished_regexes[i] = resolve_quantifier(regex, str_lengths)
@@ -213,7 +212,7 @@ def get_same_files_across_reports(accumulated_objects):
 
 # get hashes and file size from files matching the regexes;
 # if for one regex multiple different values are found, do *NOT* include them
-def get_file_features(finished_regexes, files, directories):
+def get_file_features(finished_regexes, files):
     def get_features(regex, file, file_sizes, file_hashes, str_lengths):
         if hasattr(file["0"], "parent_directory_ref") and hasattr(file["0"], "name"):
             full_path = f"{file['0'].parent_directory_str}/{file['0'].name}"
