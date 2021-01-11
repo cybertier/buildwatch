@@ -11,6 +11,7 @@ from db import db
 from diff_tool.html_report.html_report_builder import build_html_report
 from diff_tool.stix_from_stix_substractor.substractor import subtract as stix_from_stix_subtract
 from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
+from models.project import Project
 from models.run import Run
 
 
@@ -41,10 +42,10 @@ def actual_procedure(run: Run):
         return
     assure_correct_status_of_previous_run(previous_run)
     path_of_current_report: str = get_path_current_report(run)
-    path_of_reports: List[str] = get_list_of_reports_from_previous_run(previous_run)
-    pattern_path: str = get_pattern_of_previous_run(previous_run)
+    path_of_reports: List[str] = get_list_of_reports_from_previous_run(run)
+    pattern_paths: List[str] = get_pattern_of_previous_run(previous_run)
     output_path = subtract_observables_from_old_run(path_of_current_report, path_of_reports, run)
-    subtract_pattern_from_old_run(output_path, pattern_path, run)
+    subtract_pattern_from_old_runs(output_path, pattern_paths, run)
     set_run_status(run, "finished_unprepared")
 
 
@@ -68,27 +69,48 @@ def assure_correct_status_of_previous_run(previous_run: Run):
 
 
 def get_pattern_of_previous_run(run: Run):
-    path_pattern_dir = run.patterson_output_path
-    all_json_files = glob.glob(f"{path_pattern_dir}/*.json")
-    if len(all_json_files) != 1:
+    all_json_files = []
+    project: Project = run.project
+    for i in range(project.old_runs_considered):
+        previous_run = run.previous_run
+        if not previous_run:
+            break
+        add_pattern_files_for_run(all_json_files, previous_run)
+    return all_json_files
+
+
+def add_pattern_files_for_run(all_json_files, previous_run):
+    path_pattern_dir = previous_run.patterson_output_path
+    pattern_files = glob.glob(f"{path_pattern_dir}/*.json")
+    if len(pattern_files) != 1:
         raise Exception(
             f"Expected 1 json pattern file in {path_pattern_dir} but found the following files: {all_json_files}")
-    return all_json_files[0]
+    all_json_files.append(all_json_files[0])
 
 
 def get_list_of_reports_from_previous_run(run: Run):
-    cuckoo_output_path: str = run.cuckoo_output_path
-    all_json_files = glob.glob(f"{cuckoo_output_path}/*.json")
+    all_json_files = []
+    project: Project = run.project
+    for i in range(project.old_runs_considered):
+        previous_run = run.previous_run
+        if not previous_run:
+            break
+        add_cuckoo_report_files_for_run(all_json_files, run)
     if len(all_json_files) < 3:
-        raise Exception(f"Found less than 3 json files in the cuckoo_output_path({cuckoo_output_path})."
-                        f"Something is wrong with previous run of id {run.id}."
+        raise Exception(f"Found less than 3 json files."
                         f"Only found {all_json_files}")
     return all_json_files
+
+
+def add_cuckoo_report_files_for_run(all_json_files, run):
+    cuckoo_output_path: str = run.cuckoo_output_path
+    all_json_files.append(glob.glob(f"{cuckoo_output_path}/*.json"))
 
 
 def subtract_observables_from_old_run(path_of_current_report, path_of_reports, run):
     output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
                                'run', str(run.id), 'diff_tool_out_put', 'simple_subtraction.json')
+    logging.info(f"Subtracting {path_of_reports} from {path_of_current_report}")
     stix_from_stix_subtract(path_of_current_report, path_of_reports, output_path)
     return output_path
 
@@ -114,8 +136,10 @@ def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run
     return copied_to
 
 
-def subtract_pattern_from_old_run(current_report_path, pattern_path, run):
-    result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path))
+def subtract_pattern_from_old_runs(current_report_path, pattern_path, run):
+    result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path[0]))
+    for i in range(run.project.old_runs_considered - 1):
+        result = subtract_pattern_after_loading_files(result, Path(pattern_path[i + 1]))
     write_result(result, run)
 
 

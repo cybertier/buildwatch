@@ -7,15 +7,17 @@ class Run(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
     previous_run_id = db.Column(db.Integer, db.ForeignKey('run.id'), nullable=True)
     children = db.relationship("Run",
-                backref=db.backref('previous_run', remote_side=[id])
-            )
+                               backref=db.backref('previous_run', remote_side=[id])
+                               )
     user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
-    # error: An error occured for this run
+    # error: An error occurred for this run
     # created: Successfully created this run
     # cuckoo_running: Cuckoo is analyzing
     # diff_tool_running: Old observables get subtracted from current report
-    # first_finished_unprepared: If no previous runs are available, diff tool sets this status, patternson-runner waits for it
-    # first_finished_prepared: If no previous runs are available, patterson sets this once the pattern generation is complete
+    # first_finished_unprepared: If no previous runs are available,
+    # diff tool sets this status, patternson-runner waits for it
+    # first_finished_prepared: If no previous runs are available,
+    # patterson sets this once the pattern generation is complete
     # finished_unprepared: diff tool sets this status, patternson-runner waits for it
     # finished_prepared: patterson sets this once the pattern generation is complete
 
