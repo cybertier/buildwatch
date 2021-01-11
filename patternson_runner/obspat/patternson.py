@@ -77,7 +77,7 @@ def main(input_, output, processes, timeout, verbose):
     with ProcessPool(max_workers=processes, max_tasks=1) as pool:
         for directory in reports:
             pool.schedule(
-                process_report,
+                process_reports,
                 args=[directory, options, total_reports],
                 timeout=timeout,
             )
