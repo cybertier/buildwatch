@@ -83,12 +83,12 @@ def generate_patterns_for_domainnames(accumulated_objects, accumulated_reports):
 
 
 def build_pattern_compositions(patterns, accumulated_reports):
-    occur_together = find_patterns_that_occur_together(patterns)
-    if not occur_together:
-        log.debug("No patterns occured together during multiple runs.")
-    remove_patterns_if_occured_together(patterns, occur_together)
+    #occur_together = find_patterns_that_occur_together(patterns)
+    #if not occur_together:
+    #    log.debug("No patterns occured together during multiple runs.")
+    #remove_patterns_if_occured_together(patterns, occur_together)
     matched_all_reports, remaining_patterns = find_patterns_that_match_all_reports(
-        accumulated_reports, patterns, occur_together
+        accumulated_reports, patterns  #, occur_together
     )
     return matched_all_reports, remaining_patterns
 
@@ -141,7 +141,7 @@ def remove_patterns_if_occured_together(patterns_dict, occur_together):
                     patterns_dict[pattern_type].remove(p)
 
 
-def find_patterns_that_match_all_reports(accumulated_reports, patterns, occur_together):
+def find_patterns_that_match_all_reports(accumulated_reports, patterns):
     combined_patterns = (
         patterns.get("file_patterns", [])
         + patterns.get("process_patterns", [])
@@ -157,15 +157,15 @@ def find_patterns_that_match_all_reports(accumulated_reports, patterns, occur_to
         elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
             remaining_patterns.append(pat)
 
-    for gathered_patterns in occur_together:
-        and_comp = []
-        for pat in gathered_patterns:
-            if pat.match_ratio(accumulated_reports) == 1.0:
-                matched_all_reports.append(pat)
-            elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
-                and_comp.append(pat)
-        if and_comp:
-            remaining_patterns.append(and_comp)
+    #for gathered_patterns in occur_together:
+    #    and_comp = []
+    #    for pat in gathered_patterns:
+    #        if pat.match_ratio(accumulated_reports) == 1.0:
+    #            matched_all_reports.append(pat)
+    #        elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
+    #            and_comp.append(pat)
+    #    if and_comp:
+    #        remaining_patterns.append(and_comp)
     return matched_all_reports, remaining_patterns
 
 
