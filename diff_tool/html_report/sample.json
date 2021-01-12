@@ -1,0 +1,373 @@
+{
+  "objects": [
+    {
+      "name": "ld.so.cache",
+      "full_output": "Sun Jan 10 19:22:47 2021.927257 sh@7fe2dc773cdd[1155] openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a0-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/etc"
+    },
+    {
+      "name": "libc.so.6",
+      "full_output": "Sun Jan 10 19:22:47 2021.927291 sh@7fe2dc773cdd[1155] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libc.so.6\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a1-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "ld.so.cache",
+      "full_output": "Sun Jan 10 19:22:47 2021.927823 .buildwatch.sh@7fc0c021acdd[1156] openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a2-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/etc"
+    },
+    {
+      "name": "libtinfo.so.5",
+      "full_output": "Sun Jan 10 19:22:47 2021.927854 .buildwatch.sh@7fc0c021acdd[1156] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libtinfo.so.5\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a3-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libdl.so.2",
+      "full_output": "Sun Jan 10 19:22:47 2021.927917 .buildwatch.sh@7fc0c021acdd[1156] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libdl.so.2\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a4-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libc.so.6",
+      "full_output": "Sun Jan 10 19:22:47 2021.927972 .buildwatch.sh@7fc0c021acdd[1156] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libc.so.6\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a5-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "tty",
+      "full_output": "Sun Jan 10 19:22:47 2021.928236 .buildwatch.sh@7fc0bfaeec8e[1156] openat(AT_FDCWD, \"/dev/tty\", O_RDWR|O_NONBLOCK) = -6 (ENXIO)",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a6-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/dev"
+    },
+    {
+      "name": "locale-archive",
+      "full_output": "Sun Jan 10 19:22:47 2021.928263 .buildwatch.sh@7fc0bfaeedb1[1156] openat(AT_FDCWD, \"/usr/lib/locale/locale-archive\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a7-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/usr/lib/locale"
+    },
+    {
+      "name": ".buildwatch.sh",
+      "full_output": "Sun Jan 10 19:22:47 2021.928542 .buildwatch.sh@7fc0bfaeec8e[1156] openat(AT_FDCWD, \"/tmpvUY8tD/.buildwatch.sh\", O_RDONLY) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a8-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/tmpvUY8tD"
+    },
+    {
+      "name": "gconv-modules.cache",
+      "full_output": "Sun Jan 10 19:22:47 2021.931529 .buildwatch.sh@7fc0bfaeedb1[1156] openat(AT_FDCWD, \"/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache\", O_RDONLY) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445a9-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/usr/lib/x86_64-linux-gnu/gconv"
+    },
+    {
+      "name": "ISO8859-1.so",
+      "full_output": "Sun Jan 10 19:22:47 2021.931561 .buildwatch.sh@7fc0c021acdd[1156] openat(AT_FDCWD, \"/usr/lib/x86_64-linux-gnu/gconv/ISO8859-1.so\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445aa-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/usr/lib/x86_64-linux-gnu/gconv"
+    },
+    {
+      "name": "ld.so.cache",
+      "full_output": "Sun Jan 10 19:22:47 2021.934817 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445ab-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/etc"
+    },
+    {
+      "name": "libcap.so.2",
+      "full_output": "Sun Jan 10 19:22:47 2021.934850 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libcap.so.2\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445ac-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libidn.so.11",
+      "full_output": "Sun Jan 10 19:22:47 2021.934918 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libidn.so.11\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445ad-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libnettle.so.6",
+      "full_output": "Sun Jan 10 19:22:47 2021.934979 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/usr/lib/x86_64-linux-gnu/libnettle.so.6\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445ae-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/usr/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libresolv.so.2",
+      "full_output": "Sun Jan 10 19:22:47 2021.935040 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libresolv.so.2\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445af-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "libc.so.6",
+      "full_output": "Sun Jan 10 19:22:47 2021.935102 ping@7f2741192cdd[1159] openat(AT_FDCWD, \"/lib/x86_64-linux-gnu/libc.so.6\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445b0-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/lib/x86_64-linux-gnu"
+    },
+    {
+      "name": "locale-archive",
+      "full_output": "Sun Jan 10 19:22:47 2021.935403 ping@7f274060adb1[1159] openat(AT_FDCWD, \"/usr/lib/locale/locale-archive\", O_RDONLY|O_CLOEXEC) = 6",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445b1-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/usr/lib/locale"
+    },
+    {
+      "name": "tty",
+      "full_output": "Sun Jan 10 19:22:47 2021.928236 .buildwatch.sh@7fc0bfaeec8e[1156] openat(AT_FDCWD, \"/dev/tty\", O_RDWR|O_NONBLOCK) = -6 (ENXIO)",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "type": "file",
+      "id": "file--1d6445b2-5371-11eb-b0c0-59738c82a45e",
+      "parent_directory_str": "/dev"
+    },
+    {
+      "full_output": "Sun Jan 10 19:22:47 2021.926492 python2.7@7f4c3f586e37[1155] execve(\"/usr/bin/sh\", [\"sh\", \"-c\", \"/tmpvUY8tD/.buildwatch.sh\"], [\"LANGUAGE=en_US:\", \"HOME=/root\", \"LOGNAME=root\", \"PATH=/usr/bin:/bin\", \"LANG=en_US\", \"SHELL=/bin/sh\", \"PWD=/root\"]) = -2 (ENOENT)",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "command_line": "sh -c /tmpvUY8tD/.buildwatch.sh",
+      "id": "process--1d6445b3-5371-11eb-b0c0-59738c82a45e",
+      "spec_version": "2.1",
+      "type": "process",
+      "executable_path": "/usr/bin/sh"
+    },
+    {
+      "full_output": "Sun Jan 10 19:22:47 2021.926591 sh@7fe2dc772ec9[1155] execve(\"/bin/sh\", [\"sh\", \"-c\", \"/tmpvUY8tD/.buildwatch.sh\"], [\"LANGUAGE=en_US:\", \"HOME=/root\", \"LOGNAME=root\", \"PATH=/usr/bin:/bin\", \"LANG=en_US\", \"SHELL=/bin/sh\", \"PWD=/root\"])",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "command_line": "sh -c /tmpvUY8tD/.buildwatch.sh",
+      "id": "process--1d6445b4-5371-11eb-b0c0-59738c82a45e",
+      "spec_version": "2.1",
+      "type": "process",
+      "executable_path": "/bin/sh"
+    },
+    {
+      "full_output": "Sun Jan 10 19:22:47 2021.927695 .buildwatch.sh@7fc0c0219ec9[1156] execve(\"/tmpvUY8tD/.buildwatch.sh\", [\"/tmpvUY8tD/.buildwatch.sh\"], [\"LANGUAGE=en_US:\", \"HOME=/root\", \"LOGNAME=root\", \"PATH=/usr/bin:/bin\", \"LANG=en_US\", \"SHELL=/bin/sh\", \"PWD=/tmpvUY8tD\"])",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "command_line": "/tmpvUY8tD/.buildwatch.sh",
+      "id": "process--1d6445b5-5371-11eb-b0c0-59738c82a45e",
+      "spec_version": "2.1",
+      "type": "process",
+      "executable_path": "/tmpvUY8tD/.buildwatch.sh"
+    },
+    {
+      "full_output": "Sun Jan 10 19:22:47 2021.931949 ping@7f2741191ec9[1159] execve(\"/bin/ping\", [\"ping\", \"8.8.8.8\"], [\"LANG=en_US\", \"PWD=/tmpvUY8tD\", \"HOME=/root\", \"SHELL=/bin/sh\", \"SHLVL=1\", \"LANGUAGE=en_US:\", \"LOGNAME=root\", \"PATH=/usr/bin:/bin\", \"_=/bin/ping\"])",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "command_line": "ping 8.8.8.8",
+      "id": "process--1d6445b6-5371-11eb-b0c0-59738c82a45e",
+      "spec_version": "2.1",
+      "type": "process",
+      "executable_path": "/bin/ping"
+    },
+    {
+      "full_output": "Sun Jan 10 19:22:47 2021.935509 ping@7f274061d8b4[1159] connect(8, {AF_INET, 8.8.8.8, 1025}, 16) = 0",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "value": "8.8.8.8",
+      "type": "ipv6-addr",
+      "id": "ipv6-addr--1d6445b8-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "resolves_to_refs": [
+        "ipv6-addr--1d6445b8-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "full_output": "Sun Jan 10 19:22:47 2021.935509 ping@7f274061d8b4[1159] connect(8, {AF_INET, 8.8.8.8, 1025}, 16) = 0",
+      "timestamp": "Sun Jan 10 19:22:47 2021",
+      "container_id": "",
+      "spec_version": "2.1",
+      "value": "dns.google",
+      "resolves_to_str": "8.8.8.8",
+      "type": "domain-name",
+      "id": "domain-name--1d6445b7-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "product": "cuckoo-sandbox",
+      "created": "2021-01-10T18:24:45.454505Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.454505Z",
+      "analysis_sco_refs": [
+        "file--1d6445a0-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a1-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a2-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a3-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a4-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a5-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a6-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a7-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a8-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a9-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445aa-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ab-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ac-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ad-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ae-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445af-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445b0-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445b1-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445b2-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b3-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b4-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b5-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b6-5371-11eb-b0c0-59738c82a45e",
+        "ipv6-addr--1d6445b8-5371-11eb-b0c0-59738c82a45e",
+        "domain-name--1d6445b7-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "type": "malware-analysis",
+      "id": "malware-analysis--1d6445b9-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "name": "processes_created",
+      "created": "2021-01-10T18:24:45.455194Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.455194Z",
+      "object_refs": [
+        "process--1d6445b3-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b4-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b5-5371-11eb-b0c0-59738c82a45e",
+        "process--1d6445b6-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "context": "suspicious-activity",
+      "type": "grouping",
+      "id": "grouping--1d6445ba-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "name": "files_read",
+      "created": "2021-01-10T18:24:45.455498Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.455498Z",
+      "object_refs": [
+        "file--1d6445a0-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a1-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a2-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a3-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a4-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a5-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a6-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a7-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a8-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445a9-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445aa-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ab-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ac-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ad-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445ae-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445af-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445b0-5371-11eb-b0c0-59738c82a45e",
+        "file--1d6445b1-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "context": "suspicious-activity",
+      "type": "grouping",
+      "id": "grouping--1d6445bb-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "name": "files_written",
+      "created": "2021-01-10T18:24:45.455971Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.455971Z",
+      "object_refs": [
+        "file--1d6445b2-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "context": "suspicious-activity",
+      "type": "grouping",
+      "id": "grouping--1d6445bc-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "name": "hosts_connected",
+      "created": "2021-01-10T18:24:45.45624Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.45624Z",
+      "object_refs": [
+        "ipv6-addr--1d6445b8-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "context": "suspicious-activity",
+      "type": "grouping",
+      "id": "grouping--1d6445bd-5371-11eb-b0c0-59738c82a45e"
+    },
+    {
+      "name": "domains",
+      "created": "2021-01-10T18:24:45.456496Z",
+      "spec_version": "2.1",
+      "modified": "2021-01-10T18:24:45.456496Z",
+      "object_refs": [
+        "domain-name--1d6445b7-5371-11eb-b0c0-59738c82a45e"
+      ],
+      "context": "suspicious-activity",
+      "type": "grouping",
+      "id": "grouping--1d6445be-5371-11eb-b0c0-59738c82a45e"
+    }
+  ],
+  "type": "bundle",
+  "id": "bundle--1d6445bf-5371-11eb-b0c0-59738c82a45e"
+}

@@ -8,6 +8,7 @@ from typing import List, Optional
 
 from app import app
 from db import db
+from diff_tool.html_report.html_report_builder import build_html_report
 from diff_tool.stix_from_stix_substractor.substractor import subtract as stix_from_stix_subtract
 from diff_tool.stix_pattern_subtractor.pattern_subtractor import subtract_pattern_after_loading_files
 from models.run import Run
@@ -120,6 +121,10 @@ def subtract_pattern_from_old_run(current_report_path, pattern_path, run):
 
 def write_result(result, run):
     output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
-                               'run', str(run.id), 'diff_tool_out_put', 'stix_report.json')
-    with Path(output_path).open("w") as file:
+                               'run', str(run.id), 'diff_tool_out_put')
+    file_path = os.path.join(output_path, 'stix_report_final.json')
+    build_html_report(result, run)
+    with Path(file_path).open("w") as file:
         file.write(result.serialize(pretty=False, indent=4))
+    run.diff_tool_output_path = output_path
+    db.session.commit()

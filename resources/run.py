@@ -2,16 +2,16 @@ import os
 import re
 import uuid
 
-from flask import jsonify, abort
+from flask import jsonify, abort, make_response, send_file
+from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.utils import secure_filename
 
-from models.run import Run as RunModel
-from models.project import Project as ProjectModel
-from db import db
-from flask import request
 from app import app
 from cuckoo_runner.starter import start
+from db import db
+from models.project import Project as ProjectModel
+from models.run import Run as RunModel
 
 
 class Run(Resource):
@@ -19,7 +19,9 @@ class Run(Resource):
     post_parser.add_argument('project_id', type=str, help='The id of the project', required=True)
     post_parser.add_argument('previous_run_id', type=int, help='The id of the previous run', required=False)
     post_parser.add_argument('user_set_identifier', type=str, help='The identifier like git hash', required=True)
-    post_parser.add_argument('zip_filename', type=str, help='If the repo is not git managed the name of the zip file you uploaded in advance.', required=False)
+    post_parser.add_argument('zip_filename', type=str,
+                             help='If the repo is not git managed the name of the zip file you uploaded in advance.',
+                             required=False)
     get_parser = reqparse.RequestParser()
     get_parser.add_argument('id', type=int, help='id of requested project', required=False)
 
@@ -63,6 +65,19 @@ class Run(Resource):
         target_file = os.path.join(target_dir, zip_file_name)
         file.save(target_file)
         return zip_file_name
+
+    @staticmethod
+    def get_report(id):
+        """
+        Get the html report of buildwatch
+        """
+        run: RunModel = RunModel.query.get(id)
+        file = os.path.join(run.diff_tool_output_path, "report.html")
+        if not os.path.exists(file):
+            abort(404)
+        response = make_response(send_file(file))
+        response.headers['Content-Type'] = 'text/html'
+        return response
 
     def get(self):
         args = Run.get_parser.parse_args(strict=True)
