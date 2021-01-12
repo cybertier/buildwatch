@@ -121,7 +121,10 @@ def subtract_pattern_from_old_run(current_report_path, pattern_path, run):
 
 def write_result(result, run):
     output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
-                               'run', str(run.id), 'diff_tool_out_put', 'stix_report_final.json')
+                               'run', str(run.id), 'diff_tool_out_put')
+    file_path = os.path.join(output_path, 'stix_report_final.json')
     build_html_report(result, run)
-    with Path(output_path).open("w") as file:
+    with Path(file_path).open("w") as file:
         file.write(result.serialize(pretty=False, indent=4))
+    run.diff_tool_output_path = output_path
+    db.session.commit()
