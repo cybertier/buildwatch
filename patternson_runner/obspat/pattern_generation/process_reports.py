@@ -21,10 +21,10 @@ def pattern_generation(
     output_directory: Path,
 ):
     patterns = get_patterns(accumulated_objects, accumulated_reports)
-    matched_all_reports, remaining_patterns = build_pattern_compositions(
-        patterns, accumulated_reports
-    )
-    stix_pkg = create_stix_package(output_directory, matched_all_reports, remaining_patterns)
+    #matched_all_reports, remaining_patterns = build_pattern_compositions(
+    #    patterns, accumulated_reports
+    #)
+    stix_pkg = create_stix_package(output_directory, patterns)
     if stix_pkg:
         with open(output_directory, "w") as f:
             f.write(stix_pkg)
@@ -83,12 +83,12 @@ def generate_patterns_for_domainnames(accumulated_objects, accumulated_reports):
 
 
 def build_pattern_compositions(patterns, accumulated_reports):
-    #occur_together = find_patterns_that_occur_together(patterns)
-    #if not occur_together:
-    #    log.debug("No patterns occured together during multiple runs.")
-    #remove_patterns_if_occured_together(patterns, occur_together)
+    occur_together = find_patterns_that_occur_together(patterns)
+    if not occur_together:
+        log.debug("No patterns occured together during multiple runs.")
+    remove_patterns_if_occured_together(patterns, occur_together)
     matched_all_reports, remaining_patterns = find_patterns_that_match_all_reports(
-        accumulated_reports, patterns  #, occur_together
+        accumulated_reports, patterns, occur_together
     )
     return matched_all_reports, remaining_patterns
 
@@ -141,7 +141,7 @@ def remove_patterns_if_occured_together(patterns_dict, occur_together):
                     patterns_dict[pattern_type].remove(p)
 
 
-def find_patterns_that_match_all_reports(accumulated_reports, patterns):
+def find_patterns_that_match_all_reports(accumulated_reports, patterns, occur_together):
     combined_patterns = (
         patterns.get("file_patterns", [])
         + patterns.get("process_patterns", [])
@@ -157,49 +157,46 @@ def find_patterns_that_match_all_reports(accumulated_reports, patterns):
         elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
             remaining_patterns.append(pat)
 
-    #for gathered_patterns in occur_together:
-    #    and_comp = []
-    #    for pat in gathered_patterns:
-    #        if pat.match_ratio(accumulated_reports) == 1.0:
-    #            matched_all_reports.append(pat)
-    #        elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
-    #            and_comp.append(pat)
-    #    if and_comp:
-    #        remaining_patterns.append(and_comp)
+    for gathered_patterns in occur_together:
+        and_comp = []
+        for pat in gathered_patterns:
+            if pat.match_ratio(accumulated_reports) == 1.0:
+                matched_all_reports.append(pat)
+            elif pat.match_ratio(accumulated_reports) > conf.match_ratio_threshold:
+                and_comp.append(pat)
+        if and_comp:
+            remaining_patterns.append(and_comp)
     return matched_all_reports, remaining_patterns
 
 
-def create_stix_package(output_directory, matched_all_reports, remaining_patterns):
-    pattern = join_patterns_that_occur_in_all_reports(matched_all_reports)
+def create_stix_package(output_directory, patterns):
+    #pattern = join_patterns_that_occur_in_all_reports(matched_all_reports)
     sample_name = output_directory.stem
-    stix_indicator = get_stix2_indicator_from_pattern(pattern, sample_name, "1.0")
+    #stix_indicator = get_stix2_indicator_from_pattern(pattern, sample_name, "1.0")
 
-    patterns = []
-    if stix_indicator:
-        patterns.append(stix_indicator)
+    indicators = []
+    #if stix_indicator:
+    #    patterns.append(stix_indicator)
 
-    for element in remaining_patterns:
-        if isinstance(element, list):
-            indicator = get_indicators_from_list_of_patterns(sample_name, element)
-            if indicator:
-                patterns.append(indicator)
-        else:
+    for type in patterns.keys():
+        for element in patterns[type]:
+        #if isinstance(element, list):
+        #    indicator = get_indicators_from_list_of_patterns(sample_name, element)
+        #    if indicator:
+        #        indicators.append(indicator)
+        #else:
             pattern = element.observation_expression().replace("\\", "\\\\")
             indicator = get_stix2_indicator_from_pattern(
                 pattern, sample_name, element.match_ratio()
             )
             if indicator:
-                patterns.append(indicator)
+                indicators.append(indicator)
 
-    if not patterns:
-        log.info(f"No patterns could be inferred for {output_directory}")
+    if not indicators:
+        log.info(f"No indicators could be inferred for {output_directory}")
         return None
 
-    indicator = stix2.Bundle(objects=patterns).serialize(sort_keys=False, indent=4)
-
-    if matched_all_reports or remaining_patterns:
-        return indicator
-    return None
+    return stix2.Bundle(objects=indicators).serialize(sort_keys=False, indent=4)
 
 
 def join_patterns_that_occur_in_all_reports(matched_all_reports):

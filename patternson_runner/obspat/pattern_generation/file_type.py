@@ -75,7 +75,7 @@ class FilePattern:
         return obs_expr + "]"
 
     def get_re_groups(self, observable, regex_groups, report_id):
-        if hasattr(observable["0"], "parent_directory_ref") and hasattr(observable["0"], "name"):
+        if hasattr(observable["0"], "parent_directory_str") and hasattr(observable["0"], "name"):
             full_path = f"{observable['0'].parent_directory_str}/{observable['0'].name}"
             if re.match(self.regex, full_path):
                 groups = re.match(self.regex, full_path).groupdict()
@@ -214,7 +214,7 @@ def get_same_files_across_reports(accumulated_objects):
 # if for one regex multiple different values are found, do *NOT* include them
 def get_file_features(finished_regexes, files):
     def get_features(regex, file, file_sizes, file_hashes, str_lengths):
-        if hasattr(file["0"], "parent_directory_ref") and hasattr(file["0"], "name"):
+        if hasattr(file["0"], "parent_directory_str") and hasattr(file["0"], "name"):
             full_path = f"{file['0'].parent_directory_str}/{file['0'].name}"
             match = re.match(regex, full_path)
             if match:
