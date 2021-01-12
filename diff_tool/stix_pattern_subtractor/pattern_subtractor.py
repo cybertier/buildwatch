@@ -89,16 +89,25 @@ def parse_stix_objects(stix_objects) -> Dict[str, Dict[str, Any]]:
                 f"domain-name:value = '{re.escape(stix_object.value)}' "
                 f"OR domain-name:resolves_to_str = '{re.escape(stix_object.resolves_to_str)}'"
             )
-            objects_by_type["domain-name"].update({object_str: stix_object})
+            if object_str in objects_by_type["domain-name"].keys():
+                objects_by_type["domain-name"][object_str].append(stix_object)
+            else:
+                objects_by_type["domain-name"].update({object_str: [stix_object]})
         if stix_object.type == "file":
             object_str = (
                 f"file:parent_directory_str MATCHES '{stix_object.parent_directory_str}' "
                 f"AND file:name MATCHES '{re.escape(stix_object.name)}'"
             )
-            objects_by_type["file"].update({object_str: stix_object})
+            if object_str in objects_by_type["file"].keys():
+                objects_by_type["file"][object_str].append(stix_object)
+            else:
+                objects_by_type["file"].update({object_str: [stix_object]})
         if stix_object.type == "process":
             object_str = f"process:command_line MATCHES '{re.escape(stix_object.command_line)}'"
-            objects_by_type["process"].update({object_str: stix_object})
+            if object_str in objects_by_type["process"].keys():
+                objects_by_type["process"][object_str].append(stix_object)
+            else:
+                objects_by_type["process"].update({object_str: [stix_object]})
     return objects_by_type
 
 
@@ -137,7 +146,7 @@ def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> Li
             for pattern in expressions:
                 regex = re.compile(pattern)
                 if re.search(regex, obj):
-                    objects_to_delete.append(objects_by_type["domain-name"][obj])
+                    objects_to_delete.extend(objects_by_type["domain-name"][obj])
     if "file" in pattern:
         return find_stix_object_by_type(objects_by_type, "file", pattern)
     if "process" in pattern:
@@ -152,7 +161,7 @@ def find_stix_object_by_type(
     for obj in objects_by_type[type]:
         regex = re.compile(pattern)
         if re.search(regex, obj):
-            objects_to_delete.append(objects_by_type[type][obj])
+            objects_to_delete.extend(objects_by_type[type][obj])
     return objects_to_delete
 
 
