@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import "macro.html" as macros %}
+
+
+{% block content %}
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <h1>Buildwatch report</h1>
+        <p>Showing data for run with id <span class="badge badge-primary">{{ run.id | e }}</span> with version <span
+                class="badge badge-pill badge-light">{{ run.user_set_identifier | e }}</span></p>
+    </div>
+    <div class="container mt-2">
+        {% for key, value in objects.items() %}
+            {{ macros.group_macro(key, value) }}
+        {% endfor %}
+    </div>
+{% endblock %}
