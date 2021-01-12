@@ -15,18 +15,20 @@ from .pattern_generation.process_reports import pattern_generation
 
 from pathlib import Path
 from typing import List
+from logging import FileHandler
+
 
 # setup logging
-fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
-fh.setLevel(conf.log_level_logfile)
-ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(conf.log_level_stdout)
-fh.setFormatter(logging.Formatter(conf.log_format))
-ch.setFormatter(logging.Formatter(conf.log_format))
+#fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
+#fh.setLevel(conf.log_level_logfile)
+#ch = logging.StreamHandler(sys.stdout)
+#ch.setLevel(conf.log_level_stdout)
+#fh.setFormatter(logging.Formatter(conf.log_format))
+#ch.setFormatter(logging.Formatter(conf.log_format))
 log = logging.getLogger()
-log.setLevel(conf.log_level_stdout)
-log.addHandler(fh)
-log.addHandler(ch)
+#log.setLevel(conf.log_level_stdout)
+#log.addHandler(fh)
+#log.addHandler(ch)
 
 
 @click.command()
@@ -69,10 +71,10 @@ def main(input_, output, processes, timeout, verbose):
     total_reports = len(reports)
     counter = Value("i", 1)
     options = {"input": input_, "output": output}
-    if verbose:
-        ch.setLevel(10)
-        log.setLevel(10)
-        log.addHandler(ch)
+    #if verbose:
+    #    ch.setLevel(10)
+    #    log.setLevel(10)
+    #    log.addHandler(ch)
 
     with ProcessPool(max_workers=processes, max_tasks=1) as pool:
         for directory in reports:
@@ -83,16 +85,18 @@ def main(input_, output, processes, timeout, verbose):
             )
 
 
-def start_patternson(input_, output, verbose=True):
+def start_patternson(input_, output, run_id, verbose=True):
     global counter  # pylint: disable=global-variable-undefined
     reports = os.listdir(input_)
     total_reports = len(reports)
     counter = Value("i", 1)
     options = {"input": input_, "output": output}
     if verbose:
-        ch.setLevel(10)
         log.setLevel(10)
-        log.addHandler(ch)
+        file_path = Path(__file__).parent.parent.with_name("storage") / "run" / f"{run_id}" / "patternson.log"
+        handler = FileHandler(file_path)
+        handler.setLevel("DEBUG")
+        log.addHandler(handler)
 
     output_dir = Path(options["output"])
     output_dir.mkdir(exist_ok=True, parents=True)

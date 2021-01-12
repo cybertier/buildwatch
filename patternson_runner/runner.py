@@ -30,7 +30,7 @@ def init():
 def actual_procedure(run: Run):
     path_of_current_reports: Path = Path(run.cuckoo_output_path)
     create_patternson_path(run)
-    start_patternson(path_of_current_reports, path_of_current_reports.with_name("patternson-output"))
+    start_patternson(path_of_current_reports, path_of_current_reports.with_name("patternson-output"), run.id)
     set_status_for_run_and_wait(run)
 
 
