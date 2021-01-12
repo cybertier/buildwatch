@@ -1,0 +1,55 @@
+#!/bin/bash
+
+PACKER_VERSION="1.4.5"
+VM_DIR="buildwatch-vm"
+
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+function tell { 
+  echo "${bold}==> $@${normal}" 
+}
+cd vm
+
+if [ -d "$VM_DIR" ]
+then
+  tell "There is an old VM in $VM_DIRT. Continuing will overwrite the old one."
+  read -r -p "${bold}==> Continue? [y/N]${normal} " response
+  case "$response" in
+      [yY][eE][sS]|[yY]) 
+          rm -rf "$VM_DIR"
+          tell "All neat and shiny now!"
+          ;;
+      *)
+          tell "Okay, bye."
+          exit 0
+          ;;
+  esac
+fi
+
+if test -f "packer"
+then
+  tell "packer found!"
+else
+  tell "packer not found. Getting it for you:"
+  wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+  unzip packer_${PACKER_VERSION}_linux_amd64.zip 
+  rm packer_${PACKER_VERSION}_linux_amd64.zip 
+fi
+
+# set -x
+./packer build -on-error=ask "$@" ubuntu1804.json
+# set +x
+
+read -r -p "${bold}==> There is stuff lying aroung. May I clean up for you? [y/N]${normal} " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+        rm -rf packer_cache
+        rm -rf packer
+        tell "All neat and shiny now!"
+        ;;
+    *)
+        tell "Suit yourself. Not cleaning up."
+        ;;
+esac
+tell "You may colect your vm from: ./vm/buildwatch-vm"

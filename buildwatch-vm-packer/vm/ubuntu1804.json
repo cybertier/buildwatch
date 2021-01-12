@@ -1,0 +1,104 @@
+{
+  "_comment": "The packer instructions fur the buildwatch vm.",
+  "variables": {
+    "cpus": "1",
+    "disk_size": "32768",
+    "headless": "false",
+    "hostname": "buildwatch",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "iso_checksum": "7d8e0055d663bffa27c1718685085626cb59346e7626ba3d3f476322271f573e",
+    "iso_checksum_type": "sha256",
+    "iso_name": "ubuntu-18.04.3-server-amd64.iso",
+    "iso_path": "iso",
+    "iso_url": "http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ubuntu-18.04.3-server-amd64.iso",
+    "memory": "1024",
+    "no_proxy": "{{env `no_proxy`}}",
+    "preseed": "preseed.cfg",
+    "userfullname": "David Hasselhoff",
+    "password": "Cheers!",
+    "username": "hoff",
+    "version": "1.0.0",
+    "virtualbox_guest_os_type": "Ubuntu_64",
+    "vm_name": "buildwatch",
+    "keep": "true"
+  },
+  "builders": [{
+    "type": "virtualbox-iso",
+    "boot_command": [
+      "<esc><f6><esc>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs>",
+      "/install/linux ",
+      "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `preseed`}} ",
+      "debian-installer=en_US auto=true locale=en_US kbd-chooser/method=us ",
+      "console-setup/ask_detect=false keyboard-configuration/layoutcode=us ",
+      "hostname={{user `hostname` }} ",
+      "initrd=/install/initrd.gz quiet --- <enter>"
+    ],
+    "boot_wait": "10s",
+    "disk_size": "{{user `disk_size`}}",
+
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+    "guest_os_type": "{{user `virtualbox_guest_os_type`}}",
+    "hard_drive_interface": "sata",
+    "headless": "{{user `headless`}}",
+    "http_directory": "http",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "iso_urls": [
+        "{{user `iso_path`}}/{{user `iso_name`}}",
+        "{{user `iso_url`}}"
+    ],
+    "shutdown_command": "sudo /sbin/shutdown -h now",
+    "ssh_password": "{{user `password`}}",
+    "ssh_username": "{{user `username`}}",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "10000s",
+    "output_directory": "{{user `vm_name`}}-vm",
+    "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--usb", "off"],
+        ["modifyvm", "{{.Name}}", "--vram", "12"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"],
+        ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"]
+    ],
+    "virtualbox_version_file": ".vbox_version",
+    "keep_registered": "{{user `keep`}}",
+    "skip_export": "{{user `keep`}}",
+    "vm_name": "{{user `vm_name`}}"
+  }],
+  "provisioners": [{
+      "environment_vars": [
+          "DEBIAN_FRONTEND=noninteractive",
+          "SSH_USERNAME={{user `username`}}",
+          "SSH_PASSWORD={{user `password`}}",
+          "http_proxy={{user `http_proxy`}}",
+          "https_proxy={{user `https_proxy`}}",
+          "no_proxy={{user `no_proxy`}}",
+          "static_ip={{user `static_ip`}}"
+      ],
+      "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
+      "expect_disconnect": true,
+      "scripts": [
+          "script/update.sh",
+          "script/docker.sh",
+          "script/cuckoo.sh",
+          "script/sshd.sh",
+          "script/networking.sh",
+          "script/sudoers.sh",
+          "script/virtualbox.sh",
+          "script/cleanup.sh",
+          "script/minimize.sh"
+      ],
+      "type": "shell"
+  }]
+}
