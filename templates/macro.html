@@ -1,0 +1,75 @@
+{% macro element_makro(element, group_name, counter) %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-10">
+                <h3>{{ element[0] | e }}</h3>
+            </div>
+            <div class="col-2">
+
+                <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal"
+                        data-target="#mod-{{ group_name | replace(" ","-") | e }}-{{ counter }}">
+                    Show more
+                </button>
+            </div>
+        </div>
+
+        <div class="modal" id="mod-{{ group_name | replace(" ","-") | e }}-{{ counter }}">
+            <div class="modal-dialog" style="max-width: 80%;">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data about object</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;
+                        </button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <pre>
+                            <code>
+{{ element[1] | e }}
+                            </code>
+                        </pre>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </li>
+{% endmacro %}
+
+{% macro group_macro(group_name, item_list) %}
+    <div class="card bg-light text-dark mt-2">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-10">
+                    <p class="d-inline">Group: </p>
+                    <h3 class="d-inline">{{ group_name |e }} <span
+                            class="badge badge-primary">{{ item_list | length }}</span></h3>
+
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-secondary drop-button" data-toggle="collapse"
+                            data-target="#items-{{ group_name | replace(" ","-") | e }}">Items <i
+                            class="fas fa-angle-down"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="items-{{ group_name | replace(" ","-") | e }}" class="collapse">
+            <div class="card-footer">
+                <ul class="list-group list-group-flush">
+                    {% for element in item_list %}
+                        {{ element_makro(element, group_name, loop.index) }}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
