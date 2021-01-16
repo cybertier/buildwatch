@@ -31,7 +31,8 @@ class Run(Resource):
         args.pop('zip_filename')
         model = RunModel(**args)
         if zip_filename:
-            model.user_submitted_artifact_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'zips_uploaded', secure_filename(zip_filename))
+            model.user_submitted_artifact_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'zips_uploaded',
+                                                              secure_filename(zip_filename))
         self._validate_custom_constraints(model)
         db.session.add(model)
         db.session.commit()
@@ -67,16 +68,22 @@ class Run(Resource):
         return zip_file_name
 
     @staticmethod
-    def get_report(id):
+    def get_report(id, type):
         """
         Get the html report of buildwatch
         """
+        type_to_data = {
+            "html": ("report.html", 'text/html'),
+            "stix": ("stix_report_final.json", "application/json")
+        }
+        if not type in type_to_data:
+            abort(404, "This type does not exist")
         run: RunModel = RunModel.query.get(id)
-        file = os.path.join(run.diff_tool_output_path, "report.html")
+        file = os.path.join(run.diff_tool_output_path, type_to_data[type][0])
         if not os.path.exists(file):
-            abort(404)
+            abort(404, "Report file is missing")
         response = make_response(send_file(file))
-        response.headers['Content-Type'] = 'text/html'
+        response.headers['Content-Type'] = type_to_data[type][1]
         return response
 
     def get(self):

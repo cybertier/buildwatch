@@ -16,9 +16,9 @@ def upload_zip():
     return Run.upload_zip()
 
 
-@app.route('/run/<id>/report', methods=['GET'])
-def get_report(id):
-    return Run.get_report(id)
+@app.route('/run/<id>/report/<type>', methods=['GET'])
+def get_report(id, type):
+    return Run.get_report(id, type)
 
 
 @app.before_first_request
