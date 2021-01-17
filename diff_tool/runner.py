@@ -43,7 +43,7 @@ def actual_procedure(run: Run):
     assure_correct_status_of_previous_run(previous_run)
     path_of_current_report: str = get_path_current_report(run)
     path_of_reports: List[str] = get_list_of_reports_from_previous_run(run)
-    pattern_paths: List[str] = get_pattern_of_previous_run(previous_run)
+    pattern_paths: List[str] = get_pattern_of_previous_run(run)
     output_path = subtract_observables_from_old_run(path_of_current_report, path_of_reports, run)
     subtract_pattern_from_old_runs(output_path, pattern_paths, run)
     set_run_status(run, "finished_unprepared")
@@ -72,10 +72,10 @@ def get_pattern_of_previous_run(run: Run):
     all_json_files = []
     project: Project = run.project
     for i in range(project.old_runs_considered):
-        previous_run = run.previous_run
-        if not previous_run:
+        run = run.previous_run
+        if not run:
             break
-        add_pattern_files_for_run(all_json_files, previous_run)
+        add_pattern_files_for_run(all_json_files, run)
     return all_json_files
 
 
@@ -85,15 +85,15 @@ def add_pattern_files_for_run(all_json_files, previous_run):
     if len(pattern_files) != 1:
         raise Exception(
             f"Expected 1 json pattern file in {path_pattern_dir} but found the following files: {all_json_files}")
-    all_json_files.append(all_json_files[0])
+    all_json_files.append(pattern_files[0])
 
 
 def get_list_of_reports_from_previous_run(run: Run):
     all_json_files = []
     project: Project = run.project
     for i in range(project.old_runs_considered):
-        previous_run = run.previous_run
-        if not previous_run:
+        run = run.previous_run
+        if not run:
             break
         add_cuckoo_report_files_for_run(all_json_files, run)
     if len(all_json_files) < 3:
@@ -104,7 +104,7 @@ def get_list_of_reports_from_previous_run(run: Run):
 
 def add_cuckoo_report_files_for_run(all_json_files, run):
     cuckoo_output_path: str = run.cuckoo_output_path
-    all_json_files.append(glob.glob(f"{cuckoo_output_path}/*.json"))
+    all_json_files.extend(glob.glob(f"{cuckoo_output_path}/*.json"))
 
 
 def subtract_observables_from_old_run(path_of_current_report, path_of_reports, run):
@@ -139,6 +139,8 @@ def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run
 def subtract_pattern_from_old_runs(current_report_path, pattern_path, run):
     result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path[0]))
     for i in range(run.project.old_runs_considered - 1):
+        if "objects" not in result:
+            break
         result = subtract_pattern_after_loading_files(result, Path(pattern_path[i + 1]))
     write_result(result, run)
 

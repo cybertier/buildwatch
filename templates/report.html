@@ -5,10 +5,14 @@
 {% block content %}
     <div class="jumbotron text-center" style="margin-bottom:0">
         <h1>Buildwatch report</h1>
-        <p>Showing data for run with id <span class="badge badge-primary">{{ run.id | e }}</span> with version <span
-                class="badge badge-pill badge-light">{{ run.user_set_identifier | e }}</span></p>
+        <p>Showing data for run with id <span class="badge badge-primary">{{ run.id | e }}</span> corresponding to
+            version <span
+                    class="badge badge-pill badge-light">{{ run.user_set_identifier | e }}</span></p>
     </div>
     <div class="container mt-2">
+        {% if not objects %}
+            <h2 class="text-center">No new observables found</h2>
+        {% endif %}
         {% for key, value in objects.items() %}
             {{ macros.group_macro(key, value) }}
         {% endfor %}
