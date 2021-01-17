@@ -36,6 +36,8 @@ def fill_render_object_for_group(render_object: Dict[str, List[Tuple[str, str]]]
 
 def reformat_result(report_object):
     render_object: Dict[str, List[Tuple[str, str]]] = {}
+    if "objects" not in report_object:
+        return render_object
     all_objects = report_object["objects"]
     for element in all_objects:
         if not element["type"] == "grouping":

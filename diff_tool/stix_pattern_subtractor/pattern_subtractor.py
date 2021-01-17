@@ -2,12 +2,12 @@
 import json
 import logging
 import re
-from pathlib import Path
 from argparse import ArgumentParser
-import stix2
+from pathlib import Path
 from typing import List, Tuple, Dict, Any
-
 from uuid import uuid1
+
+import stix2
 
 
 def main():
@@ -77,6 +77,8 @@ def load_stix_report_and_patterns(
     stix_report_file, patterns_file
 ) -> Tuple[stix2.Bundle, stix2.Bundle]:
     patterns = stix2.parse(json.load(patterns_file.open()), allow_custom=True)
+    if type(stix_report_file) == stix2.Bundle:
+        return stix_report_file, patterns
     stix_report = stix2.parse(json.load(stix_report_file.open()), allow_custom=True)
     return stix_report, patterns
 
