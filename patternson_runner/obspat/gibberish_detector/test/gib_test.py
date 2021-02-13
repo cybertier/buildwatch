@@ -3,12 +3,12 @@ import random
 import sys
 import string
 import numpy as np
-from gibberish_detector.gib_detect_train import train, avg_transition_prob
+from ...gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-from pattern_generation.helper_functions import *
+from ...pattern_generation.helper_functions import *
 
 dictionary = None
 dict_len = None
