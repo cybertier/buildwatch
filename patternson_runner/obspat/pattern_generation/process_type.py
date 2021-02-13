@@ -64,24 +64,12 @@ class ProcessPattern:
 
 
 def process_process_type(accumulated_objects, accumulated_reports):
-    process_patterns = []
     names = []
     names_only = []
     cmd_lines = []
 
-    same_cmd_lines = []
-    same_names = []
     same_across_reports = get_same_processes_across_reports(accumulated_objects)
-    for obj in list(same_across_reports["cmds"].keys()):
-        if len(same_across_reports["cmds"][obj]) < (len(accumulated_reports) * 1 / 3):
-            del same_across_reports["cmds"][obj]
-        else:
-            same_cmd_lines.append(obj)
-    for obj in list(same_across_reports["names"].keys()):
-        if len(same_across_reports["names"][obj]) < (len(accumulated_reports) * 1 / 3):
-            del same_across_reports["names"][obj]
-        else:
-            same_names.append(obj)
+    same_cmd_lines, same_names = split_objects_by_name_or_cmd_line(same_across_reports, len(accumulated_reports))
 
     for process in accumulated_objects["process"]:
         if "command_line" in process["0"] and process["0"].command_line not in same_cmd_lines:
@@ -91,62 +79,12 @@ def process_process_type(accumulated_objects, accumulated_reports):
         if "command_line" not in process["0"] and "name" in process["0"]:
             names_only.append(process["0"].name)
 
-    tree = {}
-    regex_cmd_lines = []
-    for cmd_line in cmd_lines:
-        nested_set_for_processes(tree, cmd_line.split("/"), {})
-    regex_from_tree(tree, regex_cmd_lines)
-    for cmd in same_cmd_lines:
-        regex_cmd_lines.append(re.escape(cmd))
+    regex_cmd_lines = get_cmd_line_regexes(cmd_lines, same_cmd_lines)
+    regex_names = get_name_regexes(names, same_names)
 
-    tree = {}
-    regex_names = []
-    for name in names:
-        nested_set_for_processes(tree, name.split("\\"), {})
-    regex_from_tree(tree, regex_names)
-    for name in same_names:
-        regex_names.append(re.escape(name))
-
-    # handle cmd_line
-    for regex in regex_cmd_lines:
-        obj = ProcessPattern(len(accumulated_reports))
-        obj.regex = regex
-
-        exe_names = []
-        for cmd_line in cmd_lines + same_cmd_lines:
-            if re.fullmatch(regex, cmd_line):
-                try:
-                    exe_name = cmd_line.split("/")[-1]
-                except ValueError:  # noqa
-                    exe_name = None
-                if exe_name and exe_name not in exe_names:
-                    exe_names.append(exe_name)
-
-        if len(exe_names) == 1 and exe_names[0] in same_names:
-            obj.name = re.escape(exe_names[0])
-            process_patterns.append(obj)
-            break
-
-        tree = {}
-        re_exe_names = []
-        for name in exe_names:
-            nested_set_for_processes(tree, [name], {})
-        regex_from_tree(tree, re_exe_names)
-        if len(re_exe_names) == 1:
-            obj.name = re_exe_names[0]
-
-        process_patterns.append(obj)
-
-    for regex in regex_names:
-        matched = False
-        for name in names_only:
-            if re.fullmatch(regex, name):
-                matched = True
-        if matched:
-            obj = ProcessPattern(len(accumulated_reports))
-            obj.name = regex
-            process_patterns.append(obj)
-            continue
+    process_patterns = handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_names,
+                                               len(accumulated_reports))
+    process_patterns.extend(handle_name_regexes(regex_names, names_only, len(accumulated_reports)))
 
     return process_patterns
 
@@ -197,3 +135,90 @@ def get_same_processes_across_reports(accumulated_objects):
                     names[name_1] = ocurred_reports
                     same_across_reports["names"] = names
     return same_across_reports
+
+
+def split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports):
+    same_cmd_lines = []
+    same_names = []
+    for obj in list(same_across_reports["cmds"].keys()):
+        if len(same_across_reports["cmds"][obj]) < (number_of_reports * 1 / 3):
+            del same_across_reports["cmds"][obj]
+        else:
+            same_cmd_lines.append(obj)
+    for obj in list(same_across_reports["names"].keys()):
+        if len(same_across_reports["names"][obj]) < (number_of_reports * 1 / 3):
+            del same_across_reports["names"][obj]
+        else:
+            same_names.append(obj)
+    return same_cmd_lines, same_names
+
+
+def get_cmd_line_regexes(cmd_lines, same_cmd_lines):
+    tree = {}
+    regex_cmd_lines = []
+    for cmd_line in cmd_lines:
+        nested_set_for_processes(tree, cmd_line.split("/"), {})
+    regex_from_tree(tree, regex_cmd_lines)
+    for cmd in same_cmd_lines:
+        regex_cmd_lines.append(re.escape(cmd))
+    return regex_cmd_lines
+
+
+def get_name_regexes(names, same_names):
+    tree = {}
+    regex_names = []
+    for name in names:
+        nested_set_for_processes(tree, name.split("\\"), {})
+    regex_from_tree(tree, regex_names)
+    for name in same_names:
+        regex_names.append(re.escape(name))
+    return regex_names
+
+
+def handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_names, number_of_reports):
+    process_patterns = []
+    for regex in regex_cmd_lines:
+        obj = ProcessPattern(number_of_reports)
+        obj.regex = regex
+
+        exe_names = []
+        for cmd_line in cmd_lines + same_cmd_lines:
+            if re.fullmatch(regex, cmd_line):
+                try:
+                    exe_name = cmd_line.split("/")[-1]
+                except ValueError:  # noqa
+                    exe_name = None
+                if exe_name and exe_name not in exe_names:
+                    exe_names.append(exe_name)
+
+        if len(exe_names) == 1 and exe_names[0] in same_names:
+            obj.name = re.escape(exe_names[0])
+            process_patterns.append(obj)
+            break
+
+        tree = {}
+        re_exe_names = []
+        for name in exe_names:
+            nested_set_for_processes(tree, [name], {})
+        regex_from_tree(tree, re_exe_names)
+        if len(re_exe_names) == 1:
+            obj.name = re_exe_names[0]
+
+        process_patterns.append(obj)
+    return process_patterns
+
+
+def handle_name_regexes(regex_names, names_only, number_of_reports):
+    process_patterns = []
+    for regex in regex_names:
+        matched = False
+        for name in names_only:
+            if re.fullmatch(regex, name):
+                matched = True
+        if matched:
+            obj = ProcessPattern(number_of_reports)
+            obj.name = regex
+            process_patterns.append(obj)
+            continue
+    return process_patterns
+
