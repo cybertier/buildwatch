@@ -52,6 +52,14 @@ def index_elements_of_group(group, all_objects):
 
 
 def write_result(base: stix2.Bundle, out_put_file_path):
+    for obj in base.objects.copy():
+        if obj.type == "grouping":
+            if not obj.object_refs:
+                base.objects.remove(obj)
+    for obj in base.objects.copy():
+        if obj.type == "malware-analysis":
+            if not obj.analysis_sco_refs:
+                base.objects.remove(obj)
     string = base.serialize(pretty=False, indent=4)
     path = Path(out_put_file_path)
     with path.open("w", encoding="utf-8") as out_put_file:
@@ -87,7 +95,12 @@ def delete_not_found_in_index_of_group(group, index, all_objects, malware_object
         get_identifier_function = to_identifiers[element["type"]]
         identifiers = get_identifier_function(element)
         for identifier in identifiers:
+            if identifier.startswith("//"):
+                identifier = identifier[1:]
             if identifier in group_index:
+                if element.id not in group["object_refs"]:
+                    logging.debug(f"Object is already removed: UUID = {element.id}")
+                    continue
                 logging.debug(f"Found object with identifier {identifier} and id {element.id} that can be filtered out")
                 remove_element(element, group, all_objects, malware_object)
 
