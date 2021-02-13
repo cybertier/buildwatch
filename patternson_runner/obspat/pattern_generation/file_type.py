@@ -2,13 +2,14 @@ import itertools
 import json
 import logging
 import re
+from typing import List, Dict, Any
 
 from .gen_regex import regex_from_tree, resolve_quantifier
 from .helper_functions import (
     nested_set_for_files,
     conf,
 )
-
+from stix2 import File
 log = logging.getLogger(__name__)
 
 
@@ -85,7 +86,7 @@ class FilePattern:
 
 
 # builds tree-like structure for observed files over all reports
-def build_tree(files, same_across_reports):
+def build_tree(files: List[Dict[str, File]], same_across_reports) -> Dict[str, Dict]:
     tree = {}
     for file in files:
         path = file["0"].parent_directory_str
@@ -125,7 +126,7 @@ def clean_hashes(file_patterns):
     return file_patterns
 
 
-def process_file_type(accumulated_objects, number_of_reports: int):
+def process_file_type(accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int):
     files = accumulated_objects["file"]
     finished_regexes = []
 
@@ -163,7 +164,7 @@ def process_file_type(accumulated_objects, number_of_reports: int):
     return file_patterns
 
 
-def get_same_files_across_reports(accumulated_objects):
+def get_same_files_across_reports(accumulated_objects: Dict[str, List[Dict[str, Any]]]):
     same_across_reports = {}
     for id_1, id_2 in itertools.combinations(accumulated_objects.keys(), 2):
         if (

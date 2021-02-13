@@ -1,4 +1,6 @@
 import logging
+from typing import List, Dict
+from stix2 import DomainName
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +34,7 @@ class DomainPattern:
         )
 
 
-def process_domain_type(domains, number_of_reports: int):
+def process_domain_type(domains: List[Dict[str, DomainName]], number_of_reports: int) -> List:
     domain_patterns = {}
     for domain in domains:
         domain_name = domain["0"]["value"]

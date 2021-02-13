@@ -189,7 +189,7 @@ def accumulate_objects_per_report(accumulated_objects, observed_data_object, obj
     return accumulated_objects
 
 
-def accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type):
+def accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type) -> Dict[str, List[Dict[str, Any]]]:
     objects = accumulated_objects.get(obj_type, [])
     if observed_data_object.objects not in objects:
         objects.append(observed_data_object.objects)

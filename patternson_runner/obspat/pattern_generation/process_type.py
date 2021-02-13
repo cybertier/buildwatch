@@ -1,6 +1,7 @@
 import itertools
 import logging
 import re
+from typing import Dict, List, Tuple, Any
 
 from .gen_regex import regex_from_tree
 from .helper_functions import nested_set_for_processes
@@ -63,7 +64,7 @@ class ProcessPattern:
                     regex_groups[re_id] = entry_group_id
 
 
-def process_process_type(accumulated_objects, number_of_reports: int):
+def process_process_type(accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int):
     names = []
     names_only = []
     cmd_lines = []
@@ -89,7 +90,7 @@ def process_process_type(accumulated_objects, number_of_reports: int):
     return process_patterns
 
 
-def get_same_processes_across_reports(accumulated_objects):
+def get_same_processes_across_reports(accumulated_objects: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Dict[str, List]]:
     same_across_reports = {"cmds": {}, "names": {}}
     for id_1, id_2 in itertools.combinations(accumulated_objects.keys(), 2):
         if (
@@ -137,7 +138,7 @@ def get_same_processes_across_reports(accumulated_objects):
     return same_across_reports
 
 
-def split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports: int):
+def split_objects_by_name_or_cmd_line(same_across_reports: Dict[str, Dict[str, List]], number_of_reports: int) -> Tuple[List, List]:
     same_cmd_lines = []
     same_names = []
     for obj in list(same_across_reports["cmds"].keys()):
@@ -153,7 +154,7 @@ def split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports: in
     return same_cmd_lines, same_names
 
 
-def get_cmd_line_regexes(cmd_lines, same_cmd_lines):
+def get_cmd_line_regexes(cmd_lines, same_cmd_lines) -> List[str]:
     tree = {}
     regex_cmd_lines = []
     for cmd_line in cmd_lines:
@@ -164,7 +165,7 @@ def get_cmd_line_regexes(cmd_lines, same_cmd_lines):
     return regex_cmd_lines
 
 
-def get_name_regexes(names, same_names):
+def get_name_regexes(names: List[str], same_names: List[str]) -> List[str]:
     tree = {}
     regex_names = []
     for name in names:
@@ -175,7 +176,13 @@ def get_name_regexes(names, same_names):
     return regex_names
 
 
-def handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_names, number_of_reports):
+def handle_cmd_line_regexes(
+        regex_cmd_lines: List[str],
+        cmd_lines: List[str],
+        same_cmd_lines: List[str],
+        same_names: List[str],
+        number_of_reports: int
+) -> List[ProcessPattern]:
     process_patterns = []
     for regex in regex_cmd_lines:
         obj = ProcessPattern(number_of_reports)
@@ -208,7 +215,7 @@ def handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_nam
     return process_patterns
 
 
-def handle_name_regexes(regex_names, names_only, number_of_reports):
+def handle_name_regexes(regex_names: List[str], names_only: List[str], number_of_reports: int) -> List[ProcessPattern]:
     process_patterns = []
     for regex in regex_names:
         matched = False

@@ -1,20 +1,20 @@
 import logging
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Any
 
 import stix2
 import yaml
 from stix2patterns.validator import run_validator
 
-from .domain_type import process_domain_type
-from .file_type import process_file_type
-from .process_type import process_process_type
+from .domain_type import process_domain_type, DomainPattern
+from .file_type import process_file_type, FilePattern
+from .process_type import process_process_type, ProcessPattern
 
 log = logging.getLogger(__name__)
 
 
 def pattern_generation(
-    accumulated_objects: Dict,
+    accumulated_objects: Dict[str, List[Dict[str, Any]]],
     accumulated_reports: List[List[stix2.ObservedData]],
     output_directory: Path,
 ):
@@ -25,7 +25,9 @@ def pattern_generation(
             f.write(stix_pkg)
 
 
-def get_patterns(accumulated_objects: Dict, number_of_reports: int):
+def get_patterns(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+) -> Dict[str, List]:
     patterns = {"file_patterns": [], "process_patterns": [], "domain_patterns": []}
     if "file" in accumulated_objects:
         patterns["file_patterns"] = generate_patterns_for_files(
@@ -42,7 +44,9 @@ def get_patterns(accumulated_objects: Dict, number_of_reports: int):
     return patterns
 
 
-def generate_patterns_for_files(accumulated_objects, number_of_reports: int):
+def generate_patterns_for_files(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+) -> List[FilePattern]:
     log.debug("Started processing files")
     try:
         file_patterns = process_file_type(accumulated_objects, number_of_reports)
@@ -53,7 +57,9 @@ def generate_patterns_for_files(accumulated_objects, number_of_reports: int):
         return []
 
 
-def generate_patterns_for_processes(accumulated_objects, number_of_reports: int):
+def generate_patterns_for_processes(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+) -> List[ProcessPattern]:
     log.debug("Started processing processes")
     try:
         process_patterns = process_process_type(accumulated_objects, number_of_reports)
@@ -64,7 +70,9 @@ def generate_patterns_for_processes(accumulated_objects, number_of_reports: int)
         return []
 
 
-def generate_patterns_for_domainnames(accumulated_objects, number_of_reports: int):
+def generate_patterns_for_domainnames(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+) -> List[DomainPattern]:
     log.debug("Started processing domains")
     try:
         domain_patterns = process_domain_type(
