@@ -115,7 +115,10 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
                             entry = dictionary.get(pattern, {})
                             try:
                                 for key in list(dictionary[candidate].keys()):
-                                    entry[key] = dictionary[candidate].get(key, {})
+                                    if key in entry.keys():
+                                        entry[key] = merge_two_subtrees_with_same_root(entry[key], dictionary[candidate][key])
+                                    else:
+                                        entry[key] = dictionary[candidate].get(key, {})
                             except KeyError:
                                 pass
                             if pattern not in new_patterns:
@@ -157,7 +160,10 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
                                 entry = dictionary.get(pattern, {})
                                 try:
                                     for key in list(dictionary[candidate].keys()):
-                                        entry[key] = dictionary[candidate].get(key, {})
+                                        if key in entry.keys():
+                                            entry[key] = merge_two_subtrees_with_same_root(entry[key], dictionary[candidate][key])
+                                        else:
+                                            entry[key] = dictionary[candidate].get(key, {})
                                 except KeyError:
                                     pass
                                 dictionary[pattern] = entry
@@ -173,6 +179,20 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
                             dictionary[pattern], finished_patterns, seperator, new_path
                         )
 
+
+def merge_two_subtrees_with_same_root(tree_1, tree_2):
+    _new = tree_1.copy()
+    for first_key in tree_1.keys():
+        if first_key in tree_2.keys():
+            _new[first_key] = merge_two_subtrees_with_same_root(tree_1[first_key], tree_2[first_key])
+        else:
+            _new.update({first_key: tree_1[first_key]})
+
+    for second_key in tree_2.keys():
+        if not second_key in tree_1.keys():
+            _new.update({second_key: tree_2[second_key]})
+
+    return _new
 
 # Input:
 #    list of strings
