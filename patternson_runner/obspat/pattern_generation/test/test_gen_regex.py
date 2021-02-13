@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def test_regex_from_tree_files():
-    path_to_tree = Path("/home/ruben/Desktop/file-type/regex-tree.txt")
+    path_to_tree = Path(__file__).with_name("data") / "file-regex-tree.txt"
     tree_data = json.load(path_to_tree.open("r"))
     finished_patterns = []
     regex_from_tree(tree_data, finished_patterns)
@@ -39,7 +39,7 @@ def test_generate_expressions():
 
 
 def test_regex_from_tree_processes():
-    path_to_tree = Path(__file__).with_name("process-tree.txt")
+    path_to_tree = Path(__file__).with_name("data") / "process-tree.txt"
     tree_data = json.load(path_to_tree.open("r"))
     finished_patterns = []
     regex_from_tree(tree_data, finished_patterns)
