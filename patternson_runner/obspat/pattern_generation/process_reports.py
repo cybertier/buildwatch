@@ -81,7 +81,9 @@ def generate_patterns_for_domainnames(
         log.debug("Domain-Patterns:\n" + yaml.dump(domain_patterns))
         return domain_patterns
     except Exception as error:
-        log.exception(f"Exception during pattern generation of type 'domain-name'. {error}")
+        log.exception(
+            f"Exception during pattern generation of type 'domain-name'. {error}"
+        )
         return []
 
 
@@ -117,4 +119,6 @@ def get_stix2_indicator_from_pattern(pattern, sample_name, match_ratio):
             )
             return indicator
         else:
-            log.error(f"Invalid pattern generated. Pattern: {pattern}\n" f"Errors: {errors}")
+            log.error(
+                f"Invalid pattern generated. Pattern: {pattern}\n" f"Errors: {errors}"
+            )

@@ -14,7 +14,7 @@ def test_process_domain_type():
                 full_output="Mon Feb  1 23:14:25 2021.667496 |git@7f6319bfc741[17719] connect(3, {AF_INET, 127.0.0.53, 53}, 16) = 0",
                 resolves_to_str="127.0.0.53",
                 timestamp="Mon Feb  1 23:14:25 2021",
-                allow_custom=True
+                allow_custom=True,
             )
         },
         {
@@ -27,7 +27,7 @@ def test_process_domain_type():
                 full_output="Mon Feb  1 23:14:25 2021.667496 |git@7f6319bfc741[17719] connect(3, {AF_INET, 127.0.0.53, 53}, 16) = 0",
                 resolves_to_str="this.is.an.ipaddress",
                 timestamp="Mon Feb  1 23:14:25 2021",
-                allow_custom=True
+                allow_custom=True,
             )
         },
     ]

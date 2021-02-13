@@ -10,6 +10,7 @@ from .helper_functions import (
     conf,
 )
 from stix2 import File
+
 log = logging.getLogger(__name__)
 
 
@@ -72,7 +73,9 @@ class FilePattern:
         return obs_expr + "]"
 
     def get_re_groups(self, observable, regex_groups, report_id):
-        if hasattr(observable["0"], "parent_directory_str") and hasattr(observable["0"], "name"):
+        if hasattr(observable["0"], "parent_directory_str") and hasattr(
+            observable["0"], "name"
+        ):
             full_path = f"{observable['0'].parent_directory_str}/{observable['0'].name}"
             if re.match(self.regex, full_path):
                 groups = re.match(self.regex, full_path).groupdict()
@@ -99,7 +102,9 @@ def build_tree(files: List[Dict[str, File]], same_across_reports) -> Dict[str, D
                 continue
             nested_set_for_files(tree, f"{path}/{name}".split("/"))
         else:
-            log.warning("[FILE] Unsupported - path or name not provided." f" Object: {file}")
+            log.warning(
+                "[FILE] Unsupported - path or name not provided." f" Object: {file}"
+            )
     return tree
 
 
@@ -118,7 +123,11 @@ def clean_hashes(file_patterns):
         new_pattern = patterns[0]
         for pattern in patterns:
             file_patterns.remove(pattern)
-            if new_pattern.regex and pattern.regex and new_pattern.regex != pattern.regex:
+            if (
+                new_pattern.regex
+                and pattern.regex
+                and new_pattern.regex != pattern.regex
+            ):
                 new_pattern.regex = None
             if new_pattern.size and pattern.size and new_pattern.size != pattern.size:
                 new_pattern.size = None
@@ -126,7 +135,9 @@ def clean_hashes(file_patterns):
     return file_patterns
 
 
-def process_file_type(accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int):
+def process_file_type(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+):
     files = accumulated_objects["file"]
     finished_regexes = []
 
@@ -243,7 +254,8 @@ def get_file_features(finished_regexes, files):
         if regex in file_sizes:
             for _item in list(file_sizes[regex]):
                 if regex in file_sizes and (
-                    len(list(set(file_sizes[regex]))) != 1 or "unknown" in list(file_sizes[regex])
+                    len(list(set(file_sizes[regex]))) != 1
+                    or "unknown" in list(file_sizes[regex])
                 ):
                     del file_sizes[regex]
 

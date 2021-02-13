@@ -64,16 +64,23 @@ class ProcessPattern:
                     regex_groups[re_id] = entry_group_id
 
 
-def process_process_type(accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int):
+def process_process_type(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]], number_of_reports: int
+):
     names = []
     names_only = []
     cmd_lines = []
 
     same_across_reports = get_same_processes_across_reports(accumulated_objects)
-    same_cmd_lines, same_names = split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports)
+    same_cmd_lines, same_names = split_objects_by_name_or_cmd_line(
+        same_across_reports, number_of_reports
+    )
 
     for process in accumulated_objects["process"]:
-        if "command_line" in process["0"] and process["0"].command_line not in same_cmd_lines:
+        if (
+            "command_line" in process["0"]
+            and process["0"].command_line not in same_cmd_lines
+        ):
             cmd_lines.append(process["0"].command_line)
         if "name" in process["0"] and process["0"].name not in same_names:
             names.append(process["0"].name)
@@ -83,14 +90,19 @@ def process_process_type(accumulated_objects: Dict[str, List[Dict[str, Any]]], n
     regex_cmd_lines = get_cmd_line_regexes(cmd_lines, same_cmd_lines)
     regex_names = get_name_regexes(names, same_names)
 
-    process_patterns = handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_names,
-                                               number_of_reports)
-    process_patterns.extend(handle_name_regexes(regex_names, names_only, number_of_reports))
+    process_patterns = handle_cmd_line_regexes(
+        regex_cmd_lines, cmd_lines, same_cmd_lines, same_names, number_of_reports
+    )
+    process_patterns.extend(
+        handle_name_regexes(regex_names, names_only, number_of_reports)
+    )
 
     return process_patterns
 
 
-def get_same_processes_across_reports(accumulated_objects: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Dict[str, List]]:
+def get_same_processes_across_reports(
+    accumulated_objects: Dict[str, List[Dict[str, Any]]]
+) -> Dict[str, Dict[str, List]]:
     same_across_reports = {"cmds": {}, "names": {}}
     for id_1, id_2 in itertools.combinations(accumulated_objects.keys(), 2):
         if (
@@ -138,7 +150,9 @@ def get_same_processes_across_reports(accumulated_objects: Dict[str, List[Dict[s
     return same_across_reports
 
 
-def split_objects_by_name_or_cmd_line(same_across_reports: Dict[str, Dict[str, List]], number_of_reports: int) -> Tuple[List, List]:
+def split_objects_by_name_or_cmd_line(
+    same_across_reports: Dict[str, Dict[str, List]], number_of_reports: int
+) -> Tuple[List, List]:
     same_cmd_lines = []
     same_names = []
     for obj in list(same_across_reports["cmds"].keys()):
@@ -177,11 +191,11 @@ def get_name_regexes(names: List[str], same_names: List[str]) -> List[str]:
 
 
 def handle_cmd_line_regexes(
-        regex_cmd_lines: List[str],
-        cmd_lines: List[str],
-        same_cmd_lines: List[str],
-        same_names: List[str],
-        number_of_reports: int
+    regex_cmd_lines: List[str],
+    cmd_lines: List[str],
+    same_cmd_lines: List[str],
+    same_names: List[str],
+    number_of_reports: int,
 ) -> List[ProcessPattern]:
     process_patterns = []
     for regex in regex_cmd_lines:
@@ -215,7 +229,9 @@ def handle_cmd_line_regexes(
     return process_patterns
 
 
-def handle_name_regexes(regex_names: List[str], names_only: List[str], number_of_reports: int) -> List[ProcessPattern]:
+def handle_name_regexes(
+    regex_names: List[str], names_only: List[str], number_of_reports: int
+) -> List[ProcessPattern]:
     process_patterns = []
     for regex in regex_names:
         matched = False
@@ -228,4 +244,3 @@ def handle_name_regexes(regex_names: List[str], names_only: List[str], number_of
             process_patterns.append(obj)
             continue
     return process_patterns
-

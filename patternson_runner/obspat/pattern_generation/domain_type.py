@@ -34,7 +34,9 @@ class DomainPattern:
         )
 
 
-def process_domain_type(domains: List[Dict[str, DomainName]], number_of_reports: int) -> List:
+def process_domain_type(
+    domains: List[Dict[str, DomainName]], number_of_reports: int
+) -> List:
     domain_patterns = {}
     for domain in domains:
         domain_name = domain["0"]["value"]

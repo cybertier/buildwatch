@@ -8,7 +8,9 @@ from simple_settings import LazySettings
 from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
-conf = LazySettings(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf.yml"))
+conf = LazySettings(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf.yml")
+)
 
 gibberish_model_data_file = os.path.abspath(
     os.path.join(

@@ -13,16 +13,16 @@ import stix2
 from .pattern_generation.process_reports import pattern_generation
 
 # setup logging
-#fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
-#fh.setLevel(conf.log_level_logfile)
-#ch = logging.StreamHandler(sys.stdout)
-#ch.setLevel(conf.log_level_stdout)
-#fh.setFormatter(logging.Formatter(conf.log_format))
-#ch.setFormatter(logging.Formatter(conf.log_format))
+# fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
+# fh.setLevel(conf.log_level_logfile)
+# ch = logging.StreamHandler(sys.stdout)
+# ch.setLevel(conf.log_level_stdout)
+# fh.setFormatter(logging.Formatter(conf.log_format))
+# ch.setFormatter(logging.Formatter(conf.log_format))
 log = logging.getLogger()
-#log.setLevel(conf.log_level_stdout)
-#log.addHandler(fh)
-#log.addHandler(ch)
+# log.setLevel(conf.log_level_stdout)
+# log.addHandler(fh)
+# log.addHandler(ch)
 
 
 @click.command()
@@ -65,7 +65,7 @@ def main(input_, output, processes, timeout, verbose):
     total_reports = len(reports)
     counter = Value("i", 1)
     options = {"input": input_, "output": output}
-    #if verbose:
+    # if verbose:
     #    ch.setLevel(10)
     #    log.setLevel(10)
     #    log.addHandler(ch)
@@ -74,7 +74,7 @@ def main(input_, output, processes, timeout, verbose):
     output_file = output_dir / f"patterns.json"
     process_reports(output_file, options, total_reports)
 
-    #with ProcessPool(max_workers=processes, max_tasks=1) as pool:
+    # with ProcessPool(max_workers=processes, max_tasks=1) as pool:
     #    for directory in reports:
     #        pool.schedule(
     #            process_reports,
@@ -91,7 +91,12 @@ def start_patternson(input_, output, run_id, verbose=True):
     options = {"input": input_, "output": output}
     if verbose:
         log.setLevel(10)
-        file_path = Path(__file__).parent.parent.with_name("storage") / "run" / f"{run_id}" / "patternson.log"
+        file_path = (
+            Path(__file__).parent.parent.with_name("storage")
+            / "run"
+            / f"{run_id}"
+            / "patternson.log"
+        )
         handler = FileHandler(file_path)
         handler.setLevel("DEBUG")
         log.addHandler(handler)
@@ -172,14 +177,19 @@ def get_accumulated_objects(accumulated_reports: List[List[stix2.ObservedData]])
         for observed_data_object in report:
             obj_type = observed_data_object.objects["0"].type
             # global accumulated
-            accumulated_objects = accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type)
+            accumulated_objects = accumulate_objects_globally(
+                accumulated_objects, observed_data_object, obj_type
+            )
             # per report accumulated
-            accumulated_objects = accumulate_objects_per_report(accumulated_objects, observed_data_object, obj_type,
-                                                                report_index)
+            accumulated_objects = accumulate_objects_per_report(
+                accumulated_objects, observed_data_object, obj_type, report_index
+            )
     return accumulated_objects
 
 
-def accumulate_objects_per_report(accumulated_objects, observed_data_object, obj_type, report_index) -> Dict[str, List[Dict[str, Any]]]:
+def accumulate_objects_per_report(
+    accumulated_objects, observed_data_object, obj_type, report_index
+) -> Dict[str, List[Dict[str, Any]]]:
     objects_per_report = accumulated_objects.get(report_index, {})
     objects = objects_per_report.get(obj_type, [])
     if observed_data_object.objects not in objects:
@@ -189,7 +199,9 @@ def accumulate_objects_per_report(accumulated_objects, observed_data_object, obj
     return accumulated_objects
 
 
-def accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type) -> Dict[str, List[Dict[str, Any]]]:
+def accumulate_objects_globally(
+    accumulated_objects, observed_data_object, obj_type
+) -> Dict[str, List[Dict[str, Any]]]:
     objects = accumulated_objects.get(obj_type, [])
     if observed_data_object.objects not in objects:
         objects.append(observed_data_object.objects)
