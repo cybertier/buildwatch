@@ -1,6 +1,6 @@
 from stix2 import File
 
-from ..pattern_generation.file_type import build_tree
+from ..file_type import build_tree
 
 
 def test_build_tree():

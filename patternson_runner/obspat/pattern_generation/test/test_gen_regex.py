@@ -1,4 +1,4 @@
-from ..pattern_generation.gen_regex import regex_from_tree, generate_expressions, merge_two_subtrees_with_same_root
+from ..gen_regex import regex_from_tree, generate_expressions, merge_two_subtrees_with_same_root
 import json
 from pathlib import Path
 
