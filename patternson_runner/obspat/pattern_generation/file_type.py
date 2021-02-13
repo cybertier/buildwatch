@@ -84,52 +84,48 @@ class FilePattern:
                     regex_groups[re_id] = entry_group_id
 
 
+# builds tree-like structure for observed files over all reports
+def build_tree(files, same_across_reports):
+    tree = {}
+    for file in files:
+        path = file["0"].parent_directory_str
+        name = file["0"].name
+
+        if path and name:
+            if path == "/":
+                path = ""
+            if f"{path}/{name}" in same_across_reports:
+                continue
+            nested_set_for_files(tree, f"{path}/{name}".split("/"))
+        else:
+            log.warning("[FILE] Unsupported - path or name not provided." f" Object: {file}")
+    return tree
+
+
+# in case a file pattern can not be pinned down to one specific hash sum,
+# remove them all [do not bloat pattern with a multitude of hashes!]
+def clean_hashes(file_patterns):
+    hashes = {}
+    for pattern in file_patterns:
+        if pattern.hashes:
+            hsums = hashes.get(json.dumps(pattern.hashes), [])
+            hsums.append(pattern)
+            hashes[json.dumps(pattern.hashes)] = hsums
+    same_hashes = [p for h, p in hashes.items() if len(p) > 1]
+
+    for patterns in same_hashes:
+        new_pattern = patterns[0]
+        for pattern in patterns:
+            file_patterns.remove(pattern)
+            if new_pattern.regex and pattern.regex and new_pattern.regex != pattern.regex:
+                new_pattern.regex = None
+            if new_pattern.size and pattern.size and new_pattern.size != pattern.size:
+                new_pattern.size = None
+        file_patterns.append(new_pattern)
+    return file_patterns
+
+
 def process_file_type(accumulated_objects, accumulated_reports):
-    # builds tree-like structure for observed files over all reports
-    def build_tree():
-        tree = {}
-        for file in files:
-            if hasattr(file["0"], "parent_directory_str"):
-                path = file["0"].parent_directory_str
-            else:
-                path = None
-
-            if hasattr(file["0"], "name"):
-                name = file["0"].name
-            else:
-                name = None
-
-            if path and name:
-                if path == "/":
-                    path = ""
-                if f"{path}/{name}" in same_across_reports:
-                    continue
-                nested_set_for_files(tree, f"{path}/{name}".split("/"))
-            else:
-                log.warning("[FILE] Unsupported - path or name not provided." f" Object: {file}")
-        return tree
-
-    # in case a file pattern can not be pinned down to one specific hash sum,
-    # remove them all [do not bloat pattern with a multitude of hashes!]
-    def clean_hashes():
-        hashes = {}
-        for pattern in file_patterns:
-            if pattern.hashes:
-                hsums = hashes.get(json.dumps(pattern.hashes), [])
-                hsums.append(pattern)
-                hashes[json.dumps(pattern.hashes)] = hsums
-        same_hashes = [p for h, p in hashes.items() if len(p) > 1]
-
-        for patterns in same_hashes:
-            new_pattern = patterns[0]
-            for pattern in patterns:
-                file_patterns.remove(pattern)
-                if new_pattern.regex and pattern.regex and new_pattern.regex != pattern.regex:
-                    new_pattern.regex = None
-                if new_pattern.size and pattern.size and new_pattern.size != pattern.size:
-                    new_pattern.size = None
-            file_patterns.append(new_pattern)
-
     files = accumulated_objects["file"]
     finished_regexes = []
 
@@ -142,7 +138,7 @@ def process_file_type(accumulated_objects, accumulated_reports):
             finished_regexes.append("/".join([re.escape(x) for x in obj.split("/")]))
 
     # build regexes on file paths
-    tree = build_tree()
+    tree = build_tree(files, same_across_reports)
     regex_from_tree(tree, finished_regexes)
     finished_regexes = list(set(finished_regexes))
 
@@ -162,7 +158,7 @@ def process_file_type(accumulated_objects, accumulated_reports):
             obj.hashes = file_hashes[regex]
         file_patterns.append(obj)
 
-    clean_hashes()
+    file_patterns = clean_hashes(file_patterns)
 
     return file_patterns
 
