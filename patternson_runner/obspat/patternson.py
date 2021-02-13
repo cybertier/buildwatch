@@ -1,22 +1,16 @@
-import errno
 import json
 import logging
 import os
-import sys
 from datetime import datetime
+from logging import FileHandler
 from multiprocessing import Value, cpu_count
+from pathlib import Path
+from typing import List, Dict, Any
 
 import click
 import stix2
-from pebble import ProcessPool
 
-from .pattern_generation.helper_functions import conf
 from .pattern_generation.process_reports import pattern_generation
-
-from pathlib import Path
-from typing import List
-from logging import FileHandler
-
 
 # setup logging
 #fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
@@ -75,14 +69,18 @@ def main(input_, output, processes, timeout, verbose):
     #    ch.setLevel(10)
     #    log.setLevel(10)
     #    log.addHandler(ch)
+    output_dir = Path(options["output"])
+    output_dir.mkdir(exist_ok=True, parents=True)
+    output_file = output_dir / f"patterns.json"
+    process_reports(output_file, options, total_reports)
 
-    with ProcessPool(max_workers=processes, max_tasks=1) as pool:
-        for directory in reports:
-            pool.schedule(
-                process_reports,
-                args=[directory, options, total_reports],
-                timeout=timeout,
-            )
+    #with ProcessPool(max_workers=processes, max_tasks=1) as pool:
+    #    for directory in reports:
+    #        pool.schedule(
+    #            process_reports,
+    #            args=[directory, options, total_reports],
+    #            timeout=timeout,
+    #        )
 
 
 def start_patternson(input_, output, run_id, verbose=True):
@@ -174,17 +172,28 @@ def get_accumulated_objects(accumulated_reports: List[List[stix2.ObservedData]])
         for observed_data_object in report:
             obj_type = observed_data_object.objects["0"].type
             # global accumulated
-            objects = accumulated_objects.get(obj_type, [])
-            if observed_data_object.objects not in objects:
-                objects.append(observed_data_object.objects)
-            accumulated_objects[obj_type] = objects
+            accumulated_objects = accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type)
             # per report accumulated
-            objects_per_report = accumulated_objects.get(report_index, {})
-            objects = objects_per_report.get(obj_type, [])
-            if observed_data_object.objects not in objects:
-                objects.append(observed_data_object.objects)
-            objects_per_report[obj_type] = objects
-            accumulated_objects[report_index] = objects_per_report
+            accumulated_objects = accumulate_objects_per_report(accumulated_objects, observed_data_object, obj_type,
+                                                                report_index)
+    return accumulated_objects
+
+
+def accumulate_objects_per_report(accumulated_objects, observed_data_object, obj_type, report_index) -> Dict[str, List[Dict[str, Any]]]:
+    objects_per_report = accumulated_objects.get(report_index, {})
+    objects = objects_per_report.get(obj_type, [])
+    if observed_data_object.objects not in objects:
+        objects.append(observed_data_object.objects)
+    objects_per_report[obj_type] = objects
+    accumulated_objects[report_index] = objects_per_report
+    return accumulated_objects
+
+
+def accumulate_objects_globally(accumulated_objects, observed_data_object, obj_type):
+    objects = accumulated_objects.get(obj_type, [])
+    if observed_data_object.objects not in objects:
+        objects.append(observed_data_object.objects)
+    accumulated_objects[obj_type] = objects
     return accumulated_objects
 
 
