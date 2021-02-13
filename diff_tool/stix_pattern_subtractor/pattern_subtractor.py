@@ -13,6 +13,8 @@ import stix2
 def main():
     stix_report_path, patterns_path = parse_args()
     bundle = subtract_pattern_after_loading_files(stix_report_path, patterns_path)
+    p = Path("/home/ruben/Desktop/result.json")
+    p.write_text(bundle.serialize(indent=4))
     print_results(bundle)
 
 
@@ -21,50 +23,11 @@ def subtract_pattern_after_loading_files(stix_report_path, patterns_path):
         stix_report_path, patterns_path
     )
     objects_by_type = parse_stix_objects(stix_report.objects)
-    objects_to_delete = []
-    for indicator in patterns.objects:
-        objects_to_delete.extend(
-            match_pattern_and_return_objects_to_delete(objects_by_type, indicator)
-        )
-
-    # remove objtects_o-eletze from stix report
-    remaining_objects = stix_report.objects.copy()
-    for obj in objects_to_delete:
-        for old_obj in stix_report.objects:
-            if obj.id == old_obj.id:
-                remaining_objects.remove(old_obj)
-    for obj in remaining_objects.copy():
-        if obj.type == "grouping" or obj.type == "malware-analysis":
-            remaining_objects.remove(obj)
-
-    # load groupings and malware analysis object
-    groupings, analysis = get_groupings_and_analysis(stix_report)
-
-    # check which object should be in which grouping
-    group_names = {}
-    for grouping in groupings:
-        group_names.update({grouping.name: []})
-    for _del in remaining_objects:
-        for grouping in groupings:
-            if _del.id in grouping.object_refs:
-                group_names[grouping.name].append(_del)
-
-    # replace old references
-    all_stix_objects = []
-    remaining_groupings = []
-    for grouping in groupings:
-        if group_names[grouping.name]:
-            remaining_groupings.append(grouping.new_version(object_refs=group_names[grouping.name]))
-            all_stix_objects.extend(group_names[grouping.name])
-
-    if all_stix_objects:
-        new_analysis = analysis.new_version(analysis_sco_refs=all_stix_objects)
-        all_stix_objects.append(new_analysis)
-
-    for grouping in remaining_groupings:
-        if group_names[grouping.name]:
-            all_stix_objects.append(grouping)
-
+    objects_to_delete = find_objects_matching_patterns(objects_by_type, patterns)
+    remaining_objects = delete_objects(objects_to_delete, stix_report)
+    groupings, analysis = get_groupings_and_analysis_object(remaining_objects)
+    objects_by_grouping_name = place_objects_in_respective_groupings(remaining_objects, groupings)
+    all_stix_objects = replace_old_references(objects_by_grouping_name, groupings, analysis)
     return stix2.Bundle(
         type="bundle",
         id="bundle--" + str(uuid1()),
@@ -74,7 +37,7 @@ def subtract_pattern_after_loading_files(stix_report_path, patterns_path):
 
 
 def load_stix_report_and_patterns(
-    stix_report_file, patterns_file
+        stix_report_file, patterns_file
 ) -> Tuple[stix2.Bundle, stix2.Bundle]:
     patterns = stix2.parse(json.load(patterns_file.open()), allow_custom=True)
     if type(stix_report_file) == stix2.Bundle:
@@ -84,71 +47,59 @@ def load_stix_report_and_patterns(
 
 
 def parse_stix_objects(stix_objects) -> Dict[str, Dict[str, Any]]:
-    objects_by_type = {"domain-name": {}, "file": {}, "process": {}}
+    objects_by_type = {"domain-name": {}, "file": {}, "process": {}, "ip-addr": {}}
     for stix_object in stix_objects:
         if stix_object.type == "domain-name":
             object_str = (
-                f"domain-name:value = '{re.escape(stix_object.value)}' "
-                f"OR domain-name:resolves_to_str = '{re.escape(stix_object.resolves_to_str)}'"
+                f"domain-name:value = '{stix_object.value}' "
+                f"OR domain-name:resolves_to_str = '{stix_object.resolves_to_str}'"
             )
-            if object_str in objects_by_type["domain-name"].keys():
-                objects_by_type["domain-name"][object_str].append(stix_object)
-            else:
-                objects_by_type["domain-name"].update({object_str: [stix_object]})
+            objects_by_type = add_object_by_type(objects_by_type, "domain-name", object_str, stix_object)
+        if stix_object.type == "ipv4-addr" or stix_object.type == "ipv6-addr":
+            object_str = stix_object.value
+            objects_by_type = add_object_by_type(objects_by_type, "ip-addr", object_str, stix_object)
         if stix_object.type == "file":
             object_str = (
                 f"file:parent_directory_str MATCHES '{stix_object.parent_directory_str}' "
-                f"AND file:name MATCHES '{re.escape(stix_object.name)}'"
+                f"AND file:name MATCHES '{stix_object.name}'"
             )
-            if object_str in objects_by_type["file"].keys():
-                objects_by_type["file"][object_str].append(stix_object)
-            else:
-                objects_by_type["file"].update({object_str: [stix_object]})
+            objects_by_type = add_object_by_type(objects_by_type, "file", object_str, stix_object)
         if stix_object.type == "process":
-            object_str = f"process:command_line MATCHES '{re.escape(stix_object.command_line)}'"
-            if object_str in objects_by_type["process"].keys():
-                objects_by_type["process"][object_str].append(stix_object)
-            else:
-                objects_by_type["process"].update({object_str: [stix_object]})
+            object_str = f"process:command_line MATCHES '{stix_object.command_line}'"
+            objects_by_type = add_object_by_type(objects_by_type, "process", object_str, stix_object)
     return objects_by_type
 
 
-def match_pattern_and_return_objects_to_delete(
-    objects_by_type: Dict[str, Dict[str, Any]], indicator: stix2.Indicator
-) -> List[Any]:
-    if pattern_is_one_expression(indicator.pattern):
-        pattern = indicator.pattern[1:-1]
-        objects_to_delete = find_stix_objects(objects_by_type, pattern)
+def add_object_by_type(objects_by_type, key, object_str, stix_object):
+    if object_str in objects_by_type[key].keys():
+        objects_by_type[key][object_str].append(stix_object)
     else:
-        patterns = split_pattern(indicator.pattern)
-        objects_to_delete = find_all_objects_to_delete(objects_by_type, patterns)
+        objects_by_type[key].update({object_str: [stix_object]})
+    return objects_by_type
+
+
+def find_objects_matching_patterns(objects_by_type: Dict[str, Dict[str, Any]], patterns: stix2.Bundle):
+    objects_to_delete = []
+    indicators: List[stix2.Indicator] = patterns.objects
+    for indicator in indicators:
+        pattern = indicator.pattern[1:-1]
+        matched_objects = find_stix_objects(objects_by_type, pattern)
+        objects_to_delete.extend(matched_objects)
     return objects_to_delete
-
-
-def split_pattern(pattern: str) -> List[str]:
-    multiple_objects = pattern.split("] AND [")
-    patterns = []
-    for pattern in multiple_objects:
-        pattern = pattern.replace("[", "").replace("]", "")
-        patterns.append(pattern)
-    return patterns
-
-
-def pattern_is_one_expression(pattern: str) -> bool:
-    if len(pattern.split("] AND [")) > 1:
-        return False
-    return True
 
 
 def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> List[Any]:
     objects_to_delete = []
     if "domain-name" in pattern:
         expressions = pattern.split(" OR ")
-        for obj in objects_by_type["domain-name"]:
+        for obj in objects_by_type.get("domain-name", []):
             for pattern in expressions:
-                regex = re.compile(pattern)
-                if re.search(regex, obj):
+                pattern = pattern.replace("\\\\", "\\")
+                if re.search(pattern, obj):
                     objects_to_delete.extend(objects_by_type["domain-name"][obj])
+                    ip_string = objects_by_type["domain-name"][obj][0].resolves_to_str
+                    if ip_string in objects_by_type["ip-addr"]:
+                        objects_to_delete.extend(objects_by_type["ip-addr"][ip_string])
     if "file" in pattern:
         return find_stix_object_by_type(objects_by_type, "file", pattern)
     if "process" in pattern:
@@ -157,50 +108,118 @@ def find_stix_objects(objects_by_type: Dict[str, Dict[str, Any]], pattern) -> Li
 
 
 def find_stix_object_by_type(
-    objects_by_type: Dict[str, Dict[str, Any]], type: str, pattern
+        objects_by_type: Dict[str, Dict[str, Any]], type: str, pattern
 ) -> List[Any]:
     objects_to_delete = []
-    for obj in objects_by_type[type]:
-        regex = re.compile(pattern)
-        if re.search(regex, obj):
+    for obj in objects_by_type.get(type, []):
+        pattern = pattern.replace("\\\\", "\\")
+        if re.fullmatch(pattern, obj):
             objects_to_delete.extend(objects_by_type[type][obj])
     return objects_to_delete
 
 
-def find_all_objects_to_delete(
-    objects_by_type: Dict[str, Dict[str, Any]], patterns
-) -> List[str]:
-    all_objects_to_delete = []
-    for pattern in patterns:
-        objects_to_delete = find_stix_objects(objects_by_type, pattern)
-        if objects_to_delete:
-            all_objects_to_delete.extend(objects_to_delete)
-        else:
-            logging.debug(f"Pattern could not be matched on any STIX object: {pattern}")
-    return all_objects_to_delete
+def delete_objects(objects_to_delete: List, stix_report: stix2.Bundle) -> List:
+    remaining_objects = stix_report.objects.copy()
+    for obj in objects_to_delete:
+        for old_obj in stix_report.objects:
+            if obj.id == old_obj.id:
+                try:
+                    remaining_objects.remove(old_obj)
+                except ValueError:
+                    logging.debug(f"Object apparently was already removed:\n{old_obj}")
+                if old_obj.type == "file":
+                    if has_no_siblings(remaining_objects, old_obj):
+                        # all files who were inside the parent directory got deleted -> delete dir object
+                        remaining_objects = delete_parent_dir_object(remaining_objects, old_obj)
+    return remaining_objects
 
 
-def get_groupings_and_analysis(stix_report):
+# File objects that share the same parent_dir_str are siblings
+def has_no_siblings(remaining_objects: List, old_obj: stix2.File) -> bool:
+    for new_object in remaining_objects:
+        if new_object.type == "file":
+            if new_object.parent_directory_str == old_obj.parent_directory_str:
+                if not new_object.name == old_obj.name:
+                    return False
+    return True
+
+
+def delete_parent_dir_object(remaining_objects: List, old_obj: stix2.File) -> List:
+    parent = delete_parent_and_clones(remaining_objects, old_obj)
+    if parent and has_no_siblings(remaining_objects, parent):
+        remaining_objects = delete_parent_dir_object(remaining_objects, parent)
+    return remaining_objects
+
+
+def delete_parent_and_clones(remaining_objects: List, old_obj: stix2.File):
+    expected_dir = "/".join(old_obj.parent_directory_str.split("/")[:-1])
+    expected_name = old_obj.parent_directory_str.split("/")[-1]
+
+    if expected_dir == "":
+        expected_dir = "/"
+    clone = None
+    for new_object in remaining_objects.copy():
+        if new_object.type == "file":
+            if new_object.parent_directory_str == expected_dir and new_object.name == expected_name:
+                remaining_objects.remove(new_object)
+                clone = new_object
+    return clone
+
+
+def get_groupings_and_analysis_object(remaining_objects: List) -> Tuple[List[stix2.Grouping], stix2.MalwareAnalysis]:
     groupings = []
     analysis = None
-
-    for object in stix_report.objects:
-        if object.type == "grouping":
-            groupings.append(object)
-        if object.type == "malware-analysis":
-            analysis = object
+    for obj in remaining_objects.copy():
+        if obj.type == "grouping":
+            groupings.append(obj)
+            remaining_objects.remove(obj)
+        elif obj.type == "malware-analysis":
+            analysis = obj
+            remaining_objects.remove(obj)
     return groupings, analysis
+
+
+def place_objects_in_respective_groupings(remaining_objects: List, groupings: List[stix2.Grouping]) -> Dict[str, List]:
+    objects_by_grouping_name = {}
+    for grouping in groupings:
+        objects_by_grouping_name.update({grouping.name: []})
+    for _del in remaining_objects:
+        for grouping in groupings:
+            if _del.id in grouping.object_refs:
+                objects_by_grouping_name[grouping.name].append(_del)
+    return objects_by_grouping_name
+
+
+def replace_old_references(objects_by_grouping_name: Dict[str, List], groupings: List[stix2.Grouping], analysis: stix2.MalwareAnalysis) -> List:
+    all_stix_objects = []
+    remaining_groupings = []
+    for grouping in groupings:
+        if objects_by_grouping_name[grouping.name]:
+            remaining_groupings.append(
+                grouping.new_version(object_refs=objects_by_grouping_name[grouping.name])
+            )
+            all_stix_objects.extend(objects_by_grouping_name[grouping.name])
+
+    if all_stix_objects:
+        new_analysis = analysis.new_version(analysis_sco_refs=all_stix_objects)
+        all_stix_objects.append(new_analysis)
+
+    for grouping in remaining_groupings:
+        if objects_by_grouping_name[grouping.name]:
+            all_stix_objects.append(grouping)
+    return all_stix_objects
 
 
 def print_results(bundle: stix2.Bundle):
     print("Remaining Stix Objects:")
-    for obj in bundle.objects:
-        if obj.type == "file":
-            print(f"File: {obj.name}")
-        if obj.type == "process":
-            print(f"Process: {obj.command_line}")
-        if obj.type == "domain":
-            print(f"Domain: {obj.value}")
+    if hasattr(bundle, "objects"):
+        for obj in bundle.objects:
+            if obj.type == "file":
+                print(f"File: {obj.name}")
+            if obj.type == "process":
+                print(f"Process: {obj.command_line}")
+            if obj.type == "domain-name":
+                print(f"Domain: {obj.value}")
 
 
 def parse_args() -> Tuple[Path, Path]:
