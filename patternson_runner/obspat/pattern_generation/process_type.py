@@ -1,9 +1,9 @@
-import re
-import shlex
-import logging
 import itertools
+import logging
+import re
+
 from .gen_regex import regex_from_tree
-from .helper_functions import nested_set, match_patterns_on_reports
+from .helper_functions import nested_set
 
 log = logging.getLogger(__name__)
 
@@ -28,9 +28,7 @@ class ProcessPattern:
         ]
         return False not in same
 
-    def match_ratio(self, accumulated_reports=None):
-        if accumulated_reports:
-            self.update_matched_reports(accumulated_reports)
+    def match_ratio(self):
         return len(self.matched_reports) / self.amount_of_reports
 
     def observation_expression(self):
@@ -63,9 +61,6 @@ class ProcessPattern:
                     entry_observable_id = list(set(entry_observable_id))
                     entry_group_id[report_id] = entry_observable_id
                     regex_groups[re_id] = entry_group_id
-
-    def update_matched_reports(self, accumulated_reports):
-        match_patterns_on_reports(accumulated_reports, [self])
 
 
 def process_process_type(accumulated_objects, accumulated_reports):
@@ -153,9 +148,6 @@ def process_process_type(accumulated_objects, accumulated_reports):
             process_patterns.append(obj)
             continue
 
-    # match resulting patterns against input data from reports; also fill in
-    # which of these reports are matched
-    match_patterns_on_reports(accumulated_reports, process_patterns)
     return process_patterns
 
 

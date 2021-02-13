@@ -1,12 +1,10 @@
-import re
-import ntpath
-import logging
 import itertools
 import json
+import logging
+import re
 
 from .gen_regex import regex_from_tree, resolve_quantifier
 from .helper_functions import (
-    match_patterns_on_reports,
     nested_set,
     conf,
 )
@@ -36,9 +34,7 @@ class FilePattern:
         ]
         return False not in same
 
-    def match_ratio(self, accumulated_reports=None):
-        if accumulated_reports:
-            self.update_matched_reports(accumulated_reports)
+    def match_ratio(self):
         return len(self.matched_reports) / self.amount_of_reports
 
     def observation_expression(self):
@@ -87,8 +83,6 @@ class FilePattern:
                     entry_group_id[report_id] = entry_observable_id
                     regex_groups[re_id] = entry_group_id
 
-    def update_matched_reports(self, accumulated_reports):
-        match_patterns_on_reports(accumulated_reports, [self])
 
 
 def process_file_type(accumulated_objects, accumulated_reports):
@@ -169,9 +163,6 @@ def process_file_type(accumulated_objects, accumulated_reports):
 
     clean_hashes()
 
-    # match resulting patterns against input data from reports; also fill in
-    # which of these reports are matched
-    match_patterns_on_reports(accumulated_reports, file_patterns)
     return file_patterns
 
 

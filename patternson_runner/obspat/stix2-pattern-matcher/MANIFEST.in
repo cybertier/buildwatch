@@ -1,5 +1,0 @@
-include *.md
-include *.txt
-include LICENSE
-include tox.ini
-recursive-include stix2matcher/test/testcases *.json

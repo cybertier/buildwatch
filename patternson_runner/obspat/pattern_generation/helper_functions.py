@@ -1,13 +1,11 @@
-import os
-import re
-import json
 import logging
+import os
 import pickle
+import re
 
 from simple_settings import LazySettings
-from stix2matcher.matcher import match as s2matcher
-from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
+from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
 conf = LazySettings(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf.yml"))
@@ -82,19 +80,6 @@ def has_file_ending(string):
     if re.match(r".+\.[0-9a-zA-z]{1-3}$", string):
         return True
     return False
-
-
-# take each generated pattern and match it against the input reports
-def match_patterns_on_reports(accumulated_reports, patterns):
-    for report_index, report in enumerate(accumulated_reports):
-        for observed_data in report:
-            for pattern in patterns:
-                expression = pattern.observation_expression().replace("\\", "\\\\")
-                obj = [json.loads(observed_data.serialize())]
-                if expression:
-                    if s2matcher(expression, obj):
-                        if report_index not in pattern.matched_reports:
-                            pattern.matched_reports.append(report_index)
 
 
 # removes a leaf from a nested dict (leaf is an array of the nodes)

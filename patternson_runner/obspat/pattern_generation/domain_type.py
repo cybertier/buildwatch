@@ -1,7 +1,5 @@
 import logging
 
-from .helper_functions import match_patterns_on_reports
-
 log = logging.getLogger(__name__)
 
 
@@ -20,9 +18,7 @@ class DomainPattern:
             return False
         return self.observation_expression() == other.observation_expression()
 
-    def match_ratio(self, accumulated_reports=None):
-        if accumulated_reports:
-            self.update_matched_reports(accumulated_reports)
+    def match_ratio(self):
         return len(self.matched_reports) / self.amount_of_reports
 
     def observation_expression(self):
@@ -34,9 +30,6 @@ class DomainPattern:
             )
             + "]"
         )
-
-    def update_matched_reports(self, accumulated_reports):
-        match_patterns_on_reports(accumulated_reports, [self])
 
 
 def process_domain_type(domains, accumulated_reports):
@@ -58,5 +51,4 @@ def process_domain_type(domains, accumulated_reports):
         domain_patterns[domain_name] = domain_pattern
 
     domain_patterns = list(domain_patterns.values())
-    match_patterns_on_reports(accumulated_reports, domain_patterns)
     return domain_patterns
