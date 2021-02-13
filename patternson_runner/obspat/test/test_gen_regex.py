@@ -19,7 +19,7 @@ def test_generate_expressions():
 
 
 def test_regex_from_tree_processes():
-    path_to_tree = Path("/home/ruben/Desktop/process-type/new-tree.txt")
+    path_to_tree = Path(__file__).with_name("process-tree.txt")
     tree_data = json.load(path_to_tree.open("r"))
     finished_patterns = []
     regex_from_tree(tree_data, finished_patterns)
