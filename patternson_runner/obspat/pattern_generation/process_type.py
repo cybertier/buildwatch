@@ -3,7 +3,7 @@ import logging
 import re
 
 from .gen_regex import regex_from_tree
-from .helper_functions import nested_set
+from .helper_functions import nested_set_for_processes
 
 log = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ def process_process_type(accumulated_objects, accumulated_reports):
     tree = {}
     regex_cmd_lines = []
     for cmd_line in cmd_lines:
-        nested_set(tree, cmd_line.split("/"), {})
+        nested_set_for_processes(tree, cmd_line.split("/"), {})
     regex_from_tree(tree, regex_cmd_lines)
     for cmd in same_cmd_lines:
         regex_cmd_lines.append(re.escape(cmd))
@@ -102,7 +102,7 @@ def process_process_type(accumulated_objects, accumulated_reports):
     tree = {}
     regex_names = []
     for name in names:
-        nested_set(tree, name.split("\\"), {})
+        nested_set_for_processes(tree, name.split("\\"), {})
     regex_from_tree(tree, regex_names)
     for name in same_names:
         regex_names.append(re.escape(name))
@@ -130,7 +130,7 @@ def process_process_type(accumulated_objects, accumulated_reports):
         tree = {}
         re_exe_names = []
         for name in exe_names:
-            nested_set(tree, [name], {})
+            nested_set_for_processes(tree, [name], {})
         regex_from_tree(tree, re_exe_names)
         if len(re_exe_names) == 1:
             obj.name = re_exe_names[0]

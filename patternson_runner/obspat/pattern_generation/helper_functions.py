@@ -50,10 +50,15 @@ def get_from_dict(data_dict, path_list):
     return data_dict
 
 
-def nested_set(dic, keys, value):
+def nested_set_for_processes(dic, keys, value):
     for key in keys[:-1]:
         dic = dic.setdefault(key, {})
     dic[keys[-1]] = value
+
+
+def nested_set_for_files(dic, keys):
+    for key in keys:
+        dic = dic.setdefault(key, {})
 
 
 def is_windows_path(string):

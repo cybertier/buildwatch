@@ -5,7 +5,7 @@ import re
 
 from .gen_regex import regex_from_tree, resolve_quantifier
 from .helper_functions import (
-    nested_set,
+    nested_set_for_files,
     conf,
 )
 
@@ -84,7 +84,6 @@ class FilePattern:
                     regex_groups[re_id] = entry_group_id
 
 
-
 def process_file_type(accumulated_objects, accumulated_reports):
     # builds tree-like structure for observed files over all reports
     def build_tree():
@@ -101,9 +100,11 @@ def process_file_type(accumulated_objects, accumulated_reports):
                 name = None
 
             if path and name:
+                if path == "/":
+                    path = ""
                 if f"{path}/{name}" in same_across_reports:
                     continue
-                nested_set(tree, f"{path}/{name}".split("/"), {})
+                nested_set_for_files(tree, f"{path}/{name}".split("/"))
             else:
                 log.warning("[FILE] Unsupported - path or name not provided." f" Object: {file}")
         return tree
@@ -138,7 +139,7 @@ def process_file_type(accumulated_objects, accumulated_reports):
         if len(same_across_reports[obj]) < len(accumulated_reports) * conf.fix_value_threshold:
             del same_across_reports[obj]
         else:
-            finished_regexes.append(obj)  # "/".join([re.escape(x) for x in obj.split("/")]))  # kinda broken - meant for windows?
+            finished_regexes.append("/".join([re.escape(x) for x in obj.split("/")]))
 
     # build regexes on file paths
     tree = build_tree()
