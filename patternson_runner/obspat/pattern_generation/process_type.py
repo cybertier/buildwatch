@@ -63,13 +63,13 @@ class ProcessPattern:
                     regex_groups[re_id] = entry_group_id
 
 
-def process_process_type(accumulated_objects, accumulated_reports):
+def process_process_type(accumulated_objects, number_of_reports: int):
     names = []
     names_only = []
     cmd_lines = []
 
     same_across_reports = get_same_processes_across_reports(accumulated_objects)
-    same_cmd_lines, same_names = split_objects_by_name_or_cmd_line(same_across_reports, len(accumulated_reports))
+    same_cmd_lines, same_names = split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports)
 
     for process in accumulated_objects["process"]:
         if "command_line" in process["0"] and process["0"].command_line not in same_cmd_lines:
@@ -83,8 +83,8 @@ def process_process_type(accumulated_objects, accumulated_reports):
     regex_names = get_name_regexes(names, same_names)
 
     process_patterns = handle_cmd_line_regexes(regex_cmd_lines, cmd_lines, same_cmd_lines, same_names,
-                                               len(accumulated_reports))
-    process_patterns.extend(handle_name_regexes(regex_names, names_only, len(accumulated_reports)))
+                                               number_of_reports)
+    process_patterns.extend(handle_name_regexes(regex_names, names_only, number_of_reports))
 
     return process_patterns
 
@@ -137,7 +137,7 @@ def get_same_processes_across_reports(accumulated_objects):
     return same_across_reports
 
 
-def split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports):
+def split_objects_by_name_or_cmd_line(same_across_reports, number_of_reports: int):
     same_cmd_lines = []
     same_names = []
     for obj in list(same_across_reports["cmds"].keys()):

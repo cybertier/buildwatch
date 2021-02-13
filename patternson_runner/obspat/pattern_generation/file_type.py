@@ -125,14 +125,14 @@ def clean_hashes(file_patterns):
     return file_patterns
 
 
-def process_file_type(accumulated_objects, accumulated_reports):
+def process_file_type(accumulated_objects, number_of_reports: int):
     files = accumulated_objects["file"]
     finished_regexes = []
 
     # directly use file paths, if they are the same across multiple reports
     same_across_reports = get_same_files_across_reports(accumulated_objects)
     for obj in list(same_across_reports.keys()):
-        if len(same_across_reports[obj]) < len(accumulated_reports) * conf.fix_value_threshold:
+        if len(same_across_reports[obj]) < number_of_reports * conf.fix_value_threshold:
             del same_across_reports[obj]
         else:
             finished_regexes.append("/".join([re.escape(x) for x in obj.split("/")]))
@@ -150,7 +150,7 @@ def process_file_type(accumulated_objects, accumulated_reports):
 
     file_patterns = []
     for regex in finished_regexes:
-        obj = FilePattern(len(accumulated_reports))
+        obj = FilePattern(number_of_reports)
         obj.regex = regex
         if regex in file_sizes:
             obj.size = file_sizes[regex]

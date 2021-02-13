@@ -32,7 +32,7 @@ class DomainPattern:
         )
 
 
-def process_domain_type(domains, accumulated_reports):
+def process_domain_type(domains, number_of_reports: int):
     domain_patterns = {}
     for domain in domains:
         domain_name = domain["0"]["value"]
@@ -40,7 +40,7 @@ def process_domain_type(domains, accumulated_reports):
         if domain_name in domain_patterns:
             domain_pattern = domain_patterns[domain_name]
         else:
-            domain_pattern = DomainPattern(len(accumulated_reports))
+            domain_pattern = DomainPattern(number_of_reports)
             domain_pattern.domain = domain_name
 
         if "resolves_to_refs" in domain["0"]:

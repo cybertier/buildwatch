@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import stix2
 import yaml
@@ -14,38 +14,38 @@ log = logging.getLogger(__name__)
 
 
 def pattern_generation(
-    accumulated_objects,
+    accumulated_objects: Dict,
     accumulated_reports: List[List[stix2.ObservedData]],
     output_directory: Path,
 ):
-    patterns = get_patterns(accumulated_objects, accumulated_reports)
+    patterns = get_patterns(accumulated_objects, len(accumulated_reports))
     stix_pkg = create_stix_package(output_directory, patterns)
     if stix_pkg:
         with open(output_directory, "w") as f:
             f.write(stix_pkg)
 
 
-def get_patterns(accumulated_objects, accumulated_reports):
+def get_patterns(accumulated_objects: Dict, number_of_reports: int):
     patterns = {"file_patterns": [], "process_patterns": [], "domain_patterns": []}
     if "file" in accumulated_objects:
         patterns["file_patterns"] = generate_patterns_for_files(
-            accumulated_objects, accumulated_reports
+            accumulated_objects, number_of_reports
         )
     if "process" in accumulated_objects:
         patterns["process_patterns"] = generate_patterns_for_processes(
-            accumulated_objects, accumulated_reports
+            accumulated_objects, number_of_reports
         )
     if "domain-name" in accumulated_objects:
         patterns["domain_patterns"] = generate_patterns_for_domainnames(
-            accumulated_objects, accumulated_reports
+            accumulated_objects, number_of_reports
         )
     return patterns
 
 
-def generate_patterns_for_files(accumulated_objects, accumulated_reports):
+def generate_patterns_for_files(accumulated_objects, number_of_reports: int):
     log.debug("Started processing files")
     try:
-        file_patterns = process_file_type(accumulated_objects, accumulated_reports)
+        file_patterns = process_file_type(accumulated_objects, number_of_reports)
         log.debug("File-Patterns:\n" + yaml.dump(file_patterns))
         return file_patterns
     except Exception as error:
@@ -53,10 +53,10 @@ def generate_patterns_for_files(accumulated_objects, accumulated_reports):
         return []
 
 
-def generate_patterns_for_processes(accumulated_objects, accumulated_reports):
+def generate_patterns_for_processes(accumulated_objects, number_of_reports: int):
     log.debug("Started processing processes")
     try:
-        process_patterns = process_process_type(accumulated_objects, accumulated_reports)
+        process_patterns = process_process_type(accumulated_objects, number_of_reports)
         log.debug("Process-Patterns:\n" + yaml.dump(process_patterns))
         return process_patterns
     except Exception as error:
@@ -64,11 +64,11 @@ def generate_patterns_for_processes(accumulated_objects, accumulated_reports):
         return []
 
 
-def generate_patterns_for_domainnames(accumulated_objects, accumulated_reports):
+def generate_patterns_for_domainnames(accumulated_objects, number_of_reports: int):
     log.debug("Started processing domains")
     try:
         domain_patterns = process_domain_type(
-            accumulated_objects["domain-name"], accumulated_reports
+            accumulated_objects["domain-name"], number_of_reports
         )
         log.debug("Domain-Patterns:\n" + yaml.dump(domain_patterns))
         return domain_patterns
