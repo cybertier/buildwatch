@@ -16,6 +16,8 @@ jobs:
         run: |
           cd .github
           python --version
+          apk update
+          apk add git
           git --version
           pip install jinja2
           python compile-docs.py
