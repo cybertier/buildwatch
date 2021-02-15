@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Buildwtach</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/png" href="/static/buildwatch.svg"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="/static/WOW-master/dist/wow.min.js">
+    </script>
+    <script>
+        new WOW().init();
+    </script>
+    <link rel="stylesheet" href="/static/WOW-master/css/libs/animate.css">
+
+    <style>
+        .drop-button[aria-expanded="true"] > .fa-angle-down:before {
+            content: "\f106";
+        }
+
+        body {
+            background-image: url('/static/background2.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card bg-light text-dark m-3 wow pulse">
+            <div class="card-body">
+                <h1>
+                    See the docs
+                </h1>
+                <p>
+                    A description of rest calls you can do against this api.
+                </p>
+                <p>
+                    Get the postman collection, with it you can see how general requests are done:
+                    <a href="/static/collection.json" download="buildwatch-collection.json">here</a>
+                    Please have a look there for some examples and more details.
+                </p>
+            </div>
+        </div>
+        <div class="card bg-light text-dark m-3 wow pulse">
+            <div class="card-header">
+                <h3>
+                    Authorization
+                </h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    In the header you should have the key <strong>Authorization</strong> starting with
+                    <strong>Bearer </strong>(including space) followed by the token from config.
+                    Token is set via <strong>AUTH_TOKEN</strong> in config.
+                </p>
+            </div>
+        </div>
+        
+    <div class="card m-3 wow bounceInRight">
+        <div class="card-header">
+            <h2>
+                Create a project with git
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse1"
+                    aria-expanded="false" aria-controls="collapse1">
+                Toggle
+            </button>
+            <p class="my-3">
+                Create a project that is manged by git.
+            </p>
+        </div>
+        <div class="collapse" id="collapse1">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /project
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            POST
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            In the request body you need to give Infos about your project. Also see modles/project.py.
+old_runs_considered -&gt; How many patterns from previous runs are used to determine what behaviour was seen before.
+cuckoo_analysis_per_run -&gt; How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;name&#34;: &#34;test project&#34;,
+    &#34;git_url&#34;: &#34;https://github.com/axel1200/test-buildwatch-2.git&#34;,
+    &#34;git_managed&#34;: true,
+    &#34;cuckoo_analysis_per_run&#34;: 3,
+    &#34;old_runs_considered&#34;: 1
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the project with the coresponsding id
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;cuckoo_analysis_per_run&#34;: 3,
+    &#34;git_managed&#34;: true,
+    &#34;git_url&#34;: &#34;https://github.com/axel1200/test-buildwatch-2.git&#34;,
+    &#34;id&#34;: 1,
+    &#34;name&#34;: &#34;test project&#34;,
+    &#34;old_runs_considered&#34;: 1
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no query parameters.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInLeft">
+        <div class="card-header">
+            <h2>
+                Create a project without git
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse2"
+                    aria-expanded="false" aria-controls="collapse2">
+                Toggle
+            </button>
+            <p class="my-3">
+                Create a project that does not provide code via git but instead via ZIP files.
+            </p>
+        </div>
+        <div class="collapse" id="collapse2">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /project
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            POST
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            In the request body you need to give Infos about your project. Also see modles/project.py.
+old_runs_considered -&gt; How many patterns from previous runs are used to determine what behaviour was seen before.
+cuckoo_analysis_per_run -&gt; How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;name&#34;: &#34;test project without git&#34;,
+    &#34;git_managed&#34;: false,
+    &#34;cuckoo_analysis_per_run&#34;: 3
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the project with the coresponsding id
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;cuckoo_analysis_per_run&#34;: 3,
+    &#34;git_managed&#34;: false,
+    &#34;git_url&#34;: null,
+    &#34;id&#34;: 2,
+    &#34;name&#34;: &#34;test project without git&#34;,
+    &#34;old_runs_considered&#34;: 3
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no query parameters.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInRight">
+        <div class="card-header">
+            <h2>
+                Upload a ZIP
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse3"
+                    aria-expanded="false" aria-controls="collapse3">
+                Toggle
+            </button>
+            <p class="my-3">
+                If the project does not use git, you have to upload a ZIP first. The zip can be referenced later to create a run based on it. The ZIP must caontain the data for the program to be built. Also the instructions to build it in a &#34;.buildwatch.sh&#34;. You can install dependencies in &#34;.prebuild.sh&#34;.
+            </p>
+        </div>
+        <div class="collapse" id="collapse3">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /run/uploadZip
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            POST
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            In the request body sent form-data (multipart/form-data) containing a ZIP file under the parameter &#34;file&#34;
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+file: yourZipFile.zip
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the resulting file name the zip was saved to. You got to remeber it to create a run.
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+6bb10170-3217-4a93-952d-c732e9ae4ee7.zip
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no query parameters.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInLeft">
+        <div class="card-header">
+            <h2>
+                Create a run referencing a ZIP file
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse4"
+                    aria-expanded="false" aria-controls="collapse4">
+                Toggle
+            </button>
+            <p class="my-3">
+                Create a run. A run being a concrete version of your program/project. For projects not managed by git. Make sure you upload the zip before that
+            </p>
+        </div>
+        <div class="collapse" id="collapse4">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /project
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            POST
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
+previous_run_id (optional)-&gt; The id of the previous_run. This is important inorder to be able to substract already seen behaviour.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;project_id&#34;: 1,
+    &#34;user_set_identifier&#34;: &#34;v1.0.0&#34;,
+    &#34;zip_filename&#34;: &#34;6bb10170-3217-4a93-952d-c732e9ae4ee7.zip&#34;
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the run with the coresponsding id and all auto generated fields.
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;error&#34;: null,
+    &#34;id&#34;: 4,
+    &#34;previous_run_id&#34;: null,
+    &#34;project_id&#34;: 2,
+    &#34;status&#34;: &#34;created&#34;,
+    &#34;user_set_identifier&#34;: &#34;v1.0.0&#34;
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no query parameters.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInRight">
+        <div class="card-header">
+            <h2>
+                Create a run with a git commit hash
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse5"
+                    aria-expanded="false" aria-controls="collapse5">
+                Toggle
+            </button>
+            <p class="my-3">
+                Create a run. A run being a concrete version of your program/project. For projects managed by git. Make sure you have an existing git commit in your repo. The commit needs to contain data for the build and files that define build behaviour. The instructions to build it should be in a &#34;.buildwatch.sh&#34;. You can install dependencies in &#34;.prebuild.sh&#34;.
+            </p>
+        </div>
+        <div class="collapse" id="collapse5">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /project
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            POST
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            In the request body you need to give infos about the commit. Also see modles/run.py.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;project_id&#34;: 1,
+    &#34;user_set_identifier&#34;: &#34;d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6&#34;
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the run with the coresponsding id and all auto generated fields.
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+{
+    &#34;error&#34;: null,
+    &#34;id&#34;: 5,
+    &#34;previous_run_id&#34;: null,
+    &#34;project_id&#34;: 1,
+    &#34;status&#34;: &#34;created&#34;,
+    &#34;user_set_identifier&#34;: &#34;d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6&#34;
+}
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no query parameters.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInLeft">
+        <div class="card-header">
+            <h2>
+                Get info about a run
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse6"
+                    aria-expanded="false" aria-controls="collapse6">
+                Toggle
+            </button>
+            <p class="my-3">
+                You want to query infos about one or more runs. You are told if the run is finished and other parameters.
+            </p>
+        </div>
+        <div class="collapse" id="collapse6">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /run
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            GET
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            The request body should be empty.
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the run with the coresponsding id and all the info.
+What concerns status, there are the following options:
+error: An error occurred for this run.
+created: Successfully created this run.
+cuckoo_running: Cuckoo is analyzing.
+diff_tool_running: Old observables get subtracted from current report.
+first_finished_unprepared: If no previous runs are available.
+diff tool sets this status, patternson-runner waits for it.
+first_finished_prepared: If no previous runs are available.
+patterson sets this once the pattern generation is complete.
+finished_unprepared: diff tool sets this status, patternson-runner waits for it.
+finished_prepared: patterson sets this once the pattern generation is complete.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+[
+    {
+        &#34;error&#34;: null,
+        &#34;id&#34;: 1,
+        &#34;previous_run_id&#34;: null,
+        &#34;project_id&#34;: 1,
+        &#34;status&#34;: &#34;first_finished_prepared&#34;,
+        &#34;user_set_identifier&#34;: &#34;d2e07b721706a4f1630af3bcaa69aabeee6bb552&#34;
+    },
+    {
+        &#34;error&#34;: null,
+        &#34;id&#34;: 2,
+        &#34;previous_run_id&#34;: 1,
+        &#34;project_id&#34;: 1,
+        &#34;status&#34;: &#34;finished_prepared&#34;,
+        &#34;user_set_identifier&#34;: &#34;1db0ac5c6a0c1212ecb30c3919a5c90b8b3ec15e&#34;
+    },
+    {
+        &#34;error&#34;: null,
+        &#34;id&#34;: 3,
+        &#34;previous_run_id&#34;: 2,
+        &#34;project_id&#34;: 1,
+        &#34;status&#34;: &#34;finished_prepared&#34;,
+        &#34;user_set_identifier&#34;: &#34;3740c9e96ce54b125cc599d5c60d19c0cfe87dc8&#34;
+    },
+    {
+        &#34;error&#34;: &#34;HTTPConnectionPool(host=&#39;localhost&#39;, port=8090): Max retries&#34;,
+        &#34;id&#34;: 4,
+        &#34;previous_run_id&#34;: null,
+        &#34;project_id&#34;: 2,
+        &#34;status&#34;: &#34;error&#34;,
+        &#34;user_set_identifier&#34;: &#34;v1.0.0&#34;
+    },
+    {
+        &#34;error&#34;: &#34;HTTPConnectionPool(host=&#39;localhost&#39;, port=8090): Max retries&#34;,
+        &#34;id&#34;: 5,
+        &#34;previous_run_id&#34;: null,
+        &#34;project_id&#34;: 1,
+        &#34;status&#34;: &#34;error&#34;,
+        &#34;user_set_identifier&#34;: &#34;d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6&#34;
+    }
+]
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            If parameter id is set to an id only the run of this id is returned.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+        
+    <div class="card m-3 wow bounceInRight">
+        <div class="card-header">
+            <h2>
+                Get info about a project
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse7"
+                    aria-expanded="false" aria-controls="collapse7">
+                Toggle
+            </button>
+            <p class="my-3">
+                You want to query infos about one or more projects.
+            </p>
+        </div>
+        <div class="collapse" id="collapse7">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /project
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            GET
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            The request body should be empty.
+
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the project with the coresponsding id and all the info.
+
+                        </td>
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+
+[
+    {
+        &#34;cuckoo_analysis_per_run&#34;: 3,
+        &#34;git_managed&#34;: true,
+        &#34;git_url&#34;: &#34;https://github.com/axel1200/test-buildwatch-2.git&#34;,
+        &#34;id&#34;: 1,
+        &#34;name&#34;: &#34;test project&#34;,
+        &#34;old_runs_considered&#34;: 1
+    },
+    {
+        &#34;cuckoo_analysis_per_run&#34;: 3,
+        &#34;git_managed&#34;: false,
+        &#34;git_url&#34;: null,
+        &#34;id&#34;: 2,
+        &#34;name&#34;: &#34;test project without git&#34;,
+        &#34;old_runs_considered&#34;: 3
+    }
+]
+
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            If parameter id is set to an id only the project of this id is returned.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInLeft">
+        <div class="card-header">
+            <h2>
+                Get the stix report
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse8"
+                    aria-expanded="false" aria-controls="collapse8">
+                Toggle
+            </button>
+            <p class="my-3">
+                Get the reported about new behaviour of your program in the STIX 2.0 format.
+            </p>
+        </div>
+        <div class="collapse" id="collapse8">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /run/{id}/report/stix
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            GET
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            The request body should be empty.
+
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the stix(json) file
+
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no parameters
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="card m-3 wow bounceInLeft">
+        <div class="card-header">
+            <h2>
+                Get the html report
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse8"
+                    aria-expanded="false" aria-controls="collapse8">
+                Toggle
+            </button>
+            <p class="my-3">
+                Get the reported about new behaviour of your program in a nice website. This is better to look at than STIX 2.0.
+            </p>
+        </div>
+        <div class="collapse" id="collapse8">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            /run/{id}/report/html
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            GET
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            The request body should be empty.
+
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            You are returned the html file
+
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            There are no parameters
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+
+</body>
+</html>
