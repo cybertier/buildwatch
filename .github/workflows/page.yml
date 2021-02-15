@@ -14,4 +14,5 @@ jobs:
       - name: execute py script # run the run.py to get the latest data
         run: |
           cd .github
+          python --version
           python compile-docs.py
