@@ -1,0 +1,260 @@
+{
+  "info": {
+    "_postman_id": "5e66091f-41fa-48e0-aab0-b9fac25cd4ac",
+    "name": "Buildwatch Collection",
+    "description": "Calls against buildwatch api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create a project with git",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"test project\",\n    \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",\n    \"git_managed\": true,\n    \"cuckoo_analysis_per_run\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/project",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "project"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a project without git",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"test project without git\",\n    \"git_managed\": false,\n    \"cuckoo_analysis_per_run\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/project",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "project"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Zip for run",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/home/alex/PG/testPrebuild/testPre.zip"
+            },
+            {
+              "key": "",
+              "type": "file",
+              "src": [],
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/run/uploadZip",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run",
+            "uploadZip"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create run with zip",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"project_id\": 1,\n    \"user_set_identifier\": \"v1.0.0\",\n    \"zip_filename\": \"bd362347-ad1c-4aaa-b30f-65d9f73c8219.zip\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/run",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create run with git hash",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"project_id\": 1,\n    \"user_set_identifier\": \"d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/run",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get runs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/run",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get projects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/project",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "project"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get stix report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/run/2/report/stix",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run",
+            "2",
+            "report",
+            "stix"
+          ]
+        },
+        "description": "From a finished run get the report html"
+      },
+      "response": []
+    },
+    {
+      "name": "Get html report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/run/2/report/html",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "run",
+            "2",
+            "report",
+            "html"
+          ]
+        },
+        "description": "From a finished run get the report html"
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "filloutinprod",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

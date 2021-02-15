@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Buildwtach report</title>
+    <title>Buildwtach</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/png" href="/static/buildwatch.svg"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="/static/WOW-master/dist/wow.min.js">
+    </script>
+    <script>
+        new WOW().init();
+    </script>
+    <link rel="stylesheet" href="/static/WOW-master/css/libs/animate.css">
 
     <style>
         .drop-button[aria-expanded="true"] > .fa-angle-down:before {
             content: "\f106";
+        }
+
+        body {
+            background-image: url('/static/background2.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+
         }
     </style>
 </head>

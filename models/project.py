@@ -2,8 +2,8 @@ from db import db
 
 
 class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
     # External:
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     git_url = db.Column(db.String(300), unique=False, nullable=True)
     git_managed = db.Column(db.Boolean(), unique=False, nullable=False)

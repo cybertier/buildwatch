@@ -1,0 +1,17 @@
+name: gh pages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  pages:
+    name: pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner.
+
+      - name: execute py script # run the run.py to get the latest data
+        run: |
+          cd .github
+          python compile-docs.py
