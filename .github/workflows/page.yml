@@ -7,22 +7,20 @@ jobs:
   pages:
     name: pages
     runs-on: ubuntu-latest
-    container: python:3.8-alpine3.12
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner.
 
       - name: execute py script # run the run.py to get the latest data
         run: |
+          sudo apt -y update
           cd .github
-          python --version
-          apk update
-          apk add git
+          python3 --version
           git --version
           pip install jinja2
-          python compile-docs.py
+          python3 compile-docs.py
           cd ..
-          ls -al
+          pwd
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
