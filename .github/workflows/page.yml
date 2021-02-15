@@ -16,6 +16,7 @@ jobs:
         run: |
           cd .github
           python --version
+          git --version
           pip install jinja2
           python compile-docs.py
       - name: Deploy 🚀
