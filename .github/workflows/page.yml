@@ -7,6 +7,7 @@ jobs:
   pages:
     name: pages
     runs-on: ubuntu-latest
+    container: python:3.8-alpine3.12
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner.
@@ -15,4 +16,5 @@ jobs:
         run: |
           cd .github
           python --version
+          pip install jinja2
           python compile-docs.py
