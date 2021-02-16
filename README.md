@@ -40,4 +40,11 @@ TODO
 
 # Talking to Buildwatch
 
-See the [github pages docs](https://example.com) or `/docs` when you have executed Buildwatch. 
+See the [github pages docs](https://example.com) or `/docs` when you have executed Buildwatch.
+
+# Architecture
+
+Here are some diagrams showing how Buildwatch is organised:
+![Database](static/achitecture/databse.png)
+![Architecture](static/achitecture/architecture.png)
+![Pipeline](static/achitecture/Pipeline%20Buildwatch.png)
