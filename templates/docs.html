@@ -36,6 +36,7 @@
         {{ macros.tableCall("Create a project with git","POST", "Create a project that is manged by git.", "/project", "In the request body you need to give Infos about your project. Also see modles/project.py.
 old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
 cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+git_url-> git repo urls, for private repos the url can should contain username and password or better username and token.
 ",
 "
 {

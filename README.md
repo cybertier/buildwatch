@@ -36,7 +36,29 @@ Install requirements from requirements.txt and use python 3 to execute the main.
 
 ## Configuration
 
-TODO
+The default configuration can be found in the [/config/default_config.py](blob/main/config/default_config.py). If you
+want to supply your own values and overwrite those provide a similar python file. The path to the file should be
+supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch specific config options:
+
+| Option name        | Default           | Description       |
+| ------------- |:-------------| -----|
+| SQLALCHEMY_DATABASE_URI | 'sqlite:///sql_lite.db'| The url pointing to the Database used. Can also point to other types of databases than sqlite. |
+| SQLALCHEMY_TRACK_MODIFICATIONS | False | No need changing this | 
+| SECRETE_KEY | 'secret' | Used for cryptography should be changed in production | 
+| PROJECT_STORAGE_DIRECTORY | './storage' | Folder where data Buildwatch persistent data is stored |
+| DEBUG | True| Should be false in production |
+| AUTH_TOKEN | 'filloutinprod'| Token used to authorize to the Buildwatch rest api |
+| CUCKOO_API_URL | 'http://localhost:8090'| The url used to communicate with the cuckoo rest api |
+| CUCKOO_API_TOKEN | '5Ql0ClpOzM9oot53daAIvA' | The token for the cuckoo api used to authenticate with it. Can be found in the configuration files of cuckoo. (api_token property in cuckoo.conf) |
+| TIME_OUT_WAITING_FOR_CUCKOO | 3*60*60 | This many seconds we wait for cuckoo builds to finish |
+| TIME_OUT_WAITING_FOR_PREVIOUS_COMMIT | 3*
+60*60 | This many seconds we wait for the previous commit to be of status _prepared. |
+| DELAY_CHECKING_CUCKOO_TASK_STATUS | 20| Every x seconds check if the cuckoo task finished. |
+| DELAY_CHECKING_PREVIOUS_TASK_STATUS | 20| Every x seconds check if the previous task finished. |
+| PORT | 8080| Port Buildwatch rest api is started on |
+
+Other flask or sqlachemy specific options can be found in the corresponding documentation and can be set in this file as
+well.
 
 # Talking to Buildwatch
 
