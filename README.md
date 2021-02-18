@@ -36,7 +36,7 @@ Install requirements from requirements.txt and use python 3 to execute the main.
 
 ## Configuration
 
-The default configuration can be found in the [/config/default_config.py](blob/main/config/default_config.py). If you
+The default configuration can be found in the [/config/default_config.py](config/default_config.py). If you
 want to supply your own values and overwrite those provide a similar python file. The path to the file should be
 supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch specific config options:
 
