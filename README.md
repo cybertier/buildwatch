@@ -51,8 +51,7 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | CUCKOO_API_URL | 'http://localhost:8090'| The url used to communicate with the cuckoo rest api |
 | CUCKOO_API_TOKEN | '5Ql0ClpOzM9oot53daAIvA' | The token for the cuckoo api used to authenticate with it. Can be found in the configuration files of cuckoo. (api_token property in cuckoo.conf) |
 | TIME_OUT_WAITING_FOR_CUCKOO | 3*60*60 | This many seconds we wait for cuckoo builds to finish |
-| TIME_OUT_WAITING_FOR_PREVIOUS_COMMIT | 3*
-60*60 | This many seconds we wait for the previous commit to be of status _prepared. |
+| TIME_OUT_WAITING_FOR_PREVIOUS_COMMIT | 3*60*60 | This many seconds we wait for the previous commit to be of status _prepared. |
 | DELAY_CHECKING_CUCKOO_TASK_STATUS | 20| Every x seconds check if the cuckoo task finished. |
 | DELAY_CHECKING_PREVIOUS_TASK_STATUS | 20| Every x seconds check if the previous task finished. |
 | PORT | 8080| Port Buildwatch rest api is started on |
