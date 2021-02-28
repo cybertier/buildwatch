@@ -20,6 +20,9 @@ If you are using another VCS or don't have a git repo for other reasons you can 
 
 Either do so in your cuckoo setup or in the .prebuild.sh
 
+### Logging stdout
+Use `exec >> "program.log" 2>&1 && tail "program.log"` has a first line in your `sh` script in order to log the output. Buildwatch will fetch the program.log into the storage folder with the cuckoo reports.
+
 # Setup
 
 We quickly describe how to set up the project
