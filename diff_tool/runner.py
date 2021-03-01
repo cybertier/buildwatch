@@ -136,12 +136,12 @@ def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run
     return copied_to
 
 
-def subtract_pattern_from_old_runs(current_report_path, pattern_path, run):
-    result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_path[0]))
-    for i in range(run.project.old_runs_considered - 1):
+def subtract_pattern_from_old_runs(current_report_path, pattern_paths, run):
+    result = subtract_pattern_after_loading_files(Path(current_report_path), Path(pattern_paths[0]))
+    for i in range(len(pattern_paths) - 1):
         if "objects" not in result:
             break
-        result = subtract_pattern_after_loading_files(result, Path(pattern_path[i + 1]))
+        result = subtract_pattern_after_loading_files(result, Path(pattern_paths[i + 1]))
     write_result(result, run)
 
 
