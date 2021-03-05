@@ -190,22 +190,23 @@ def get_accumulated_objects(accumulated_reports: List[List[stix2.ObservedData]])
 def accumulate_objects_per_report(
     accumulated_objects, observed_data_object, obj_type, report_index
 ) -> Dict[str, List[Dict[str, Any]]]:
-    objects_per_report = accumulated_objects.get(report_index, {})
-    objects = objects_per_report.get(obj_type, [])
-    if observed_data_object.objects not in objects:
-        objects.append(observed_data_object.objects)
-    objects_per_report[obj_type] = objects
-    accumulated_objects[report_index] = objects_per_report
+    if report_index in accumulated_objects.keys():
+        if obj_type in accumulated_objects[report_index].keys():
+            accumulated_objects[report_index][obj_type].append(observed_data_object.objects)
+        else:
+            accumulated_objects[report_index][obj_type] = [observed_data_object.objects]
+    else:
+        accumulated_objects[report_index] = {obj_type: [observed_data_object.objects]}
     return accumulated_objects
 
 
 def accumulate_objects_globally(
     accumulated_objects, observed_data_object, obj_type
 ) -> Dict[str, List[Dict[str, Any]]]:
-    objects = accumulated_objects.get(obj_type, [])
-    if observed_data_object.objects not in objects:
-        objects.append(observed_data_object.objects)
-    accumulated_objects[obj_type] = objects
+    if obj_type in accumulated_objects.keys():
+        accumulated_objects[obj_type].append(observed_data_object.objects)
+    else:
+        accumulated_objects[obj_type] = [observed_data_object.objects]
     return accumulated_objects
 
 
