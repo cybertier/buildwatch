@@ -1,0 +1,28 @@
+name: gh pages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  pages:
+    name: pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner.
+
+      - name: execute py script # run the run.py to get the latest data
+        run: |
+          sudo apt -y update
+          cd .github
+          python3 --version
+          git --version
+          pip install jinja2
+          python3 compile-docs.py
+          cd ..
+          pwd
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: .github/out # The folder the action should deploy.

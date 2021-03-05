@@ -1,4 +1,4 @@
-from flask import request, abort
+from flask import request, abort, send_from_directory, render_template
 from flask_restful import Api
 
 from app import app
@@ -19,6 +19,17 @@ def upload_zip():
 @app.route('/run/<id>/report/<type>', methods=['GET'])
 def get_report(id, type):
     return Run.get_report(id, type)
+
+
+@app.route('/static/<path:path>')
+def static_files(path):
+    return send_from_directory('static', path)
+
+
+@app.route('/docs')
+@app.route('/')
+def docs():
+    return render_template('docs.html')
 
 
 @app.before_first_request
@@ -42,4 +53,4 @@ if __name__ == '__main__':
     from db import db
 
     db.init_app(app)
-    app.run(port=8080, debug=app.config["DEBUG"])
+    app.run(port=app.config["PORT"], debug=app.config["DEBUG"])

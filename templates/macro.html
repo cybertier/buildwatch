@@ -73,3 +73,105 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro tableCall(title, method, description, path, bodyRequest, exampleBodyRequest, bodyResponse, bodyResponseExample, query, id) %}
+    <div class="card m-3 wow {{ 'bounceInLeft' if id % 2 == 0 else 'bounceInRight' }}">
+        <div class="card-header">
+            <h2>
+                {{ title }}
+            </h2>
+            <button class="btn btn-primary float-right" type="button" data-toggle="collapse"
+                    data-target="#collapse{{ id }}"
+                    aria-expanded="false" aria-controls="collapse{{ id }}">
+                Toggle
+            </button>
+            <p class="my-3">
+                {{ description }}
+            </p>
+        </div>
+        <div class="collapse" id="collapse{{ id }}">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Path
+                        </td>
+                        <td>
+                            {{ path }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Method
+                        </td>
+                        <td>
+                            {{ method }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Request Body
+                        </td>
+                        <td>
+                            {{ bodyRequest }}
+                        </td>
+                    </tr>
+                    {% if exampleBodyRequest %}
+                        <tr>
+                            <td>
+                                Request Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+{{ exampleBodyRequest }}
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td>
+                            Response Body
+                        </td>
+                        <td>
+                            {{ bodyResponse }}
+                        </td>
+                    </tr>
+                    {% if bodyResponseExample %}
+                        <tr>
+                            <td>
+                                Response Body Example
+                            </td>
+                            <td>
+                                <code>
+                                <pre>
+{{ bodyResponseExample }}
+                                </pre>
+                                </code>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td>
+                            Query Parameter
+                        </td>
+                        <td>
+                            {{ query }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

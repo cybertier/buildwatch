@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% import "macro.html" as macros %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="card bg-light text-dark m-3 wow pulse">
+            <div class="card-body">
+                <h1>
+                    See the docs
+                </h1>
+                <p>
+                    A description of rest calls you can do against this api.
+                </p>
+                <p>
+                    Get the postman collection, with it you can see how general requests are done:
+                    <a href="/static/collection.json" download="buildwatch-collection.json">here</a>
+                    Please have a look there for some examples and more details.
+                </p>
+            </div>
+        </div>
+        <div class="card bg-light text-dark m-3 wow pulse">
+            <div class="card-header">
+                <h3>
+                    Authorization
+                </h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    In the header you should have the key <strong>Authorization</strong> starting with
+                    <strong>Bearer </strong>(including space) followed by the token from config.
+                    Token is set via <strong>AUTH_TOKEN</strong> in config.
+                </p>
+            </div>
+        </div>
+        {{ macros.tableCall("Create a project with git","POST", "Create a project that is manged by git.", "/project", "In the request body you need to give Infos about your project. Also see modles/project.py.
+old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
+cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+git_url-> git repo urls, for private repos the url can should contain username and password or better username and token.
+",
+"
+{
+    \"name\": \"test project\",
+    \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",
+    \"git_managed\": true,
+    \"cuckoo_analysis_per_run\": 3,
+    \"old_runs_considered\": 1
+}
+", "You are returned the project with the coresponsding id", 
+"
+{
+    \"cuckoo_analysis_per_run\": 3,
+    \"git_managed\": true,
+    \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",
+    \"id\": 1,
+    \"name\": \"test project\",
+    \"old_runs_considered\": 1
+}
+", "There are no query parameters.", 1) }}
+
+        {{ macros.tableCall("Create a project without git", "POST", "Create a project that does not provide code via git but instead via ZIP files.", "/project", "In the request body you need to give Infos about your project. Also see modles/project.py.
+old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
+cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+",
+"
+{
+    \"name\": \"test project without git\",
+    \"git_managed\": false,
+    \"cuckoo_analysis_per_run\": 3
+}
+", "You are returned the project with the coresponsding id",
+"
+{
+    \"cuckoo_analysis_per_run\": 3,
+    \"git_managed\": false,
+    \"git_url\": null,
+    \"id\": 2,
+    \"name\": \"test project without git\",
+    \"old_runs_considered\": 3
+}
+", "There are no query parameters.", 2) }}
+
+        {{ macros.tableCall("Upload a ZIP", "POST", "If the project does not use git, you have to upload a ZIP first. The zip can be referenced later to create a run based on it. The ZIP must caontain the data for the program to be built. Also the instructions to build it in a \".buildwatch.sh\". You can install dependencies in \".prebuild.sh\".", "/run/uploadZip", "In the request body sent form-data (multipart/form-data) containing a ZIP file under the parameter \"file\"",
+"
+file: yourZipFile.zip
+", "You are returned the resulting file name the zip was saved to. You got to remeber it to create a run.",
+"
+6bb10170-3217-4a93-952d-c732e9ae4ee7.zip
+", "There are no query parameters.", 3) }}
+
+        {{ macros.tableCall("Create a run referencing a ZIP file", "POST", "Create a run. A run being a concrete version of your program/project. For projects not managed by git. Make sure you upload the zip before that", "/project", "In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
+previous_run_id (optional)-> The id of the previous_run. This is important inorder to be able to substract already seen behaviour.
+",
+"
+{
+    \"project_id\": 1,
+    \"user_set_identifier\": \"v1.0.0\",
+    \"zip_filename\": \"6bb10170-3217-4a93-952d-c732e9ae4ee7.zip\"
+}
+", "You are returned the run with the coresponsding id and all auto generated fields.",
+"
+{
+    \"error\": null,
+    \"id\": 4,
+    \"previous_run_id\": null,
+    \"project_id\": 2,
+    \"status\": \"created\",
+    \"user_set_identifier\": \"v1.0.0\"
+}
+", "There are no query parameters.", 4) }}
+
+        {{ macros.tableCall("Create a run with a git commit hash", "POST", "Create a run. A run being a concrete version of your program/project. For projects managed by git. Make sure you have an existing git commit in your repo. The commit needs to contain data for the build and files that define build behaviour. The instructions to build it should be in a \".buildwatch.sh\". You can install dependencies in \".prebuild.sh\".", "/project", "In the request body you need to give infos about the commit. Also see modles/run.py.
+",
+"
+{
+    \"project_id\": 1,
+    \"user_set_identifier\": \"d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6\"
+}
+", "You are returned the run with the coresponsding id and all auto generated fields.",
+"
+{
+    \"error\": null,
+    \"id\": 5,
+    \"previous_run_id\": null,
+    \"project_id\": 1,
+    \"status\": \"created\",
+    \"user_set_identifier\": \"d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6\"
+}
+", "There are no query parameters.", 5) }}
+
+        {{ macros.tableCall("Get info about a run", "GET", "You want to query infos about one or more runs. You are told if the run is finished and other parameters.", "/run", "The request body should be empty.",
+"" , "You are returned the run with the coresponsding id and all the info.
+What concerns status, there are the following options:
+error: An error occurred for this run.
+created: Successfully created this run.
+cuckoo_running: Cuckoo is analyzing.
+diff_tool_running: Old observables get subtracted from current report.
+first_finished_unprepared: If no previous runs are available.
+diff tool sets this status, patternson-runner waits for it.
+first_finished_prepared: If no previous runs are available.
+patterson sets this once the pattern generation is complete.
+finished_unprepared: diff tool sets this status, patternson-runner waits for it.
+finished_prepared: patterson sets this once the pattern generation is complete.
+",
+"
+[
+    {
+        \"error\": null,
+        \"id\": 1,
+        \"previous_run_id\": null,
+        \"project_id\": 1,
+        \"status\": \"first_finished_prepared\",
+        \"user_set_identifier\": \"d2e07b721706a4f1630af3bcaa69aabeee6bb552\"
+    },
+    {
+        \"error\": null,
+        \"id\": 2,
+        \"previous_run_id\": 1,
+        \"project_id\": 1,
+        \"status\": \"finished_prepared\",
+        \"user_set_identifier\": \"1db0ac5c6a0c1212ecb30c3919a5c90b8b3ec15e\"
+    },
+    {
+        \"error\": null,
+        \"id\": 3,
+        \"previous_run_id\": 2,
+        \"project_id\": 1,
+        \"status\": \"finished_prepared\",
+        \"user_set_identifier\": \"3740c9e96ce54b125cc599d5c60d19c0cfe87dc8\"
+    },
+    {
+        \"error\": \"HTTPConnectionPool(host='localhost', port=8090): Max retries\",
+        \"id\": 4,
+        \"previous_run_id\": null,
+        \"project_id\": 2,
+        \"status\": \"error\",
+        \"user_set_identifier\": \"v1.0.0\"
+    },
+    {
+        \"error\": \"HTTPConnectionPool(host='localhost', port=8090): Max retries\",
+        \"id\": 5,
+        \"previous_run_id\": null,
+        \"project_id\": 1,
+        \"status\": \"error\",
+        \"user_set_identifier\": \"d365ee24e5fcfa2ac3c04f5b7fc1378b34f401b6\"
+    }
+]
+", "If parameter id is set to an id only the run of this id is returned.", 6) }}
+
+
+        {{ macros.tableCall("Get info about a project", "GET", "You want to query infos about one or more projects.", "/project", "The request body should be empty.
+",
+"" , "You are returned the project with the coresponsding id and all the info.
+",
+"
+[
+    {
+        \"cuckoo_analysis_per_run\": 3,
+        \"git_managed\": true,
+        \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",
+        \"id\": 1,
+        \"name\": \"test project\",
+        \"old_runs_considered\": 1
+    },
+    {
+        \"cuckoo_analysis_per_run\": 3,
+        \"git_managed\": false,
+        \"git_url\": null,
+        \"id\": 2,
+        \"name\": \"test project without git\",
+        \"old_runs_considered\": 3
+    }
+]
+", "If parameter id is set to an id only the project of this id is returned.", 7) }}
+
+        {{ macros.tableCall("Get the stix report", "GET", "Get the reported about new behaviour of your program in the STIX 2.0 format.", "/run/{id}/report/stix", "The request body should be empty.
+",
+"" , "You are returned the stix(json) file
+",
+"", "There are no parameters", 8) }}
+
+        {{ macros.tableCall("Get the html report", "GET", "Get the reported about new behaviour of your program in a nice website. This is better to look at than STIX 2.0.", "/run/{id}/report/html", "The request body should be empty.
+",
+"" , "You are returned the html file
+",
+"", "There are no parameters", 8) }}
+    </div>
+
+
+{% endblock %}
