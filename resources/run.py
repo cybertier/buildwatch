@@ -54,7 +54,7 @@ class Run(Resource):
                 abort(404, {'message': 'Reference a previously uploaded zip with zip_filename'})
 
         if model.previous_run_id is not None:
-            previous_run = RunModel.query.filter(Run.id == model.previous_run_id)[0]
+            previous_run = RunModel.query.filter(RunModel.id == model.previous_run_id)[0]
             if not previous_run:
                 abort(400, {'message': 'Previous run not found'})
 
