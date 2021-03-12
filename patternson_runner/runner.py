@@ -54,7 +54,7 @@ def set_status_for_run_and_wait(run):
         run = Run.query.get(run.id)
         time.sleep(app.config['DELAY_CHECKING_CUCKOO_TASK_STATUS'])
         db.session.refresh(run)
-        if patterns_file.exists():
+        if patterns_file.exists() or run.project.patternson_off:
             if run.status == "finished_unprepared":
                 set_run_status(run, "finished_prepared")
                 break

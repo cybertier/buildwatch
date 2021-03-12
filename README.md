@@ -58,6 +58,7 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | DELAY_CHECKING_CUCKOO_TASK_STATUS | 20| Every x seconds check if the cuckoo task finished. |
 | DELAY_CHECKING_PREVIOUS_TASK_STATUS | 20| Every x seconds check if the previous task finished. |
 | PORT | 8080| Port Buildwatch rest api is started on |
+| CUSTOM_WHITELIST | './storage/whitelist.json' | Points to a file in json format that contains a list of strings that are used to define whitelisted observables. Observable is whitelisted if it is exactly the whitelisted value. Use * at start and end of the item as a wildcard.|
 
 Other flask or sqlachemy specific options can be found in the corresponding documentation and can be set in this file as
 well.
