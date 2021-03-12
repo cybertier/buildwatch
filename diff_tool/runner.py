@@ -45,7 +45,8 @@ def actual_procedure(run: Run):
     path_of_reports: List[str] = get_list_of_reports_from_previous_run(run)
     pattern_paths: List[str] = get_pattern_of_previous_run(run)
     output_path = subtract_observables_from_old_run(path_of_current_report, path_of_reports, run)
-    subtract_pattern_from_old_runs(output_path, pattern_paths, run)
+    if not run.project.patternson_off:
+        subtract_pattern_from_old_runs(output_path, pattern_paths, run)
     set_run_status(run, "finished_unprepared")
 
 

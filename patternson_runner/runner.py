@@ -12,6 +12,10 @@ from patternson_runner.obspat.patternson import start_patternson
 def run(run_id: int):
     init()
     run = Run.query.get(run_id)
+    if run.project.patternson_off:
+        logging.info("patternson turned off for this project")
+        set_status_for_run_and_wait(run)
+        db.session.commit()
     try:
         actual_procedure(run)
     except Exception as e:
