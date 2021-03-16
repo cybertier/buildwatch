@@ -9,7 +9,7 @@ class Project(db.Model):
     git_managed = db.Column(db.Boolean(), unique=False, nullable=False)
     cuckoo_analysis_per_run = db.Column(db.Integer(), unique=False, nullable=False)
     old_runs_considered = db.Column(db.Integer(), unique=False, nullable=False, default=1)
-    patternson_off = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    patternson_off = db.Column(db.Boolean(), unique=False, nullable=False, default=False, server_default="false")
     # Internal:
     git_checkout_path = db.Column(db.String(500), unique=False, nullable=True)
     storage_path = db.Column(db.String(500), unique=False, nullable=True)
