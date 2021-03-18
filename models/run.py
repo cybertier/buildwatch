@@ -2,6 +2,9 @@ from db import db
 
 
 class Run(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('project_id', 'user_set_identifier'),
+    )
     # External:
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
@@ -9,7 +12,7 @@ class Run(db.Model):
     children = db.relationship("Run",
                                backref=db.backref('previous_run', remote_side=[id])
                                )
-    user_set_identifier = db.Column(db.String(120), unique=True, nullable=False)
+    user_set_identifier = db.Column(db.String(120), unique=False, nullable=False)
     # error: An error occurred for this run
     # created: Successfully created this run
     # cuckoo_running: Cuckoo is analyzing

@@ -13,8 +13,8 @@ def test_regex_from_tree_files():
     finished_patterns = []
     regex_from_tree(tree_data, finished_patterns)
     assert finished_patterns == [
-        "/[0-9a-zA-Z]+/test/\\.gitattributes",
-        "/[0-9a-zA-Z]+/test/[0-9a-zA-Z\\-]+\\.js",
+        "/[0-9a-zA-Z_]+/test/\\.gitattributes",
+        "/[0-9a-zA-Z:]+/test/[0-9a-zA-Z\\-]+\\.js",
     ]
 
 

@@ -11,6 +11,30 @@
         "6-inherited.js": {},
         "7-toString.js": {}
       }
+    },
+    "tmpXYZ12_": {
+      "test": {
+        ".gitattributes": {},
+        "1-on.js": {},
+        "2-once.js": {},
+        "3-onAny.js": {},
+        "4-removeListener.js": {},
+        "5-removeAllListeners.js": {},
+        "6-inherited.js": {},
+        "7-toString.js": {}
+      }
+    },
+    "tmpABC_p4": {
+      "test": {
+        ".gitattributes": {},
+        "1-on.js": {},
+        "2-once.js": {},
+        "3-onAny.js": {},
+        "4-removeListener.js": {},
+        "5-removeAllListeners.js": {},
+        "6-inherited.js": {},
+        "7-toString.js": {}
+      }
     }
   }
 }

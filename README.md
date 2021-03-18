@@ -20,6 +20,9 @@ If you are using another VCS or don't have a git repo for other reasons you can 
 
 Either do so in your cuckoo setup or in the .prebuild.sh
 
+### Logging stdout
+Use `exec >> "program.log" 2>&1 && tail "program.log"` has a first line in your `sh` script in order to log the output. Buildwatch will fetch the program.log into the storage folder with the cuckoo reports.
+
 # Setup
 
 We quickly describe how to set up the project
@@ -55,6 +58,7 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | DELAY_CHECKING_CUCKOO_TASK_STATUS | 20| Every x seconds check if the cuckoo task finished. |
 | DELAY_CHECKING_PREVIOUS_TASK_STATUS | 20| Every x seconds check if the previous task finished. |
 | PORT | 8080| Port Buildwatch rest api is started on |
+| CUSTOM_WHITELIST | './storage/whitelist.json' | Points to a file in json format that contains a list of strings that are used to define whitelisted observables. Observable is whitelisted if it is exactly the whitelisted value. Use * at start and end of the item as a wildcard.|
 
 Other flask or sqlachemy specific options can be found in the corresponding documentation and can be set in this file as
 well.

@@ -3,14 +3,15 @@ import os
 import time
 from typing import List
 
+import requests
 from requests_toolbelt import MultipartEncoder
 
 from app import app
 from models.project import Project
-import requests
 
 headers = {'Authorization': f'Bearer {app.config["CUCKOO_API_TOKEN"]}'}
 base_url = app.config["CUCKOO_API_URL"]
+whitelist_custom_path = app.config["CUSTOM_WHITELIST"]
 
 
 def start_run_for_zip_and_get_task_ids(zip_path: str, project: Project) -> List[int]:
@@ -21,12 +22,23 @@ def start_run_for_zip_and_get_task_ids(zip_path: str, project: Project) -> List[
     return task_ids
 
 
+def load_whitelist():
+    if not os.path.exists(whitelist_custom_path):
+        return ""
+    file = open(whitelist_custom_path)
+    content = file.read()
+    file.close()
+    return content
+
+
 def create_task(zip_path):
     url = base_url + "/tasks/create/file"
+    custom_whitelist = load_whitelist()
     m = MultipartEncoder(
         fields={
             'file': ('custom_file_name.zip', open(zip_path, 'rb')),
-            'package': 'buildwatch'
+            'package': 'buildwatch',
+            'custom': custom_whitelist
         }
     )
     my_headers = headers
@@ -84,3 +96,4 @@ def save_artifacts(task_id: int, output_folder: str):
         return
     file = open(os.path.join(output_folder, f"program_log_{task_id}.log"), "wb")
     file.write(response.content)
+    file.close()

@@ -20,6 +20,7 @@ class Project(Resource):
                                   'to subtract observables from the current run',
                              required=True)
     post_parser.add_argument('git_url', type=str, help='The git url of the project', required=False)
+    post_parser.add_argument('patternson_off', type=bool, help='If patterns should be learned', required=False)
     post_parser.add_argument('git_managed', type=bool, help='If project is managed by git', required=True)
     post_parser.add_argument('cuckoo_analysis_per_run', type=int, help='How many times a run is analysed in cuckoo',
                              required=True)
