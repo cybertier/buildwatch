@@ -16,14 +16,15 @@ def run(run_id: int):
         logging.info("patternson turned off for this project")
         set_status_for_run_and_wait(run)
         db.session.commit()
-    try:
-        actual_procedure(run)
-    except Exception as e:
-        run.status = "error"
-        run.error = str(e)
-        db.session.commit()
-        logging.error(f"Something went wrong in the patternson runner tool: {e}")
-        raise Exception("patternson terminated") from e
+    else:
+        try:
+            actual_procedure(run)
+        except Exception as e:
+            run.status = "error"
+            run.error = str(e)
+            db.session.commit()
+            logging.error(f"Something went wrong in the patternson runner tool: {e}")
+            raise Exception("patternson terminated") from e
 
 
 def init():
