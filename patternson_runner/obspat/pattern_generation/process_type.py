@@ -43,8 +43,8 @@ class ProcessPattern:
 
     def get_re_groups(self, observable, regex_groups, report_id):
         if hasattr(observable["0"], "command_line") and self.regex:
-            if re.match(self.regex, observable["0"].command_line):
-                groups = re.match(self.regex, observable["0"].command_line).groupdict()
+            if re.match(self.regex, observable["0"]['command_line']):
+                groups = re.match(self.regex, observable["0"]['command_line']).groupdict()
                 for re_id in groups.keys():
                     entry_group_id = regex_groups.get(re_id, {})
                     entry_observable_id = entry_group_id.get(report_id, [])
@@ -53,8 +53,8 @@ class ProcessPattern:
                     entry_group_id[report_id] = entry_observable_id
                     regex_groups[re_id] = entry_group_id
         if hasattr(observable["0"], "name") and self.name:
-            if re.match(self.name, observable["0"].name):
-                groups = re.match(self.name, observable["0"].name).groupdict()
+            if re.match(self.name, observable["0"]['name']):
+                groups = re.match(self.name, observable["0"]['name']).groupdict()
                 for re_id in groups.keys():
                     entry_group_id = regex_groups.get(re_id, {})
                     entry_observable_id = entry_group_id.get(report_id, [])
@@ -79,13 +79,13 @@ def process_process_type(
     for process in accumulated_objects["process"]:
         if (
             "command_line" in process["0"]
-            and process["0"].command_line not in same_cmd_lines
+            and process["0"]['command_line'] not in same_cmd_lines
         ):
-            cmd_lines.append(process["0"].command_line)
-        if "name" in process["0"] and process["0"].name not in same_names:
-            names.append(process["0"].name)
+            cmd_lines.append(process["0"]['command_line'])
+        if "name" in process["0"] and process["0"]['name'] not in same_names:
+            names.append(process["0"]['name'])
         if "command_line" not in process["0"] and "name" in process["0"]:
-            names_only.append(process["0"].name)
+            names_only.append(process["0"]['name'])
 
     regex_cmd_lines = get_cmd_line_regexes(cmd_lines, same_cmd_lines)
     regex_names = get_name_regexes(names, same_names)
@@ -119,16 +119,16 @@ def get_same_processes_across_reports(
             cmd_1 = None
             name_1 = None
             if hasattr(p1["0"], "command_line"):
-                cmd_1 = p1["0"].command_line
+                cmd_1 = p1["0"]['command_line']
             if hasattr(p1["0"], "name"):
-                name_1 = p1["0"].name
+                name_1 = p1["0"]['name']
             for p2 in processes_2:
                 cmd_2 = None
                 name_2 = None
                 if hasattr(p2["0"], "command_line"):
-                    cmd_2 = p2["0"].command_line
+                    cmd_2 = p2["0"]['command_line']
                 if hasattr(p2["0"], "name"):
-                    name_2 = p2["0"].name
+                    name_2 = p2["0"]['name']
                 if cmd_1 and cmd_1 == cmd_2:
                     cmds = same_across_reports["cmds"]
                     ocurred_reports = cmds.get(cmd_1, [])

@@ -224,7 +224,6 @@ def generate_expressions(strings):
         for string in strings[:]:
             if re.fullmatch(pattern, string):
                 strings.remove(string)
-
     # second round: Global Sequence Alignment over the remaining strings
     patterns, no_matches = regex_from_gsa(strings)
     return finished_patterns + patterns, no_matches
@@ -445,7 +444,7 @@ def regex_from_gsa(strings):
                 # do NOT use the universal matching group on its own!!
                 if re.match(r"\(\.\)\*$", pattern) or pattern == "":
                     continue
-                eval_regex(patterns, pattern)
+                # eval_regex(patterns, pattern)
             except:  # noqa
                 pass
 
@@ -453,9 +452,9 @@ def regex_from_gsa(strings):
     for s1, s2 in itertools.combinations(strings, 2):
         if len(max([s1, s2], key=len)) > 512:
             # string is too long
-            regex = regex_from_sequencer(s1, s2)
-            if regex:
-                eval_regex(patterns, regex)
+            # regex = regex_from_sequencer(s1, s2)
+            # if regex:
+            #     eval_regex(patterns, regex)
             continue
         do_alignment(s1, s2)
 

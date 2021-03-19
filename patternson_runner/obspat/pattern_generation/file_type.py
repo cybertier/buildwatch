@@ -13,7 +13,6 @@ from stix2 import File
 
 log = logging.getLogger(__name__)
 
-
 class FilePattern:
     def __hash__(self):
         return hash(repr(self))
@@ -73,10 +72,8 @@ class FilePattern:
         return obs_expr + "]"
 
     def get_re_groups(self, observable, regex_groups, report_id):
-        if hasattr(observable["0"], "parent_directory_str") and hasattr(
-            observable["0"], "name"
-        ):
-            full_path = f"{observable['0'].parent_directory_str}/{observable['0'].name}"
+        try:
+            full_path = f"{observable['0']['parent_directory_str']}/{observable['0']['name']}"
             if re.match(self.regex, full_path):
                 groups = re.match(self.regex, full_path).groupdict()
                 for re_id in groups.keys():
@@ -86,14 +83,16 @@ class FilePattern:
                     entry_observable_id = list(set(entry_observable_id))
                     entry_group_id[report_id] = entry_observable_id
                     regex_groups[re_id] = entry_group_id
+        except Exception:
+            pass
 
 
 # builds tree-like structure for observed files over all reports
 def build_tree(files: List[Dict[str, File]], same_across_reports) -> Dict[str, Dict]:
     tree = {}
     for file in files:
-        path = file["0"].parent_directory_str
-        name = file["0"].name
+        path = file["0"]['parent_directory_str']
+        name = file["0"]['name']
 
         if path and name:
             if path == "/":
@@ -156,7 +155,6 @@ def process_file_type(
 
     # get secondary features
     file_sizes, file_hashes, str_lengths = get_file_features(finished_regexes, files)
-
     for i, regex in enumerate(finished_regexes):
         finished_regexes[i] = resolve_quantifier(regex, str_lengths)
 
@@ -178,35 +176,26 @@ def process_file_type(
 def get_same_files_across_reports(accumulated_objects: Dict[str, List[Dict[str, Any]]]):
     same_across_reports = {}
     for id_1, id_2 in itertools.combinations(accumulated_objects.keys(), 2):
-        if (
-            id_1 == id_2
-            or not isinstance(id_1, int)
-            or not isinstance(id_2, int)
-            or "file" not in accumulated_objects[id_1]
-            or "file" not in accumulated_objects[id_2]
-        ):
+        try:
+            files_1 = accumulated_objects[id_1]["file"]
+            files_2 = accumulated_objects[id_2]["file"]
+
+            for f1 in files_1:
+                path_1 = f1["0"]['parent_directory_str']
+                name_1 = f1["0"]['name']
+                for f2 in files_2:
+                    path_2 = f2["0"]['parent_directory_str']
+                    name_2 = f2["0"]['name']
+
+                    if path_1 == path_2 and name_1 == name_2:
+                        ocurred_reports = same_across_reports.get(f"{path_1}/{name_1}", [])
+                        if id_1 not in ocurred_reports:
+                            ocurred_reports.append(id_1)
+                        if id_2 not in ocurred_reports:
+                            ocurred_reports.append(id_2)
+                        same_across_reports[f"{path_1}/{name_1}"] = ocurred_reports
+        except Exception as exc:
             continue
-        files_1 = accumulated_objects[id_1]["file"]
-        files_2 = accumulated_objects[id_2]["file"]
-        for f1 in files_1:
-            try:
-                path_1 = f1["0"].parent_directory_str
-                name_1 = f1["0"].name
-            except AttributeError:
-                continue
-            for f2 in files_2:
-                try:
-                    path_2 = f2["0"].parent_directory_str
-                    name_2 = f2["0"].name
-                except AttributeError:
-                    continue
-                if path_1 == path_2 and name_1 == name_2:
-                    ocurred_reports = same_across_reports.get(f"{path_1}/{name_1}", [])
-                    if id_1 not in ocurred_reports:
-                        ocurred_reports.append(id_1)
-                    if id_2 not in ocurred_reports:
-                        ocurred_reports.append(id_2)
-                    same_across_reports[f"{path_1}/{name_1}"] = ocurred_reports
     return same_across_reports
 
 
@@ -214,8 +203,8 @@ def get_same_files_across_reports(accumulated_objects: Dict[str, List[Dict[str, 
 # if for one regex multiple different values are found, do *NOT* include them
 def get_file_features(finished_regexes, files):
     def get_features(regex, file, file_sizes, file_hashes, str_lengths):
-        if hasattr(file["0"], "parent_directory_str") and hasattr(file["0"], "name"):
-            full_path = f"{file['0'].parent_directory_str}/{file['0'].name}"
+        try:
+            full_path = f"{file['0']['parent_directory_str']}/{file['0']['name']}"
             match = re.match(regex, full_path)
             if match:
                 for group_id, string in match.groupdict().items():
@@ -223,26 +212,28 @@ def get_file_features(finished_regexes, files):
                     if len(string) not in lengths:
                         lengths.append(len(string))
                     str_lengths[group_id] = lengths
-                sizes = file_sizes.get(regex, [])
-                if hasattr(file["0"], "size"):
-                    if file["0"].size not in sizes:
-                        sizes.append(file["0"].size)
-                else:
-                    if "unknown" not in sizes:
-                        sizes.append("unknown")
-                file_sizes[regex] = sizes
-
-                hashes = file_hashes.get(regex, {})
-                if hasattr(file["0"], "hashes"):
-                    for hash_type, value in file["0"].hashes.items():
-                        if hash_type in hashes:
-                            if value not in hashes[hash_type]:
-                                hashes[hash_type].append(value)
-                        else:
-                            hashes[hash_type] = [value]
-                else:
-                    hashes["unknown"] = True
-                file_hashes[regex] = hashes
+                # sizes = file_sizes.get(regex, [])
+                # if hasattr(file["0"], "size"):
+                #     if file["0"]['size'] not in sizes:
+                #         sizes.append(file["0"].size)
+                # else:
+                #     if "unknown" not in sizes:
+                #         sizes.append("unknown")
+                # file_sizes[regex] = sizes
+                #
+                # hashes = file_hashes.get(regex, {})
+                # if hasattr(file["0"], "hashes"):
+                #     for hash_type, value in file["0"].hashes.items():
+                #         if hash_type in hashes:
+                #             if value not in hashes[hash_type]:
+                #                 hashes[hash_type].append(value)
+                #         else:
+                #             hashes[hash_type] = [value]
+                # else:
+                #     hashes["unknown"] = True
+                # file_hashes[regex] = hashes
+        except Exception:
+            pass
 
     file_sizes = {}
     file_hashes = {}
@@ -250,7 +241,6 @@ def get_file_features(finished_regexes, files):
     for regex in finished_regexes:
         for file in files:
             get_features(regex, file, file_sizes, file_hashes, str_lengths)
-
         if regex in file_sizes:
             for _item in list(file_sizes[regex]):
                 if regex in file_sizes and (
