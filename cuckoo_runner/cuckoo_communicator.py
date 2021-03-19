@@ -38,7 +38,8 @@ def create_task(zip_path):
         fields={
             'file': ('custom_file_name.zip', open(zip_path, 'rb')),
             'package': 'buildwatch',
-            'custom': custom_whitelist
+            'custom': custom_whitelist,
+            "options": "analpath=tmpCuckoo"
         }
     )
     my_headers = headers
