@@ -212,26 +212,6 @@ def get_file_features(finished_regexes, files):
                     if len(string) not in lengths:
                         lengths.append(len(string))
                     str_lengths[group_id] = lengths
-                # sizes = file_sizes.get(regex, [])
-                # if hasattr(file["0"], "size"):
-                #     if file["0"]['size'] not in sizes:
-                #         sizes.append(file["0"].size)
-                # else:
-                #     if "unknown" not in sizes:
-                #         sizes.append("unknown")
-                # file_sizes[regex] = sizes
-                #
-                # hashes = file_hashes.get(regex, {})
-                # if hasattr(file["0"], "hashes"):
-                #     for hash_type, value in file["0"].hashes.items():
-                #         if hash_type in hashes:
-                #             if value not in hashes[hash_type]:
-                #                 hashes[hash_type].append(value)
-                #         else:
-                #             hashes[hash_type] = [value]
-                # else:
-                #     hashes["unknown"] = True
-                # file_hashes[regex] = hashes
         except Exception:
             pass
 
