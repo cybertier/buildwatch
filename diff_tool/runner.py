@@ -67,6 +67,9 @@ def assure_correct_status_of_previous_run(previous_run: Run):
                 f"Previous run has an error '{previous_run.error}', therefore we can not built a report. Resolve the error in run {previous_run.id}")
         time.sleep(app.config['DELAY_CHECKING_PREVIOUS_TASK_STATUS'])
         logging.info(f"Previous run has not yet finished, status:{previous_run.status}")
+    else:
+        logging.warning(f"Timeout exceeded for waiting for previous run to get prepared status, status:{previous_run.status}")
+
 
 
 def get_pattern_of_previous_run(run: Run):
