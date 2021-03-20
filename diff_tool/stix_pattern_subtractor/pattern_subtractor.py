@@ -22,18 +22,26 @@ def subtract_pattern_after_loading_files(stix_report_path, patterns_path):
     stix_report, patterns = load_stix_report_and_patterns(
         stix_report_path, patterns_path
     )
-    objects_by_type = parse_stix_objects(stix_report.objects)
-    objects_to_delete = find_objects_matching_patterns(objects_by_type, patterns)
-    remaining_objects = delete_objects(objects_to_delete, stix_report)
-    groupings, analysis = get_groupings_and_analysis_object(remaining_objects)
-    objects_by_grouping_name = place_objects_in_respective_groupings(remaining_objects, groupings)
-    all_stix_objects = replace_old_references(objects_by_grouping_name, groupings, analysis)
-    return stix2.Bundle(
-        type="bundle",
-        id="bundle--" + str(uuid1()),
-        objects=all_stix_objects,
-        allow_custom=True,
-    )
+    if hasattr(stix_report, "objects"):
+        objects_by_type = parse_stix_objects(stix_report.objects)
+        objects_to_delete = find_objects_matching_patterns(objects_by_type, patterns)
+        remaining_objects = delete_objects(objects_to_delete, stix_report)
+        groupings, analysis = get_groupings_and_analysis_object(remaining_objects)
+        objects_by_grouping_name = place_objects_in_respective_groupings(remaining_objects, groupings)
+        all_stix_objects = replace_old_references(objects_by_grouping_name, groupings, analysis)
+        return stix2.Bundle(
+            type="bundle",
+            id="bundle--" + str(uuid1()),
+            objects=all_stix_objects,
+            allow_custom=True,
+        )
+    else:
+        return stix2.Bundle(
+            type="bundle",
+            id="bundle--" + str(uuid1()),
+            objects=[],
+            allow_custom=True,
+        )
 
 
 def load_stix_report_and_patterns(
@@ -112,9 +120,12 @@ def find_stix_object_by_type(
 ) -> List[Any]:
     objects_to_delete = []
     for obj in objects_by_type.get(type, []):
-        pattern = pattern.replace("\\\\", "\\")
-        if re.fullmatch(pattern, obj):
-            objects_to_delete.extend(objects_by_type[type][obj])
+        pattern = pattern.replace("\\\\", "\\").replace("\\\\]", "]")
+        try:
+            if re.fullmatch(pattern, obj):
+                objects_to_delete.extend(objects_by_type[type][obj])
+        except Exception as e:
+            print(e)
     return objects_to_delete
 
 
