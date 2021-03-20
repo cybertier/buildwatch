@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Tuple, Dict, List
+from typing import Tuple, Dict, List, Set
 
 import stix2
 from jinja2 import Environment, select_autoescape, FileSystemLoader
@@ -20,9 +20,10 @@ def process_identifiers(identifiers) -> str:
         return f"{identifiers[0]} | {identifiers[1]}"
 
 
-def fill_render_object_for_group(render_object: Dict[str, List[Tuple[str, str]]], group, all_objects):
+def fill_render_object_for_group(render_object: Dict[str, Set[Tuple[str, str]]], group, all_objects):
     group_name = group.name.replace("_", " ")
-    render_object[group_name] = []
+    render_object[group_name] = set()
+    identifiers_already_used = set()
     for element in all_objects:
         if not element["id"] in group["object_refs"]:
             continue
@@ -30,12 +31,19 @@ def fill_render_object_for_group(render_object: Dict[str, List[Tuple[str, str]]]
             continue
         get_identifier_function = to_identifiers[element["type"]]
         identifiers = get_identifier_function(element)
-        render_object[group_name].append((process_identifiers(identifiers),
-                                          element.serialize(pretty=False, indent=4)))
+        identifier = process_identifiers(identifiers)
+        if identifier in identifiers_already_used:
+            already_existing_stix_object = [x[1] for x in render_object[group_name] if x[0] == identifier][0]
+            render_object[group_name].add((identifier,
+                                           element.serialize(pretty=False, indent=4) +"\n" + already_existing_stix_object
+                                           ))
+        render_object[group_name].add((identifier,
+                                       element.serialize(pretty=False, indent=4)))
+        identifiers_already_used.add(identifier)
 
 
 def reformat_result(report_object):
-    render_object: Dict[str, List[Tuple[str, str]]] = {}
+    render_object: Dict[str, Set[Tuple[str, str]]] = {}
     if "objects" not in report_object:
         return render_object
     all_objects = report_object["objects"]
