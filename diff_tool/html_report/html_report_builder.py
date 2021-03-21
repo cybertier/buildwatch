@@ -33,10 +33,13 @@ def fill_render_object_for_group(render_object: Dict[str, Set[Tuple[str, str]]],
         identifiers = get_identifier_function(element)
         identifier = process_identifiers(identifiers)
         if identifier in identifiers_already_used:
-            already_existing_stix_object = [x[1] for x in render_object[group_name] if x[0] == identifier][0]
+            old_tuple = [x for x in render_object[group_name] if x[0] == identifier][0]
+            already_existing_stix_object = old_tuple[1]
+            render_object[group_name].remove(old_tuple)
             render_object[group_name].add((identifier,
                                            element.serialize(pretty=False, indent=4) +"\n" + already_existing_stix_object
                                            ))
+            continue
         render_object[group_name].add((identifier,
                                        element.serialize(pretty=False, indent=4)))
         identifiers_already_used.add(identifier)
