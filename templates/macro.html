@@ -1,14 +1,14 @@
 {% macro element_makro(element, group_name, counter) %}
-    <li class="list-group-item">
+    <li class="list-group-item pr-0">
         <div class="row">
             <div class="col-10">
                 <h3>{{ element[0] | e }}</h3>
             </div>
-            <div class="col-2">
+            <div class="d-flex flex-row-reverse col-2">
 
                 <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal"
                         data-target="#mod-{{ group_name | replace(" ","-") | e }}-{{ counter }}">
-                    Show more
+                    Show {{ element[2] }} {{ "usage" if element[2] == 1 else "usages" }}
                 </button>
             </div>
         </div>
@@ -45,17 +45,46 @@
     </li>
 {% endmacro %}
 
-{% macro group_macro(group_name, item_list) %}
-    <div class="card bg-light text-dark mt-2">
+{% macro directory_makro(element, group_name, counter) %}
+    <li class="list-group-item pr-0">
+        <div class="row">
+            <div class="col-10">
+                <h3>{{ element[0] | e }} <span
+                        class="badge badge-primary">{{ element[2] }}</span></h3>
+            </div>
+            <div class="d-flex flex-row-reverse col-2">
+
+                <button type="button" class="btn btn-secondary drop-button" data-toggle="collapse"
+                        data-target="#items-dir-{{ group_name | replace(" ","-") | e }}-{{ counter }}"><i
+                        class="fas  {{ "fa-angle-down" if element[1] |length > 5 else "fa-angle-up" }}"></i></button>
+            </div>
+        </div>
+        <div id="items-dir-{{ group_name | replace(" ","-") | e }}-{{ counter }}"
+             class="collapse {{ "" if element[1] |length > 5 else "show" }}">
+            <ul class="list-group list-group-flush border border-right-0 border-top-0 border-bottom-0">
+                {% for elementOfDir in element[1] %}
+                    {% if elementOfDir[1] is string %}
+                        {{ element_makro(elementOfDir, group_name + element[0], loop.index) }}
+                    {% else %}
+                        {{ directory_makro(elementOfDir, group_name + element[0], loop.index) }}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </li>
+{% endmacro %}
+
+{% macro group_macro(group_name, item_list_and_number) %}
+    <div class="card bg-light text-dark mt-2 wow pulse">
         <div class="card-body">
             <div class="row">
                 <div class="col-10">
                     <p class="d-inline">Group: </p>
                     <h3 class="d-inline">{{ group_name |e }} <span
-                            class="badge badge-primary">{{ item_list | length }}</span></h3>
+                            class="badge badge-primary">{{ item_list_and_number[1] }}</span></h3>
 
                 </div>
-                <div class="col-2">
+                <div class="d-flex flex-row-reverse col-2">
                     <button type="button" class="btn btn-secondary drop-button" data-toggle="collapse"
                             data-target="#items-{{ group_name | replace(" ","-") | e }}">Items <i
                             class="fas fa-angle-down"></i></button>
@@ -65,8 +94,12 @@
         <div id="items-{{ group_name | replace(" ","-") | e }}" class="collapse">
             <div class="card-footer">
                 <ul class="list-group list-group-flush">
-                    {% for element in item_list %}
-                        {{ element_makro(element, group_name, loop.index) }}
+                    {% for element in item_list_and_number[0] %}
+                        {% if element[1] is string %}
+                            {{ element_makro(element, group_name, loop.index) }}
+                        {% else %}
+                            {{ directory_makro(element, group_name, loop.index) }}
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>

@@ -7,7 +7,8 @@ import stix2
 
 to_identifiers = {
     "process": lambda process: [process["command_line"]],
-    "file": lambda file: [file["parent_directory_str"] + "/" + file["name"]],
+    "file": lambda file: [
+        (file["parent_directory_str"] if file["parent_directory_str"] != "/" else "") + "/" + file["name"]],
     "domain-name": lambda domain: [domain["value"], domain["resolves_to_str"]],
     "ipv6-addr": lambda ip: [ip["value"]],
     "ipv4-addr": lambda ip: [ip["value"]]
