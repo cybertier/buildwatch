@@ -34,7 +34,7 @@ def fill_render_object_for_group(render_object: Dict[str, List[any]], group, all
 
 def get_or_create_directory(directory, last_traveled_directory, group):
     if last_traveled_directory is None:
-        already_existing_directory = [x for x in group if x[0] == directory]
+        already_existing_directory = [x for x in group if x[0] == directory and type(x[1]) == list]
         if already_existing_directory:
             return already_existing_directory[0]
         else:
@@ -44,7 +44,7 @@ def get_or_create_directory(directory, last_traveled_directory, group):
     list_of_items_of_last_traveled_directory = last_traveled_directory[1]
     already_existing_directory_in_list_of_items_of_last_traveled_directory = [x for x in
                                                                               list_of_items_of_last_traveled_directory
-                                                                              if x[0] == directory]
+                                                                              if x[0] == directory and type(x[1]) == list]
     if already_existing_directory_in_list_of_items_of_last_traveled_directory:
         return already_existing_directory_in_list_of_items_of_last_traveled_directory[0]
     else:
@@ -55,7 +55,7 @@ def get_or_create_directory(directory, last_traveled_directory, group):
 
 def get_and_Increment_directory(directory, last_traveled_directory, group_item_list):
     if last_traveled_directory is None:
-        already_existing_directory = [x for x in group_item_list if x[0] == directory]
+        already_existing_directory = [x for x in group_item_list if x[0] == directory and type(x[1]) == list]
         if already_existing_directory:
             already_existing_directory[0][2] += 1
             return already_existing_directory[0]
@@ -63,7 +63,7 @@ def get_and_Increment_directory(directory, last_traveled_directory, group_item_l
     list_of_items_of_last_traveled_directory = last_traveled_directory[1]
     already_existing_directory_in_list_of_items_of_last_traveled_directory = [x for x in
                                                                               list_of_items_of_last_traveled_directory
-                                                                              if x[0] == directory]
+                                                                              if x[0] == directory and type(x[1]) == list]
     if already_existing_directory_in_list_of_items_of_last_traveled_directory:
         already_existing_directory_in_list_of_items_of_last_traveled_directory[0][2] += 1
         return already_existing_directory_in_list_of_items_of_last_traveled_directory[0]
@@ -86,6 +86,8 @@ def add_item_to_directory(element, last_traveled_directory, group_item_list, gro
     old_list = [x for x in items if x[0] == file_name]
     if old_list:
         old_list = old_list[0]
+        if type(old_list[1]) == list:
+            return
         items.append([file_name,
                       element.serialize(pretty=False, indent=4) + "\n" + old_list[1]
                          , old_list[2] + 1])

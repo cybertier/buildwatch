@@ -2,6 +2,7 @@ import glob
 import logging
 import os
 import shutil
+import sys
 import time
 from pathlib import Path
 from typing import List, Optional
@@ -68,8 +69,8 @@ def assure_correct_status_of_previous_run(previous_run: Run):
         time.sleep(app.config['DELAY_CHECKING_PREVIOUS_TASK_STATUS'])
         logging.info(f"Previous run has not yet finished, status:{previous_run.status}")
     else:
-        logging.warning(f"Timeout exceeded for waiting for previous run to get prepared status, status:{previous_run.status}")
-
+        logging.warning(
+            f"Timeout exceeded for waiting for previous run to get prepared status, status:{previous_run.status}")
 
 
 def get_pattern_of_previous_run(run: Run):
@@ -153,8 +154,12 @@ def write_result(result, run):
     output_path = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'],
                                'run', str(run.id), 'diff_tool_out_put')
     file_path = os.path.join(output_path, 'stix_report_final.json')
-    build_html_report(result, run)
     with Path(file_path).open("w") as file:
         file.write(result.serialize(pretty=False, indent=4))
+    build_html_report(result, run)
     run.diff_tool_output_path = output_path
     db.session.commit()
+
+
+if __name__ == "__main__":
+    run(int(sys.argv[1]))
