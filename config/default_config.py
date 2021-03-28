@@ -4,6 +4,7 @@ SECRETE_KEY = 'secret'
 PROJECT_STORAGE_DIRECTORY = './storage'
 CUSTOM_WHITELIST = './storage/whitelist.json'
 DEBUG = True
+REPORT_FOR_FIRST_RUN = True
 AUTH_TOKEN = 'filloutinprod'
 CUCKOO_API_URL = 'http://localhost:8090'
 CUCKOO_API_TOKEN = '5Ql0ClpOzM9oot53daAIvA'

@@ -49,6 +49,7 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | SQLALCHEMY_TRACK_MODIFICATIONS | False | No need changing this | 
 | SECRETE_KEY | 'secret' | Used for cryptography should be changed in production | 
 | PROJECT_STORAGE_DIRECTORY | './storage' | Folder where data Buildwatch persistent data is stored |
+| REPORT_FOR_FIRST_RUN | TRUE | Generate a report for the first run. Might perform badly on big projects. |
 | DEBUG | True| Should be false in production |
 | AUTH_TOKEN | 'filloutinprod'| Token used to authorize to the Buildwatch rest api |
 | CUCKOO_API_URL | 'http://localhost:8090'| The url used to communicate with the cuckoo rest api |

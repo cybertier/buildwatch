@@ -1,4 +1,5 @@
 import glob
+import json
 import logging
 import os
 import shutil
@@ -6,6 +7,8 @@ import sys
 import time
 from pathlib import Path
 from typing import List, Optional
+
+import stix2
 
 from app import app
 from db import db
@@ -39,6 +42,10 @@ def actual_procedure(run: Run):
     previous_run: Optional[Run] = run.previous_run
     if not previous_run:
         logging.info(f"There is no previous run, so no need for the diff tool to run")
+        if app.config['REPORT_FOR_FIRST_RUN']:
+            path_of_current_report: str = get_path_current_report(run)
+            stix = stix2.parse(json.load(Path(path_of_current_report).open()), allow_custom=True)
+            write_result(stix, run)
         set_run_status(run, "first_finished_unprepared")
         return
     assure_correct_status_of_previous_run(previous_run)
