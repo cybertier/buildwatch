@@ -6,19 +6,19 @@ labels.reverse()
 rpc = [0, 0, 1]
 opencv = [0, 1242, 4]
 eslint_config = [4, 1, 8]
-eslint_scope= [0, 0, 6]
-kraken_api= [0, 0, 0]
-mariadb= [272, 2, 72]
+eslint_scope = [0, 0, 6]
+kraken_api = [0, 0, 0]
+mariadb = [272, 2, 72]
 
 x = np.arange(len(labels))  # the lab
 # el locations
 width = 0.15  # the width of the bars
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(x - (width*2) , rpc, width, label='RPC-Websocket')
-rects2 = ax.bar(x -width, opencv, width, label='Opencv.js')
-rects3 = ax.bar(x , eslint_config, width, label='Eslint-Config')
-rects4 = ax.bar(x + (width*1), eslint_scope, width, label='Kraken Api')
+rects1 = ax.bar(x - (width * 2), rpc, width, label='RPC-Websocket')
+rects2 = ax.bar(x - width, opencv, width, label='Opencv.js')
+rects3 = ax.bar(x, eslint_config, width, label='Eslint-Config')
+rects4 = ax.bar(x + (width * 1), eslint_scope, width, label='Kraken Api')
 rects5 = ax.bar(x + (width*2), mariadb, width, label='Maria DB')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
