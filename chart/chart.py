@@ -7,7 +7,7 @@ rpc = [0, 0, 1]
 opencv = [0, 1242, 4]
 eslint_config = [4, 1, 8]
 eslint_scope = [0, 0, 6]
-kraken_api = [0, 0, 0]
+kraken_api = [5, 0, 13]
 mariadb = [272, 2, 72]
 
 x = np.arange(len(labels))  # the lab
@@ -15,11 +15,12 @@ x = np.arange(len(labels))  # the lab
 width = 0.15  # the width of the bars
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(x - (width * 2), rpc, width, label='RPC-Websocket')
-rects2 = ax.bar(x - width, opencv, width, label='Opencv.js')
-rects3 = ax.bar(x, eslint_config, width, label='Eslint-Config')
-rects4 = ax.bar(x + (width * 1), eslint_scope, width, label='Kraken Api')
-rects5 = ax.bar(x + (width*2), mariadb, width, label='Maria DB')
+rects1 = ax.bar(x - (width * 2.5), rpc, width, label='RPC-Websocket')
+rects2 = ax.bar(x - width*1.5, opencv, width, label='Opencv.js')
+rects3 = ax.bar(x - width/2, eslint_config, width, label='Eslint-Config')
+rects4 = ax.bar(x + (width * 0.5), kraken_api, width, label='Kraken Api')
+rects5 = ax.bar(x + (width*1.5), mariadb, width, label='Maria DB')
+rects6 = ax.bar(x + width*2.5, eslint_scope, width, label='Eslint-Scope')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 ax.set_ylabel('Newly introduced artefacts observed by Buildwatch')
@@ -48,6 +49,7 @@ autolabel(rects2)
 autolabel(rects3)
 autolabel(rects4)
 autolabel(rects5)
+autolabel(rects6)
 
 fig.tight_layout()
 

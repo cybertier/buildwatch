@@ -46,7 +46,7 @@
 {% endmacro %}
 
 {% macro directory_makro(element, group_name, counter) %}
-    <li class="list-group-item pr-0">
+    <li class="list-group-item pr-0" id="dir-{{ group_name | replace(" ","-") | e }}-{{ counter }}">
         <div class="row">
             <div class="col-10">
                 <h3>{{ element[0] | e }} <span
@@ -59,6 +59,17 @@
                         class="fas  {{ "fa-angle-down" if element[1] |length > 5 else "fa-angle-up" }}"></i></button>
             </div>
         </div>
+    <script>
+            $.contextMenu({
+                // define which elements trigger this menu
+                selector: '#dir-{{ group_name | replace(" ","-") | e }}-{{ counter }}',
+                // define the elements of the menu
+                items: {
+                    white: {name: "Add to whitelist", callback: function(key, opt){ alert("Added to whitelist"); }}
+                }
+                // there's more, have a look at the demos and docs...
+            });
+    </script>
         <div id="items-dir-{{ group_name | replace(" ","-") | e }}-{{ counter }}"
              class="collapse {{ "" if element[1] |length > 5 else "show" }}">
             <ul class="list-group list-group-flush border border-right-0 border-top-0 border-bottom-0">
