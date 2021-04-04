@@ -40,13 +40,14 @@ def create_tables():
 
 @app.before_request
 def check_for_token():
-    if not app.debug:
-        try:
-            if not request.headers['Authorization'] == f"Bearer {app.config['AUTH_TOKEN']}":
-                abort(403)
-        except Exception as e:
-            app.logger.warn("No auth possible", e)
+    if app.debug or request.path == "/" or request.path == "/docs":
+        return
+    try:
+        if not request.headers['Authorization'] == f"Bearer {app.config['AUTH_TOKEN']}":
             abort(403)
+    except Exception as e:
+        app.logger.warn("No auth possible", e)
+        abort(403)
 
 
 if __name__ == '__main__':
