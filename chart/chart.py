@@ -15,11 +15,11 @@ x = np.arange(len(labels))  # the lab
 width = 0.15  # the width of the bars
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(x - (width * 2.5), rpc, width, label='RPC-Websocket')
-rects2 = ax.bar(x - width*1.5, opencv, width, label='Opencv.js')
-rects3 = ax.bar(x - width/2, eslint_config, width, label='Eslint-Config')
-rects4 = ax.bar(x + (width * 0.5), kraken_api, width, label='Kraken Api')
-rects5 = ax.bar(x + (width*1.5), mariadb, width, label='Maria DB')
+rects1 = ax.bar(x - (width * 2.5), kraken_api, width, label='Kraken Api')
+rects2 = ax.bar(x - width*1.5, rpc, width, label='RPC-Websocket')
+rects3 = ax.bar(x - (width*0.5), mariadb, width, label='Maria DB')
+rects4 = ax.bar(x + width*0.5, opencv, width, label='Opencv.js')
+rects5 = ax.bar(x + width*1.5, eslint_config, width, label='Eslint-Config')
 rects6 = ax.bar(x + width*2.5, eslint_scope, width, label='Eslint-Scope')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
