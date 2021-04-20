@@ -72,5 +72,21 @@ See the [github pages docs](https://example.com) or `/docs` when you have execut
 
 Here are some diagrams showing how Buildwatch is organised:
 ![Database](static/achitecture/databse.png)
+### Project entity field explanation :
+
+old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
+
+cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+
+patternson_off -> Can be set to true to disable the Pattern generation and thereby reduce time needed.
+
+previous_run_id (optional)-> The id of the previous_run. This is important inorder to be able to substract already seen behaviour. Not needed and overwritten with project uses git.
+
+
+
 ![Architecture](static/achitecture/architecture.png)
 ![Pipeline](static/achitecture/Pipeline%20Buildwatch.png)
+
+## Diagrams in German
+![Architecture](static/achitecture/German/architecture.png)
+![Pipeline](static/achitecture/German/Pipeline%20Buildwatch.png)
