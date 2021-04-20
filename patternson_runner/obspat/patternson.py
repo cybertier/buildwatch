@@ -10,7 +10,7 @@ from typing import List, Dict, Any
 import click
 import stix2
 
-from .pattern_generation.process_reports import pattern_generation
+from pattern_generation.process_reports import pattern_generation
 
 # setup logging
 # fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)

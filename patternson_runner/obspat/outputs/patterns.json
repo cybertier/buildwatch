@@ -1,0 +1,561 @@
+{
+    "objects": [
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'sh\\\\ \\\\-c\\\\ /[0-9a-z]+/\\\\.buildwatch\\\\.sh']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--424c6cda-bbfd-4a23-8cf9-b1c7c9f190b0",
+            "created": "2021-04-20T09:37:32.695883Z",
+            "modified": "2021-04-20T09:37:32.695883Z",
+            "valid_from": "2021-04-20T09:37:32.695883Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'sh\\\\ \\\\-c\\\\ /[0-9a-zA-Z]+/\\\\.buildwatch\\\\.sh']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--b3b59eaf-12fb-43dd-9b41-652f12d4ff22",
+            "created": "2021-04-20T09:37:32.708344Z",
+            "modified": "2021-04-20T09:37:32.708344Z",
+            "valid_from": "2021-04-20T09:37:32.708344Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/[0-9a-z]+/\\\\.buildwatch\\\\.sh']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--47432303-7c2e-47e8-a21b-a09b0dc7a6e9",
+            "created": "2021-04-20T09:37:32.710281Z",
+            "modified": "2021-04-20T09:37:32.710281Z",
+            "valid_from": "2021-04-20T09:37:32.710281Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/[0-9a-z]+/lib/git\\\\-core/git\\\\ index\\\\-pack\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-fix\\\\-thin\\\\ \\\\-\\\\-keep=fetch\\\\-pack\\\\ 17722\\\\ on\\\\ buildwatch\\\\ \\\\-\\\\-check\\\\-self\\\\-contained\\\\-and\\\\-connected']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--fc5bc775-e931-484d-ae40-33071ca9c8ab",
+            "created": "2021-04-20T09:37:32.714355Z",
+            "modified": "2021-04-20T09:37:32.714355Z",
+            "valid_from": "2021-04-20T09:37:32.714355Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/[0-9a-z]+/lib/git\\\\-core/git\\\\ index\\\\-pack\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-fix\\\\-thin\\\\ \\\\-\\\\-keep=fetch\\\\-pack\\\\ 17721\\\\ on\\\\ buildwatch\\\\ \\\\-\\\\-check\\\\-self\\\\-contained\\\\-and\\\\-connected']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--82f54cec-1e77-4517-ad64-03d6370344db",
+            "created": "2021-04-20T09:37:32.718024Z",
+            "modified": "2021-04-20T09:37:32.718024Z",
+            "valid_from": "2021-04-20T09:37:32.718024Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/[0-9a-zA-Z]+/\\\\.buildwatch\\\\.sh']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--b810ec36-365d-4df2-8e10-b1cbebfe996c",
+            "created": "2021-04-20T09:37:32.720893Z",
+            "modified": "2021-04-20T09:37:32.720893Z",
+            "valid_from": "2021-04-20T09:37:32.720893Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/npm\\\\-17709\\\\-57b9966d/git\\\\-cache\\\\-ad999f63/2238043c465090cd4303450d6c048520562179ea']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--28c00bc2-77b6-4d4d-a8fe-b5a83d2a0d94",
+            "created": "2021-04-20T09:37:32.724414Z",
+            "modified": "2021-04-20T09:37:32.724414Z",
+            "valid_from": "2021-04-20T09:37:32.724414Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/npm\\\\-17709\\\\-57b9966d/git\\\\-cache\\\\-850f6754/9b9240619cc3c20ef596323de36a0330ece42180']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--b66dfe4d-640e-484a-9edb-45bc0d37f2be",
+            "created": "2021-04-20T09:37:32.727812Z",
+            "modified": "2021-04-20T09:37:32.727812Z",
+            "valid_from": "2021-04-20T09:37:32.727812Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/npm\\\\-17709\\\\-57b9966d/[0-9a-z\\\\-]+/2238043c465090cd4303450d6c048520562179ea']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--3bcec638-0009-4abf-ad06-95342363c760",
+            "created": "2021-04-20T09:37:32.730435Z",
+            "modified": "2021-04-20T09:37:32.730435Z",
+            "valid_from": "2021-04-20T09:37:32.730435Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/npm\\\\-17709\\\\-57b9966d/[0-9a-z\\\\-]+/9b9240619cc3c20ef596323de36a0330ece42180']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--6dd8fdc9-d5de-46fc-a93d-f0d0171f5de0",
+            "created": "2021-04-20T09:37:32.732352Z",
+            "modified": "2021-04-20T09:37:32.732352Z",
+            "valid_from": "2021-04-20T09:37:32.732352Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/npm\\\\-17709\\\\-57b9966d/[0-9a-z\\\\-]+/[0-9a-f]+']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--d9d23d46-6b02-4e65-a8bf-d769874d1ac6",
+            "created": "2021-04-20T09:37:32.734586Z",
+            "modified": "2021-04-20T09:37:32.734586Z",
+            "valid_from": "2021-04-20T09:37:32.734586Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/[0-9a-z\\\\-]+/.+/\\\\[0\\\\-9a\\\\-f\\\\]\\\\+']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--db1badc9-1399-4b87-89b5-4bbe02635d3e",
+            "created": "2021-04-20T09:37:32.737687Z",
+            "modified": "2021-04-20T09:37:32.737687Z",
+            "valid_from": "2021-04-20T09:37:32.737687Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/[0-9a-z\\\\-]+/.+/2238043c465090cd4303450d6c048520562179ea']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--72e6ee22-e7c1-4283-b3b7-229b8d97bc32",
+            "created": "2021-04-20T09:37:32.740085Z",
+            "modified": "2021-04-20T09:37:32.740085Z",
+            "valid_from": "2021-04-20T09:37:32.740085Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/[0-9a-z\\\\-]+/.+/9b9240619cc3c20ef596323de36a0330ece42180']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--de3c09f7-5408-4eca-ad37-5c02be8a11ad",
+            "created": "2021-04-20T09:37:32.742644Z",
+            "modified": "2021-04-20T09:37:32.742644Z",
+            "valid_from": "2021-04-20T09:37:32.742644Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ /root/[a-z\\\\.]+/_git\\\\-remotes/git-github-com-[0-9a-zA-Z\\\\-]+-git-[0-9a-f]+ /tmp/[0-9a-z\\\\-]+/.+/[0-9a-f]+']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--ef08c7b2-54b4-4dcd-b773-dc28961fe263",
+            "created": "2021-04-20T09:37:32.744674Z",
+            "modified": "2021-04-20T09:37:32.744674Z",
+            "valid_from": "2021-04-20T09:37:32.744674Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'sudo\\\\ npm\\\\ install\\\\ package/']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--24e195cb-43f6-4bb8-ba24-70e261de7fff",
+            "created": "2021-04-20T09:37:32.746266Z",
+            "modified": "2021-04-20T09:37:32.746266Z",
+            "valid_from": "2021-04-20T09:37:32.746266Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'npm\\\\ install\\\\ package/']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--9bbdf8cb-0498-494f-91f2-6d351036a939",
+            "created": "2021-04-20T09:37:32.747733Z",
+            "modified": "2021-04-20T09:37:32.747733Z",
+            "valid_from": "2021-04-20T09:37:32.747733Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ \\\\-\\\\-template=/root/\\\\.npm/_git\\\\-remotes/_templates\\\\ \\\\-\\\\-mirror\\\\ git://github\\\\.com/jashkenas/underscore\\\\.git\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-jashkenas\\\\-underscore\\\\-git\\\\-e8740c92']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--bc695b52-8bbf-417e-b07b-0e928f1843f7",
+            "created": "2021-04-20T09:37:32.749739Z",
+            "modified": "2021-04-20T09:37:32.749739Z",
+            "valid_from": "2021-04-20T09:37:32.749739Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ \\\\-\\\\-template=/root/\\\\.npm/_git\\\\-remotes/_templates\\\\ \\\\-\\\\-mirror\\\\ git://github\\\\.com/pluma/par\\\\.git\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-pluma\\\\-par\\\\-git\\\\-ce50a0c8']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--f051bfdb-daf7-4812-be6e-23e8aa00b25b",
+            "created": "2021-04-20T09:37:32.752469Z",
+            "modified": "2021-04-20T09:37:32.752469Z",
+            "valid_from": "2021-04-20T09:37:32.752469Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ clone\\\\ \\\\-\\\\-template=/root/\\\\.npm/_git\\\\-remotes/_templates\\\\ \\\\-\\\\-mirror\\\\ git://github\\\\.com/eriksank/EventEmitter4\\\\.git\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-eriksank\\\\-EventEmitter4\\\\-git\\\\-c533a4e5']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--8dafd700-f312-4a05-8f6c-bfc8b975aaff",
+            "created": "2021-04-20T09:37:32.757425Z",
+            "modified": "2021-04-20T09:37:32.757425Z",
+            "valid_from": "2021-04-20T09:37:32.757425Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/usr/lib/git\\\\-core/git\\\\ index\\\\-pack\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-fix\\\\-thin\\\\ \\\\-\\\\-keep=fetch\\\\-pack\\\\ 17723\\\\ on\\\\ buildwatch\\\\ \\\\-\\\\-check\\\\-self\\\\-contained\\\\-and\\\\-connected']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--a9f0f274-2712-4258-b2e7-8e2c49a941a7",
+            "created": "2021-04-20T09:37:32.763031Z",
+            "modified": "2021-04-20T09:37:32.763031Z",
+            "valid_from": "2021-04-20T09:37:32.763031Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/usr/lib/git\\\\-core/git\\\\ rev\\\\-list\\\\ \\\\-\\\\-objects\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-not\\\\ \\\\-\\\\-all\\\\ \\\\-\\\\-quiet']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--88f966cb-261b-4bf0-99a7-b7ddc6d488a3",
+            "created": "2021-04-20T09:37:32.769111Z",
+            "modified": "2021-04-20T09:37:32.769111Z",
+            "valid_from": "2021-04-20T09:37:32.769111Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ rev\\\\-list\\\\ \\\\-n1\\\\ master']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--3d5da667-3164-4d4a-93f3-9a9f3a0e7277",
+            "created": "2021-04-20T09:37:32.772965Z",
+            "modified": "2021-04-20T09:37:32.772965Z",
+            "valid_from": "2021-04-20T09:37:32.772965Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/bin/sh\\\\ \\\\-c\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-eriksank\\\\-EventEmitter4\\\\-git\\\\-c533a4e5\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-eriksank\\\\-EventEmitter4\\\\-git\\\\-c533a4e5']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--01e9bbd1-297e-4fb8-b4d7-25aebe6e816a",
+            "created": "2021-04-20T09:37:32.776495Z",
+            "modified": "2021-04-20T09:37:32.776495Z",
+            "valid_from": "2021-04-20T09:37:32.776495Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-eriksank\\\\-EventEmitter4\\\\-git\\\\-c533a4e5']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--9c005545-a37c-4dfb-8f04-371de0c22ac9",
+            "created": "2021-04-20T09:37:32.779883Z",
+            "modified": "2021-04-20T09:37:32.779883Z",
+            "valid_from": "2021-04-20T09:37:32.779883Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ checkout\\\\ 2238043c465090cd4303450d6c048520562179ea']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--8525d3ce-1a8a-4c8e-b7d8-8bef8a5fec5b",
+            "created": "2021-04-20T09:37:32.782122Z",
+            "modified": "2021-04-20T09:37:32.782122Z",
+            "valid_from": "2021-04-20T09:37:32.782122Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/bin/sh\\\\ \\\\-c\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-pluma\\\\-par\\\\-git\\\\-ce50a0c8\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-pluma\\\\-par\\\\-git\\\\-ce50a0c8']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--bdf0f0f0-7b48-41cb-b561-b523cb38c00c",
+            "created": "2021-04-20T09:37:32.784215Z",
+            "modified": "2021-04-20T09:37:32.784215Z",
+            "valid_from": "2021-04-20T09:37:32.784215Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-pluma\\\\-par\\\\-git\\\\-ce50a0c8']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--e53f6c78-7e69-4017-b576-5c252e314b30",
+            "created": "2021-04-20T09:37:32.786898Z",
+            "modified": "2021-04-20T09:37:32.786898Z",
+            "valid_from": "2021-04-20T09:37:32.786898Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ checkout\\\\ 9b9240619cc3c20ef596323de36a0330ece42180']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--f9e3fee1-f770-430c-b8e9-58a416ec6007",
+            "created": "2021-04-20T09:37:32.789335Z",
+            "modified": "2021-04-20T09:37:32.789335Z",
+            "valid_from": "2021-04-20T09:37:32.789335Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/bin/sh\\\\ \\\\-c\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-jashkenas\\\\-underscore\\\\-git\\\\-e8740c92\\\\ git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-jashkenas\\\\-underscore\\\\-git\\\\-e8740c92']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--4a6f61f3-cc31-4a25-bc95-8beb81b7333f",
+            "created": "2021-04-20T09:37:32.791464Z",
+            "modified": "2021-04-20T09:37:32.791464Z",
+            "valid_from": "2021-04-20T09:37:32.791464Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\-upload\\\\-pack\\\\ /root/\\\\.npm/_git\\\\-remotes/git\\\\-github\\\\-com\\\\-jashkenas\\\\-underscore\\\\-git\\\\-e8740c92']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--909fb7f0-17ab-4c4b-a7e7-8dc42cfa976e",
+            "created": "2021-04-20T09:37:32.793819Z",
+            "modified": "2021-04-20T09:37:32.793819Z",
+            "valid_from": "2021-04-20T09:37:32.793819Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES 'git\\\\ checkout\\\\ 745e9b7314064e66a7257f9b361030e6055980b8']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--36d6c2bc-306c-4b4f-baef-d99a91e60b03",
+            "created": "2021-04-20T09:37:32.795743Z",
+            "modified": "2021-04-20T09:37:32.795743Z",
+            "valid_from": "2021-04-20T09:37:32.795743Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/usr/lib/git\\\\-core/git\\\\ index\\\\-pack\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-fix\\\\-thin\\\\ \\\\-\\\\-keep=fetch\\\\-pack\\\\ 17725\\\\ on\\\\ buildwatch\\\\ \\\\-\\\\-check\\\\-self\\\\-contained\\\\-and\\\\-connected']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--06468b26-580c-488d-b45d-bbea3b1bf288",
+            "created": "2021-04-20T09:37:32.797528Z",
+            "modified": "2021-04-20T09:37:32.797528Z",
+            "valid_from": "2021-04-20T09:37:32.797528Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[process:command_line MATCHES '/usr/lib/git\\\\-core/git\\\\ index\\\\-pack\\\\ \\\\-\\\\-stdin\\\\ \\\\-\\\\-fix\\\\-thin\\\\ \\\\-\\\\-keep=fetch\\\\-pack\\\\ 17724\\\\ on\\\\ buildwatch\\\\ \\\\-\\\\-check\\\\-self\\\\-contained\\\\-and\\\\-connected']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--0c8d9938-fd6b-4c22-bb85-6166f7cda0da",
+            "created": "2021-04-20T09:37:32.799644Z",
+            "modified": "2021-04-20T09:37:32.799644Z",
+            "valid_from": "2021-04-20T09:37:32.799644Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[domain-name:value = 'localhost' OR domain-name:resolves_to_str = '127.0.0.53']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--c0ae4cf8-8c6a-4db9-b44b-1c61e68e253c",
+            "created": "2021-04-20T09:37:32.806108Z",
+            "modified": "2021-04-20T09:37:32.806108Z",
+            "valid_from": "2021-04-20T09:37:32.806108Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[domain-name:value = 'lb-140-82-121-3-fra.github.com' OR domain-name:resolves_to_str = '140.82.121.3']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--5aed1b13-2f81-4759-8c8e-992234ad0bae",
+            "created": "2021-04-20T09:37:32.811602Z",
+            "modified": "2021-04-20T09:37:32.811602Z",
+            "valid_from": "2021-04-20T09:37:32.811602Z"
+        },
+        {
+            "labels": [
+                "patterns",
+                "match-ratio: 0.0"
+            ],
+            "pattern": "[domain-name:value = 'lb-140-82-121-4-fra.github.com' OR domain-name:resolves_to_str = '140.82.121.4']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--e0ac9022-21d1-4596-81b9-708c8f9e44d8",
+            "created": "2021-04-20T09:37:32.814668Z",
+            "modified": "2021-04-20T09:37:32.814668Z",
+            "valid_from": "2021-04-20T09:37:32.814668Z"
+        }
+    ],
+    "type": "bundle",
+    "id": "bundle--0ab75ca5-701a-4851-af1d-0e246442c5fe"
+}
