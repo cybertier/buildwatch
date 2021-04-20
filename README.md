@@ -66,7 +66,7 @@ well.
 
 # Talking to Buildwatch
 
-See the [github pages docs](https://example.com) or `/docs` when you have executed Buildwatch.
+See the [github pages docs (not working unless project is published)](https://example.com) or `/docs` via http when you have started Buildwatch.
 
 # Architecture
 
