@@ -73,10 +73,7 @@ def main(input_, output, processes, timeout, verbose):
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / f"patterns.json"
 
-    start = datetime.now()
     process_reports(options, output_file, total_reports)
-    end = datetime.now()
-    print(f"Time taken: {end-start}")
 
     # with ProcessPool(max_workers=processes, max_tasks=1) as pool:
     #    for directory in reports:
