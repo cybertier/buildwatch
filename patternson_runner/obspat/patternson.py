@@ -72,7 +72,6 @@ def main(input_, output, processes, timeout, verbose):
     output_dir = Path(options["output"])
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / f"patterns.json"
-
     process_reports(options, output_file, total_reports)
 
     # with ProcessPool(max_workers=processes, max_tasks=1) as pool:
