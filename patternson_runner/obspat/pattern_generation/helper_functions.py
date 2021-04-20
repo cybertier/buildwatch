@@ -5,7 +5,7 @@ import re
 
 from simple_settings import LazySettings
 
-from gibberish_detector.gib_detect_train import train, avg_transition_prob
+from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
 conf = LazySettings(
