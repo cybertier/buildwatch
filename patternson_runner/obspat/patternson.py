@@ -1,15 +1,15 @@
 import json
 import logging
 import os
-from datetime import datetime
 from logging import FileHandler
 from multiprocessing import Value, cpu_count
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Tuple
 
 import click
 import stix2
 
+from .pattern_generation.helper_functions import FileData, ProcessData, DomainData
 from .pattern_generation.process_reports import pattern_generation
 
 # setup logging
@@ -113,31 +113,23 @@ def start_patternson(input_, output, run_id, verbose=True):
 
 def process_reports(options, output_file, total_reports=None):
     log.info(f"Processing {total_reports} files : {os.listdir(options['input'])}")
-
-    accumulated_reports = load_stix_reports(options)
-    if accumulated_reports:
-        accumulated_objects = get_accumulated_objects(accumulated_reports)
-        pattern_generation(accumulated_objects, accumulated_reports, output_file)
-    else:
-        log.warning(f"Could not gather any objects from reports.")
+    objects_per_type, objects_per_run = load_stix_reports(options)
+    pattern_generation(objects_per_type, objects_per_run, output_file)
 
 
-def load_stix_reports(options) -> List[List[stix2.ObservedData]]:
-    accumulated_objects = []
-    dir = Path(options["input"])
-    for runtime in dir.glob("stix_*"):
-        try:
-            stix_obj = load_stix_obj_from_file(runtime)
-        except Exception as e:
-            log.debug(f"Could not load file {runtime}. {e}")
-            continue
-
-        observed_data_objects = extract_data_from_stix_object(stix_obj)
-        if not observed_data_objects:
-            log.warning(f"No usable objects found in file {runtime}")
-            continue
-        accumulated_objects.append(observed_data_objects)
-    return accumulated_objects
+def load_stix_reports(options) -> Tuple[Dict[str, List], Dict[int, Dict[str, List]]]:
+    objects_per_type = {"file": [], "process": [], "domain-name": []}
+    objects_per_run = {}
+    run_counter = 1
+    for runtime in Path(options["input"]).glob("stix_*"):
+        stix_obj = load_stix_obj_from_file(runtime)
+        observed_data_objects = extract_data_from_stix_bundle(stix_obj)
+        objects_per_run.update({run_counter: observed_data_objects})
+        objects_per_type["file"].extend(observed_data_objects["file"])
+        objects_per_type["process"].extend(observed_data_objects["process"])
+        objects_per_type["domain-name"].extend(observed_data_objects["domain-name"])
+        run_counter += 1
+    return objects_per_type, objects_per_run
 
 
 def load_stix_obj_from_file(file: Path):
@@ -146,73 +138,26 @@ def load_stix_obj_from_file(file: Path):
     return stix_obj
 
 
-def extract_data_from_stix_object(stix_object) -> List[stix2.ObservedData]:
-    observed_data_objects = []
-    if stix_object.type == "bundle":
-        observed_data_objects.extend(extract_data_from_stix_bundle(stix_object))
-    elif stix_object.type == "observed-data":
-        observed_data_objects.append(stix_object)
-    return observed_data_objects
-
-
 def extract_data_from_stix_bundle(
     stix_bundle: stix2.Bundle,
-) -> List[stix2.ObservedData]:
-    observed_data_objects = []
+) -> Dict[str, List]:
+    observed_data_objects: Dict[str, List] = {"file": [], "process": [], "domain-name": []}
     for obj in stix_bundle.objects:
-        if obj["type"] == "observed-data":
-            observed_data_objects.append(obj)
-        if obj["type"] != "malware-analysis" and obj["type"] != "grouping":
-            timestamp = datetime.strptime(obj["timestamp"], "%a %b %d %H:%M:%S %Y")
-            observed_data_objects.append(
-                stix2.ObservedData(
-                    first_observed=timestamp,
-                    last_observed=timestamp,
-                    number_observed=1,
-                    objects={"0": obj},
-                    allow_custom=True,
-                )
-            )
+        _type = obj["type"]
+        if _type != "malware-analysis" and _type != "grouping":
+            if _type == "file":
+                new_file = FileData(obj["parent_directory_str"], obj["name"])
+                if new_file not in observed_data_objects["file"]:
+                    observed_data_objects["file"].append(new_file)
+            if _type == "process":
+                new_process = ProcessData(obj["executable_path"], obj["command_line"])
+                if new_process not in observed_data_objects["process"]:
+                    observed_data_objects["process"].append(new_process)
+            if _type == "domain-name":
+                new_domain = DomainData(obj["value"], obj["resolves_to_str"])
+                if new_domain not in observed_data_objects["domain-name"]:
+                    observed_data_objects["domain-name"].append(new_domain)
     return observed_data_objects
-
-
-def get_accumulated_objects(accumulated_reports: List[List[stix2.ObservedData]]):
-    accumulated_objects = {}
-    for report_index, report in enumerate(accumulated_reports):
-        for observed_data_object in report:
-            obj_type = observed_data_object.objects["0"].type
-            # global accumulated
-            accumulated_objects = accumulate_objects_globally(
-                accumulated_objects, observed_data_object, obj_type
-            )
-            # per report accumulated
-            accumulated_objects = accumulate_objects_per_report(
-                accumulated_objects, observed_data_object, obj_type, report_index
-            )
-    return accumulated_objects
-
-
-def accumulate_objects_per_report(
-    accumulated_objects, observed_data_object, obj_type, report_index
-) -> Dict[str, List[Dict[str, Any]]]:
-    if report_index in accumulated_objects.keys():
-        if obj_type in accumulated_objects[report_index].keys():
-            accumulated_objects[report_index][obj_type].append(observed_data_object.objects)
-        else:
-            accumulated_objects[report_index][obj_type] = [observed_data_object.objects]
-    else:
-        accumulated_objects[report_index] = {obj_type: [observed_data_object.objects]}
-    return accumulated_objects
-
-
-def accumulate_objects_globally(
-    accumulated_objects, observed_data_object, obj_type
-) -> Dict[str, List[Dict[str, Any]]]:
-    if obj_type in accumulated_objects.keys():
-        accumulated_objects[obj_type].append(observed_data_object.objects)
-    else:
-        accumulated_objects[obj_type] = [observed_data_object.objects]
-    return accumulated_objects
 
 
 if __name__ == "__main__":

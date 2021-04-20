@@ -89,6 +89,9 @@ class Run(Resource):
         if not type in type_to_data:
             abort(404, "This type does not exist")
         run: RunModel = RunModel.query.get(id)
+        if not run.diff_tool_output_path:
+            abort(400, f"Seems like the diff toll did not finish for that run... Wait or see the error depending on "
+                       f"the run status. Status is {run.status}")
         file = os.path.join(run.diff_tool_output_path, type_to_data[type][0])
         if not os.path.exists(file):
             abort(404, "Report file is missing")

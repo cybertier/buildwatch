@@ -61,6 +61,7 @@ git_url-> git repo urls, for private repos the url can should contain username a
         {{ macros.tableCall("Create a project without git", "POST", "Create a project that does not provide code via git but instead via ZIP files.", "/project", "In the request body you need to give Infos about your project. Also see modles/project.py.
 old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
 cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+patternson_off -> Can be set to true to disable the Pattern generation and thereby reduce time needed.
 ",
 "
 {
@@ -76,7 +77,8 @@ cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at lea
     \"git_url\": null,
     \"id\": 2,
     \"name\": \"test project without git\",
-    \"old_runs_considered\": 3
+    \"old_runs_considered\": 3,
+    \"patternson_off\": false
 }
 ", "There are no query parameters.", 2) }}
 
@@ -90,6 +92,7 @@ file: yourZipFile.zip
 
         {{ macros.tableCall("Create a run referencing a ZIP file", "POST", "Create a run. A run being a concrete version of your program/project. For projects not managed by git. Make sure you upload the zip before that", "/project", "In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
 previous_run_id (optional)-> The id of the previous_run. This is important inorder to be able to substract already seen behaviour.
+Otherwise the same applies here as when creating a project with a git repo.
 ",
 "
 {

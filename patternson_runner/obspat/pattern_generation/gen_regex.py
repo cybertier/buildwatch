@@ -141,9 +141,7 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
             for pattern in new_patterns:
                 new_path = list(path)
                 new_path.append(pattern)
-                regex_from_tree(
-                    dictionary[pattern], finished_patterns, seperator, new_path
-                )
+                regex_from_tree(dictionary[pattern], finished_patterns, seperator, new_path)
 
             patterns = sorted(patterns, key=len, reverse=True)
             if patterns:
@@ -153,9 +151,7 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
                     matched = False
                     if remaining_strings:
                         for string in list(dictionary.keys()):
-                            if string in remaining_strings and re.fullmatch(
-                                pattern, string
-                            ):
+                            if string in remaining_strings and re.fullmatch(pattern, string):
                                 matched = True
                     if matched:
                         # pattern matched on something. summarise subfolders of
@@ -169,15 +165,11 @@ def regex_from_tree(dictionary, finished_patterns, seperator="/", path=None):
                                 try:
                                     for key in list(dictionary[candidate].keys()):
                                         if key in entry.keys():
-                                            entry[
-                                                key
-                                            ] = merge_two_subtrees_with_same_root(
+                                            entry[key] = merge_two_subtrees_with_same_root(
                                                 entry[key], dictionary[candidate][key]
                                             )
                                         else:
-                                            entry[key] = dictionary[candidate].get(
-                                                key, {}
-                                            )
+                                            entry[key] = dictionary[candidate].get(key, {})
                                 except KeyError:
                                     pass
                                 dictionary[pattern] = entry
@@ -322,11 +314,7 @@ def regex_from_sequencer(s1, s2):
         return common_substrings
 
     common_substrings = get_common_substrings()
-    if not (
-        common_substrings["start"]
-        or common_substrings["middle"]
-        or common_substrings["end"]
-    ):
+    if not (common_substrings["start"] or common_substrings["middle"] or common_substrings["end"]):
         return None
 
     # build blueprint expression with substrings
@@ -334,9 +322,7 @@ def regex_from_sequencer(s1, s2):
     remainder_1 = s1
     remainder_2 = s2
     for start in common_substrings["start"]:
-        if re.match(re.escape(start), remainder_1) and re.match(
-            re.escape(start), remainder_2
-        ):
+        if re.match(re.escape(start), remainder_1) and re.match(re.escape(start), remainder_2):
             pat = re.escape(start)
             if not common_substrings["middle"] and not common_substrings["end"]:
                 pat += r"(.)*"
@@ -384,12 +370,7 @@ def regex_from_sequencer(s1, s2):
                 break
     elif remainder_1 and remainder_2:
         pat += "(.)*"
-    if (
-        pat != ""
-        and pat != "(.)*"
-        and re.match(pat + "$", s1)
-        and re.match(pat + "$", s2)
-    ):
+    if pat != "" and pat != "(.)*" and re.match(pat + "$", s1) and re.match(pat + "$", s2):
         return pat
     return None
 
@@ -409,13 +390,63 @@ def regex_from_gsa(strings):
                     str_matches.append(s)
                     patterns_dict[pattern_re] = str_matches
 
+<<<<<<< HEAD
+=======
+    def do_alignment(s1, s2):
+        # Create sequences to be aligned.
+        str1 = Sequence(re.escape(s1))
+        str2 = Sequence(re.escape(s2))
+
+        # Create a vocabulary and encode the sequences.
+        v = Vocabulary()
+        str1_encoded = v.encodeSequence(str1)
+        str2_encoded = v.encodeSequence(str2)
+
+        # Create a scoring and align the sequences using global aligner.
+        scoring = SimpleScoring(2, -1)
+        aligner = GlobalSequenceAligner(scoring, -1)
+        _, alignments = aligner.align(str1_encoded, str2_encoded, backtrace=True)
+
+        # Create sequence profiles out of alignments.
+        profiles = [Profile.fromSequenceAlignment(a) for a in alignments]
+        for encoded in profiles:
+            profile = v.decodeProfile(encoded)
+            # print(profile.pattern())
+            # profiles look something like this:
+            # "s o m e p a * * * * t * * * t * * e r n"
+            # clean this up and replace groups of * with regex,
+            # so the result looks like this: "somepa(.)*ern"
+            pattern = re.sub("(?<! ) {1}(?! )| (?= )", "", profile.pattern())
+            if re.fullmatch(r"[,.;+_\-!=@§$%&()#\[\]{}€ a-zA-Z0-9*]+", pattern):
+                # if pattern does not contain 'exotic' chars, keep
+                # special chars in place
+                pattern = re.sub(r"([\*]+)([a-zA-Z0-9]{0,2}[\*]+)*", "(.)*", pattern)
+            else:
+                # if pattern contains 'exotic' chars, i.e. han or kanji,
+                # disregard special chars if they appear alone
+                pattern = re.sub(r"([\*]+)([^\*]{0,2}[\*]+)*", "(.)*", pattern)
+            try:
+                # do NOT use the universal matching group on its own!!
+                if re.match(r"\(\.\)\*$", pattern) or pattern == "":
+                    continue
+                # eval_regex(patterns, pattern)
+            except:  # noqa
+                pass
+
+>>>>>>> main
     patterns = {}
     for s1, s2 in itertools.combinations(strings, 2):
         if len(max([s1, s2], key=len)) > 512:
             # string is too long
+<<<<<<< HEAD
             # regex = regex_from_sequencer(s1, s2)
             # if regex:
             #     eval_regex(patterns, regex)
+=======
+            #regex = regex_from_sequencer(s1, s2)
+            #if regex:
+            #    eval_regex(patterns, regex)
+>>>>>>> main
             continue
         try:  # global sequence alignment (needlemann-wunsch) from rust lib
             pattern = rustysa.regex_from_gsa(s1, s2)  # only works with ascii strings!
@@ -512,9 +543,7 @@ def replace_quantifier(lengths, match):
     if len(lengths) == 1:
         return match.group().replace("+", "{" + str(lengths[0]) + "}")
     if conf.get_min_max_len:
-        return match.group().replace(
-            "+", "{" + str(min(lengths)) + "," + str(max(lengths)) + "}"
-        )
+        return match.group().replace("+", "{" + str(min(lengths)) + "," + str(max(lengths)) + "}")
     return match.group()
 
 
@@ -537,9 +566,7 @@ def resolve_to_more_specific_regex(strings, pattern):
             group_pattern = group_pattern.replace("(?P<grp" + str(key) + ">(.*))", "")
         else:
             regex = regex_from_list(list(set(groups[key])))
-            group_pattern = group_pattern.replace(
-                "(?P<grp" + str(key) + ">(.*))", regex
-            )
+            group_pattern = group_pattern.replace("(?P<grp" + str(key) + ">(.*))", regex)
     return group_pattern
 
 
@@ -641,9 +668,7 @@ def regex_type_from_string(string):
 #    e.g. 'foo[0-9a-f;!]+bar'
 def str_type_to_regex(types, special_chars, prefix, suffix):
     global group_ctr
-    if "alphanumeric" in types or (
-        "letters" in types and "number" in types and len(types) == 2
-    ):
+    if "alphanumeric" in types or ("letters" in types and "number" in types and len(types) == 2):
         if conf.inter_observables_enabled:
             group_ctr += 1
             return (
@@ -657,14 +682,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix
-            + "[0-9a-zA-Z"
-            + re.escape("".join(special_chars))
-            + "]"
-            + "+"
-            + suffix
-        )
+        return prefix + "[0-9a-zA-Z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "alphanumeric_l" in types or (
         "letters_l" in types and "number" in types and len(types) == 2
     ):
@@ -681,9 +699,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix + "[0-9a-z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
-        )
+        return prefix + "[0-9a-z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "alphanumeric_u" in types or (
         "letters_u" in types and "number" in types and len(types) == 2
     ):
@@ -700,9 +716,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix + "[0-9A-Z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
-        )
+        return prefix + "[0-9A-Z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "letters" in types:
         if conf.inter_observables_enabled:
             group_ctr += 1
@@ -717,9 +731,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix + "[a-zA-Z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
-        )
+        return prefix + "[a-zA-Z" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "letters_l" in types:
         if conf.inter_observables_enabled:
             group_ctr += 1
@@ -764,14 +776,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix
-            + "[0-9a-fA-F"
-            + re.escape("".join(special_chars))
-            + "]"
-            + "+"
-            + suffix
-        )
+        return prefix + "[0-9a-fA-F" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "hex_l" in types:
         if conf.inter_observables_enabled:
             group_ctr += 1
@@ -786,9 +791,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix + "[0-9a-f" + re.escape("".join(special_chars)) + "]" + "+" + suffix
-        )
+        return prefix + "[0-9a-f" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "hex_u" in types:
         if conf.inter_observables_enabled:
             group_ctr += 1
@@ -803,9 +806,7 @@ def str_type_to_regex(types, special_chars, prefix, suffix):
                 + ")"
                 + suffix
             )
-        return (
-            prefix + "[0-9A-F" + re.escape("".join(special_chars)) + "]" + "+" + suffix
-        )
+        return prefix + "[0-9A-F" + re.escape("".join(special_chars)) + "]" + "+" + suffix
     if "number" in types:
         if conf.inter_observables_enabled:
             group_ctr += 1

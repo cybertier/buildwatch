@@ -49,6 +49,7 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | SQLALCHEMY_TRACK_MODIFICATIONS | False | No need changing this | 
 | SECRETE_KEY | 'secret' | Used for cryptography should be changed in production | 
 | PROJECT_STORAGE_DIRECTORY | './storage' | Folder where data Buildwatch persistent data is stored |
+| REPORT_FOR_FIRST_RUN | TRUE | Generate a report for the first run. Might perform badly on big projects. |
 | DEBUG | True| Should be false in production |
 | AUTH_TOKEN | 'filloutinprod'| Token used to authorize to the Buildwatch rest api |
 | CUCKOO_API_URL | 'http://localhost:8090'| The url used to communicate with the cuckoo rest api |
@@ -65,11 +66,27 @@ well.
 
 # Talking to Buildwatch
 
-See the [github pages docs](https://example.com) or `/docs` when you have executed Buildwatch.
+See the [github pages docs (not working unless project is published)](https://example.com) or `/docs` via http when you have started Buildwatch.
 
 # Architecture
 
 Here are some diagrams showing how Buildwatch is organised:
 ![Database](static/achitecture/databse.png)
+### Project entity field explanation :
+
+old_runs_considered -> How many patterns from previous runs are used to determine what behaviour was seen before.
+
+cuckoo_analysis_per_run -> How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+
+patternson_off -> Can be set to true to disable the Pattern generation and thereby reduce time needed.
+
+previous_run_id (optional)-> The id of the previous_run. This is important inorder to be able to substract already seen behaviour. Not needed and overwritten with project uses git.
+
+
+
 ![Architecture](static/achitecture/architecture.png)
 ![Pipeline](static/achitecture/Pipeline%20Buildwatch.png)
+
+## Diagrams in German
+![Architecture](static/achitecture/German/architecture.png)
+![Pipeline](static/achitecture/German/Pipeline%20Buildwatch.png)
