@@ -391,7 +391,6 @@ def regex_from_gsa(strings):
                     str_matches.append(s)
                     patterns_dict[pattern_re] = str_matches
 
-    def do_alignment(s1, s2):
     patterns = {}
     for s1, s2 in itertools.combinations(strings, 2):
         if len(max([s1, s2], key=len)) > 512:
