@@ -240,6 +240,7 @@ git_url-&gt; git repo urls, for private repos the url can should contain usernam
                             In the request body you need to give Infos about your project. Also see modles/project.py.
 old_runs_considered -&gt; How many patterns from previous runs are used to determine what behaviour was seen before.
 cuckoo_analysis_per_run -&gt; How often the one run is executed. Needs to be at least 3. The more times the better patterns can be built.
+patternson_off -&gt; Can be set to true to disable the Pattern generation and thereby reduce time needed.
 
                         </td>
                     </tr>
@@ -286,7 +287,8 @@ cuckoo_analysis_per_run -&gt; How often the one run is executed. Needs to be at 
     &#34;git_url&#34;: null,
     &#34;id&#34;: 2,
     &#34;name&#34;: &#34;test project without git&#34;,
-    &#34;old_runs_considered&#34;: 3
+    &#34;old_runs_considered&#34;: 3,
+    &#34;patternson_off&#34;: false
 }
 
                                 </pre>
@@ -465,6 +467,7 @@ file: yourZipFile.zip
                         <td>
                             In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
 previous_run_id (optional)-&gt; The id of the previous_run. This is important inorder to be able to substract already seen behaviour.
+Otherwise the same applies here as when creating a project with a git repo.
 
                         </td>
                     </tr>
