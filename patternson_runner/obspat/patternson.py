@@ -86,7 +86,6 @@ def main(input_, output, processes, timeout, verbose):
 def start_patternson(input_, output, run_id, verbose=True):
     global counter  # pylint: disable=global-variable-undefined
     reports = os.listdir(input_)
-    total_reports = len(reports)
     counter = Value("i", 1)
     options = {"input": input_, "output": output}
     if verbose:
@@ -104,7 +103,7 @@ def start_patternson(input_, output, run_id, verbose=True):
     output_dir = Path(options["output"])
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / f"patterns.json"
-    process_reports(options, output_file, total_reports)
+    process_reports(options, output_file, len(reports))
 
 
 def process_reports(options, output_file, total_reports=None):
@@ -116,15 +115,12 @@ def process_reports(options, output_file, total_reports=None):
 def load_stix_reports(options) -> Tuple[Dict[str, List], Dict[int, Dict[str, List]]]:
     objects_per_type = {"file": [], "process": [], "domain-name": []}
     objects_per_run = {}
-    run_counter = 1
-    for runtime in Path(options["input"]).glob("stix_*"):
-        stix_obj = load_stix_obj_from_file(runtime)
+    for run_counter, stix_file in enumerate(Path(options["input"]).glob("stix_*")):
+        stix_obj = load_stix_obj_from_file(stix_file)
         observed_data_objects = extract_data_from_stix_bundle(stix_obj)
         objects_per_run.update({run_counter: observed_data_objects})
-        objects_per_type["file"].extend(observed_data_objects["file"])
-        objects_per_type["process"].extend(observed_data_objects["process"])
-        objects_per_type["domain-name"].extend(observed_data_objects["domain-name"])
-        run_counter += 1
+        for _type in objects_per_type.keys():
+            objects_per_type[_type].extend(observed_data_objects[_type])
     return objects_per_type, objects_per_run
 
 

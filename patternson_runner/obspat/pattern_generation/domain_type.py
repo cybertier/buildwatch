@@ -1,9 +1,9 @@
 import logging
 from typing import List
 
-log = logging.getLogger(__name__)
-
 from .helper_functions import DomainData
+
+log = logging.getLogger(__name__)
 
 
 class DomainPattern:
@@ -34,19 +34,13 @@ class DomainPattern:
 def process_domain_type(domains: List[DomainData]) -> List[str]:
     domain_patterns = {}
     for domain in domains:
-        domain_name = domain.name
-
-        if domain_name in domain_patterns:
-            domain_pattern = domain_patterns[domain_name]
+        if domain.name in domain_patterns:
+            domain_pattern = domain_patterns[domain.name]
         else:
-            domain_pattern = DomainPattern(domain_name)
+            domain_pattern = DomainPattern(domain.name)
 
         if domain.ip not in domain_pattern.ips:
             domain_pattern.ips.append(domain.ip)
 
-        domain_patterns[domain_name] = domain_pattern
-
-    observation_expressions = []
-    for key, value in domain_patterns.items():
-        observation_expressions.append(value.observation_expression())
-    return observation_expressions
+        domain_patterns[domain.name] = domain_pattern
+    return [pattern.observation_expression() for pattern in domain_patterns.values()]

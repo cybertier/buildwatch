@@ -395,8 +395,8 @@ def regex_from_gsa(strings):
     for s1, s2 in itertools.combinations(strings, 2):
         if len(max([s1, s2], key=len)) > 512:
             # string is too long
-            #regex = regex_from_sequencer(s1, s2)
-            #if regex:
+            # regex = regex_from_sequencer(s1, s2)
+            # if regex:
             #    eval_regex(patterns, regex)
             continue
         try:  # global sequence alignment (needlemann-wunsch) from rust lib

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Dict
 
 import stix2
-from multiprocessing import Pool
+
 from .domain_type import process_domain_type
 from .file_type import process_file_type
 from .process_type import process_process_type
