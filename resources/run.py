@@ -14,6 +14,16 @@ from models.project import Project as ProjectModel
 from models.run import Run as RunModel
 
 
+def get():
+    args = Run.get_parser.parse_args(strict=True)
+    if args['id'] is not None:
+        data = RunModel.query.filter(RunModel.id == int(args['id']))
+    else:
+        data = RunModel.query.all()
+
+    return jsonify([item.json() for item in data])
+
+
 class Run(Resource):
     post_parser = reqparse.RequestParser()
     post_parser.add_argument('project_id', type=str, help='The id of the project', required=True)
@@ -62,7 +72,6 @@ class Run(Resource):
             if project_previous.id != project.id:
                 abort(400, {'message': 'Previous run does not belong to the same project'})
 
-
     @staticmethod
     def upload_zip():
         """
@@ -86,7 +95,7 @@ class Run(Resource):
             "html": ("report.html", 'text/html'),
             "stix": ("stix_report_final.json", "application/json")
         }
-        if not type in type_to_data:
+        if type not in type_to_data:
             abort(404, "This type does not exist")
         run: RunModel = RunModel.query.get(id)
         if not run.diff_tool_output_path:
@@ -98,12 +107,3 @@ class Run(Resource):
         response = make_response(send_file(file))
         response.headers['Content-Type'] = type_to_data[type][1]
         return response
-
-    def get(self):
-        args = Run.get_parser.parse_args(strict=True)
-        if args['id'] is not None:
-            data = RunModel.query.filter(RunModel.id == int(args['id']))
-        else:
-            data = RunModel.query.all()
-
-        return jsonify([item.json() for item in data])

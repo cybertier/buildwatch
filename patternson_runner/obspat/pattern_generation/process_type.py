@@ -54,12 +54,13 @@ def filter_too_rare_objects(
     return same_cmd_lines
 
 
-def get_cmd_line_regexes(processes, same_cmd_lines: List[str]) -> List[str]:
+def get_cmd_line_regexes(processes: List[ProcessData], same_cmd_lines: List[str]) -> List[str]:
     cmd_lines = [process.cmd for process in processes if process.cmd not in same_cmd_lines]
     tree = {}
-    regex_cmd_lines = []
     for cmd_line in cmd_lines:
         nested_set_for_processes(tree, cmd_line.split("/"), {})
+
+    regex_cmd_lines = []
     regex_from_tree(tree, regex_cmd_lines)
     for cmd in same_cmd_lines:
         regex_cmd_lines.append(re.escape(cmd))

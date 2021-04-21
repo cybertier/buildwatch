@@ -43,21 +43,18 @@ def get_patterns(
 
 def create_stix_package(output_directory, patterns: Dict[str, List]) -> str:
     sample_name = output_directory.stem
-
-    indicators = []
-
-    for type in patterns.keys():
-        for element in patterns[type]:
-            indicators.append(
-                stix2.Indicator(
-                    labels=[sample_name],
-                    pattern=element.replace("\\", "\\\\"),
-                    pattern_type="stix",
-                )
-            )
+    indicators = [
+        stix2.Indicator(
+            labels=[sample_name],
+            pattern=element.replace("\\", "\\\\"),
+            pattern_type="stix",
+        )
+        for _type in patterns.keys()
+        for element in patterns[_type]
+    ]
 
     if not indicators:
-        log.info(f"No indicators could be inferred for {output_directory}")
-        return f"No indicators could be inferred for {output_directory}"
+        log.info(f"No indicators could be inferred for {output_directory}.")
+        return f"No indicators could be inferred for {output_directory}."
 
     return stix2.Bundle(objects=indicators).serialize(sort_keys=False, indent=4)

@@ -25,9 +25,7 @@ def subtract(base_stix_file_path: str, subtract_file_path: List[str], out_put_fi
 
 
 def load_files(base_stix_file_path: str, subtract_file_paths: List[str]):
-    subtract = []
-    for path in subtract_file_paths:
-        subtract.append(stix2.parse(json.load(Path(path).open()), allow_custom=True))
+    subtract = [stix2.parse(json.load(Path(path).open()), allow_custom=True) for path in subtract_file_paths]
     base = stix2.parse(json.load(Path(base_stix_file_path).open()), allow_custom=True)
     return base, subtract
 
@@ -52,19 +50,15 @@ def index_elements_of_group(group, all_objects):
     return index
 
 
-def write_result(base: stix2.Bundle, out_put_file_path):
+def write_result(base: stix2.Bundle, output_filepath):
     for obj in base.objects.copy():
-        if obj.type == "grouping":
-            if not obj.object_refs:
-                base.objects.remove(obj)
+        if obj.type == "grouping" and not obj.object_refs:
+            base.objects.remove(obj)
     for obj in base.objects.copy():
-        if obj.type == "malware-analysis":
-            if not obj.analysis_sco_refs:
-                base.objects.remove(obj)
-    string = base.serialize(pretty=False, indent=4)
-    path = Path(out_put_file_path)
-    with path.open("w", encoding="utf-8") as out_put_file:
-        out_put_file.write(string)
+        if obj.type == "malware-analysis" and not obj.analysis_sco_refs:
+            base.objects.remove(obj)
+    with Path(output_filepath).open("w", encoding="utf-8") as f:
+        f.write(base.serialize(pretty=False, indent=4))
 
 
 def delete_not_found_in_index(base, index):
@@ -98,12 +92,11 @@ def delete_not_found_in_index_of_group(group, index, all_objects, malware_object
         for identifier in identifiers:
             if identifier.startswith("//"):
                 identifier = identifier[1:]
-            if identifier in group_index:
-                if element.id not in group["object_refs"]:
-                    logging.debug(f"Object is already removed: UUID = {element.id}")
-                    continue
-                logging.debug(f"Found object with identifier {identifier} and id {element.id} that can be filtered out")
-                remove_element(element, group, all_objects, malware_object)
+            if identifier in group_index and element.id not in group["object_refs"]:
+                logging.debug(f"Object is already removed: UUID = {element.id}")
+                continue
+            logging.debug(f"Found object with identifier {identifier} and id {element.id} that can be filtered out")
+            remove_element(element, group, all_objects, malware_object)
 
 
 def remove_element(element, group, all_objects, malware_object):

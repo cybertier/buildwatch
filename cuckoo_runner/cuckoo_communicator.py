@@ -60,22 +60,19 @@ def busy_waiting_for_task_completion_and_fetch_results(task_ids: List[int], outp
     raise Exception("cuckoo run timed out as it was not finished after 3 hours")
 
 
-def is_task_finished(id: int):
-    url = f"{base_url}/tasks/view/{id}"
+def is_task_finished(task_id: int):
+    url = f"{base_url}/tasks/view/{task_id}"
     response = requests.get(url, headers=headers)
     task = response.json()["task"]
-    errors = task["errors"]
-    if errors:
-        raise Exception(f"Cuckoo task with id {id} failed because of errors {errors}")
-    status = task["status"]
-    logging.info(f"Task with id {id} has status {status}")
-    return status == "reported"
+    if task["errors"]:
+        raise Exception(f"Cuckoo task with id {task_id} failed because of errors {task['errors']}")
+    logging.info(f"Task with id {task_id} has status {task['status']}")
+    return task['status'] == "reported"
 
 
 def check_tasks_states_and_fetch_data_if_finished(pending_task_ids: List[int], output_folder: str):
     for task_id in pending_task_ids:
-        finished = is_task_finished(task_id)
-        if finished:
+        if is_task_finished(task_id):
             pending_task_ids.remove(task_id)
             save_artifacts(task_id, output_folder)
 
