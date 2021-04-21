@@ -4,7 +4,7 @@ stix2
 gitpython
 requests
 stix2-patterns
-pyyaml==5.3.1
+pyyaml==5.4
 simple_settings==0.13
 alignment==1.0.10
 numpy
