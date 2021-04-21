@@ -6,4 +6,3 @@ alignment==1.0.10
 numpy
 pebble==4.3.10
 click==7.0
-./stix2-pattern-matcher

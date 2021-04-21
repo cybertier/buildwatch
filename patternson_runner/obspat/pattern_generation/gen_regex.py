@@ -10,6 +10,8 @@ from alignment.sequencealigner import SimpleScoring, GlobalSequenceAligner
 from alignment.profile import Profile
 from .helper_functions import conf, has_file_ending, is_gibberish
 
+from . import librustysa as rustysa
+
 log = logging.getLogger(__name__)
 directory = os.path.dirname(os.path.abspath(__file__))
 group_ctr = 0
@@ -389,47 +391,6 @@ def regex_from_gsa(strings):
                     str_matches.append(s)
                     patterns_dict[pattern_re] = str_matches
 
-    def do_alignment(s1, s2):
-        # Create sequences to be aligned.
-        str1 = Sequence(re.escape(s1))
-        str2 = Sequence(re.escape(s2))
-
-        # Create a vocabulary and encode the sequences.
-        v = Vocabulary()
-        str1_encoded = v.encodeSequence(str1)
-        str2_encoded = v.encodeSequence(str2)
-
-        # Create a scoring and align the sequences using global aligner.
-        scoring = SimpleScoring(2, -1)
-        aligner = GlobalSequenceAligner(scoring, -1)
-        _, alignments = aligner.align(str1_encoded, str2_encoded, backtrace=True)
-
-        # Create sequence profiles out of alignments.
-        profiles = [Profile.fromSequenceAlignment(a) for a in alignments]
-        for encoded in profiles:
-            profile = v.decodeProfile(encoded)
-            # print(profile.pattern())
-            # profiles look something like this:
-            # "s o m e p a * * * * t * * * t * * e r n"
-            # clean this up and replace groups of * with regex,
-            # so the result looks like this: "somepa(.)*ern"
-            pattern = re.sub("(?<! ) {1}(?! )| (?= )", "", profile.pattern())
-            if re.fullmatch(r"[,.;+_\-!=@§$%&()#\[\]{}€ a-zA-Z0-9*]+", pattern):
-                # if pattern does not contain 'exotic' chars, keep
-                # special chars in place
-                pattern = re.sub(r"([\*]+)([a-zA-Z0-9]{0,2}[\*]+)*", "(.)*", pattern)
-            else:
-                # if pattern contains 'exotic' chars, i.e. han or kanji,
-                # disregard special chars if they appear alone
-                pattern = re.sub(r"([\*]+)([^\*]{0,2}[\*]+)*", "(.)*", pattern)
-            try:
-                # do NOT use the universal matching group on its own!!
-                if re.match(r"\(\.\)\*$", pattern) or pattern == "":
-                    continue
-                # eval_regex(patterns, pattern)
-            except:  # noqa
-                pass
-
     patterns = {}
     for s1, s2 in itertools.combinations(strings, 2):
         if len(max([s1, s2], key=len)) > 512:
@@ -438,7 +399,11 @@ def regex_from_gsa(strings):
             #if regex:
             #    eval_regex(patterns, regex)
             continue
-        do_alignment(s1, s2)
+        try:  # global sequence alignment (needlemann-wunsch) from rust lib
+            pattern = rustysa.regex_from_gsa(s1, s2)  # only works with ascii strings!
+            eval_regex(patterns, pattern)
+        except:  # noqa
+            pass
 
     remove_too_specific_patterns(patterns)
 
