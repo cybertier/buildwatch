@@ -19,7 +19,7 @@ def child(run_id):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
     logging.basicConfig(filename=os.path.join(target_dir, "diff_tool.log"), level=logging.DEBUG)
-    formatter = logging.Formatter(f'DT({run_id})-%(levelname)s-%(message)s')
+    formatter = logging.Formatter(f'%(asctime)s-DT({run_id})-%(levelname)s-%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     ch = logging.StreamHandler(sys.stdout)
     ch.setFormatter(formatter)
     logging.getLogger().addHandler(ch)
