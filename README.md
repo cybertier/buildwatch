@@ -62,7 +62,7 @@ We quickly describe how to set up the project
 
 ## Cuckoo
 
-You need a running cuckoo instance and a cuckoo api. You need to have [this fork](https://github.com/axel1200/cuckoo)
+You need a running cuckoo instance and a cuckoo api. You need to have [this fork](https://github.com/cybertier/cuckoo)
 for the setup read its readme and the cuckoo docs. You need to run the daemon `cuckoo -d` and the api `cuckoo api`. The
 ip and port of the api need to be given to cuckoo via the configuration.
 
