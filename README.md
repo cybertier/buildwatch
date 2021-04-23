@@ -4,6 +4,19 @@ Watching your build. Buildwatch can make reports on what behaviour your build sh
 builds. Maybe you would rather watch your unit tests. No problem for buildwatch. The idea is that you host Buildwatch
 somewhere on a standalone server and give it its tasks via a CI pipeline.
 
+### Set up VM
+```
+cd buildwatch-vm-packer
+./pack-vm
+```
+#### Grant that VM Internet access
+```
+sudo iptables -A FORWARD -o {yourinterfacehere} -i vboxnet0 -s 192.168.56.0/24 -m conntrack --ctstate NEW -j ACCEPT
+sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A POSTROUTING -t nat -j MASQUERADE
+sudo sysctl -w net.ipv4.ip_forward=1
+```
+
 ### Using git
 
 If you are using git you can just create a project pointing to the git repository and then trigger runs using the git
@@ -15,6 +28,26 @@ create the run and ask for its result.
 
 If you are using another VCS or don't have a git repo for other reasons you can also provide zips containing a
 .buildwatch.sh.
+
+create a project
+`curl -X POST -H "Content-Type: application/json" -d '{"name": "test", "git_managed": false, "cuckoo_analysis_per_run": 3, "old_runs_considered": 3}' localhost:8080/project`
+
+```
+{
+  "cuckoo_analysis_per_run": 3,
+  "git_managed": false,
+  "git_url": null,
+  "id": 1,
+  "name": "test",
+  "old_runs_considered": 3,
+  "patternson_off": false
+}
+```
+upload a file
+`curl -i -X POST -H "Content-Type: multipart/form-data" -F "file=@sample.zip" localhost:8080/run/uploadZip`
+
+execute the run using that file
+`curl -X POST -H "Content-Type: application/json" -d '{"project_id": "1", "user_set_identifier": "test", "zip_filename": "edc3cef2-da60-489f-9ee8-2ebb5844a301.zip"}' localhost:8080/run`
 
 ### Installing dependencies
 
@@ -46,8 +79,8 @@ supplied via the `BUILDWATCH_SETTINGS_FILE` environment variable. Buildwatch spe
 | Option name        | Default           | Description       |
 | ------------- |:-------------| -----|
 | SQLALCHEMY_DATABASE_URI | 'sqlite:///sql_lite.db'| The url pointing to the Database used. Can also point to other types of databases than sqlite. |
-| SQLALCHEMY_TRACK_MODIFICATIONS | False | No need changing this | 
-| SECRETE_KEY | 'secret' | Used for cryptography should be changed in production | 
+| SQLALCHEMY_TRACK_MODIFICATIONS | False | No need changing this |
+| SECRETE_KEY | 'secret' | Used for cryptography should be changed in production |
 | PROJECT_STORAGE_DIRECTORY | './storage' | Folder where data Buildwatch persistent data is stored |
 | REPORT_FOR_FIRST_RUN | TRUE | Generate a report for the first run. Might perform badly on big projects. |
 | DEBUG | True| Should be false in production |

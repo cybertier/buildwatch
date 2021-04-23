@@ -1,7 +1,6 @@
-FROM ubuntu:20.04
+FROM python:3-slim
 
-RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt

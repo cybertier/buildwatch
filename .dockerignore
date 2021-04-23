@@ -1,0 +1,7 @@
+.git
+.github
+buildwatch-vm-packer
+cuckoo
+cuckoo_venv
+chart
+test

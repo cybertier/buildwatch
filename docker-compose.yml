@@ -1,3 +1,4 @@
 services:
-  buildwatch_app:
-    build: Dockerfile
+  buildwatch_api:
+    build: .
+    network_mode: host

@@ -54,4 +54,4 @@ if __name__ == "__main__":
     from db import db
 
     db.init_app(app)
-    app.run(port=app.config["PORT"], debug=app.config["DEBUG"])
+    app.run(host='0.0.0.0', port=app.config["PORT"], debug=app.config["DEBUG"])
