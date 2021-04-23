@@ -1,4 +1,8 @@
+version: "3.9"
+
 services:
   buildwatch_api:
     build: .
     network_mode: host
+    volumes:
+      - ./storage:/app/storage
