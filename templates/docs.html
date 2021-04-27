@@ -90,7 +90,7 @@ file: yourZipFile.zip
 6bb10170-3217-4a93-952d-c732e9ae4ee7.zip
 ", "There are no query parameters.", 3) }}
 
-        {{ macros.tableCall("Create a run referencing a ZIP file", "POST", "Create a run. A run being a concrete version of your program/project. For projects not managed by git. Make sure you upload the zip before that", "/project", "In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
+        {{ macros.tableCall("Create a run referencing a ZIP file", "POST", "Create a run. A run being a concrete version of your program/project. For projects not managed by git. Make sure you upload the zip before that", "/run", "In the request body you need to give infos about the uploaded zip and set an identifier for this run. Also see modles/run.py.
 previous_run_id (optional)-> The id of the previous_run. This is important inorder to be able to substract already seen behaviour.
 Otherwise the same applies here as when creating a project with a git repo.
 ",
@@ -112,7 +112,7 @@ Otherwise the same applies here as when creating a project with a git repo.
 }
 ", "There are no query parameters.", 4) }}
 
-        {{ macros.tableCall("Create a run with a git commit hash", "POST", "Create a run. A run being a concrete version of your program/project. For projects managed by git. Make sure you have an existing git commit in your repo. The commit needs to contain data for the build and files that define build behaviour. The instructions to build it should be in a \".buildwatch.sh\". You can install dependencies in \".prebuild.sh\".", "/project", "In the request body you need to give infos about the commit. Also see modles/run.py.
+        {{ macros.tableCall("Create a run with a git commit hash", "POST", "Create a run. A run being a concrete version of your program/project. For projects managed by git. Make sure you have an existing git commit in your repo. The commit needs to contain data for the build and files that define build behaviour. The instructions to build it should be in a \".buildwatch.sh\". You can install dependencies in \".prebuild.sh\".", "/run", "In the request body you need to give infos about the commit. Also see modles/run.py.
 ",
 "
 {
