@@ -13,7 +13,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"test project\",\n    \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",\n    \"git_managed\": true,\n    \"cuckoo_analysis_per_run\": 3\n}",
+          "raw": "{\n    \"name\": \"test project\",\n    \"git_url\": \"https://github.com/axel1200/test-buildwatch-2.git\",\n    \"git_managed\": true,\n    \"cuckoo_analysis_per_run\": 3,\n    \"old_runs_considered\": 2\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -39,7 +39,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"test project without git\",\n    \"git_managed\": false,\n    \"cuckoo_analysis_per_run\": 3\n}",
+          "raw": "{\n    \"name\": \"test project without git\",\n    \"git_managed\": false,\n    \"cuckoo_analysis_per_run\": 3,\n    \"old_runs_considered\": 3\n}",
           "options": {
             "raw": {
               "language": "json"
