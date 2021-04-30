@@ -12,7 +12,7 @@ log_format: '%(asctime)s | %(levelname)s | %(message)s'
 max_log_size: 1048576
 
 
-reports_dir: /tmp/data              # path to input data, expected structure: reports_dir/[sample]/[runtime instance]/stix2.json
+reports_dir: /tmp/data              # path to input data
 output_dir: /tmp/pattern            # path to store resulting patterns into
 
 
@@ -24,7 +24,4 @@ system_dirs:                        # do not generate regex on these folder name
   - 'home'
 include_re_len: True                # include a quantifier more specific than '+', if possible
 get_min_max_len: True               # include a quanitifer and capture min/max lengths of observed strings
-
-
 fix_value_threshold: 0.25           # do not generate regex if fixed value is observed in at least this ratio of input reports
-match_ratio_threshold: 0.25         # do not include patterns which are unable to match on at least this ratio of input reports
