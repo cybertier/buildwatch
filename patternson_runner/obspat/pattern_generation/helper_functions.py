@@ -4,7 +4,7 @@ import pickle
 import re
 
 from simple_settings import LazySettings
-from gibberish_detector.gib_detect_train import train, avg_transition_prob
+from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
 conf = LazySettings(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf.yml"))

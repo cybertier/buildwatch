@@ -1,12 +1,13 @@
 import json
 import logging
 import os
+import datetime
 import click
 import sys
 from pathlib import Path
 from typing import List, Dict, Tuple
-from pattern_generation.helper_functions import conf
-from pattern_generation.process_reports import pattern_generation
+from .pattern_generation.helper_functions import conf
+from .pattern_generation.process_reports import pattern_generation
 
 # setup logging
 fh = logging.handlers.RotatingFileHandler(conf.log_file, maxBytes=conf.max_log_size)
@@ -49,7 +50,11 @@ def main(input_dir, output_dir, verbose):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / f"patterns.json"
+
+    start = datetime.datetime.now()
     process_reports(input_dir, output_file, total_reports)
+    end = datetime.datetime.now()
+    print(f"Time: {end-start}")
 
 
 def process_reports(input_dir, output_file, total_reports=None):
