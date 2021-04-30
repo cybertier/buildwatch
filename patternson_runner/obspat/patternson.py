@@ -1,9 +1,9 @@
 import json
 import logging
 import os
-import datetime
 import click
 import sys
+from logging import FileHandler
 from pathlib import Path
 from typing import List, Dict, Tuple
 from .pattern_generation.helper_functions import conf
@@ -50,11 +50,28 @@ def main(input_dir, output_dir, verbose):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / f"patterns.json"
-
-    start = datetime.datetime.now()
     process_reports(input_dir, output_file, total_reports)
-    end = datetime.datetime.now()
-    print(f"Time: {end-start}")
+
+
+def start_patternson(input_dir, output_dir, run_id, verbose=True):
+    reports = os.listdir(input_dir)
+    total_reports = len(reports)
+    if verbose:
+        log.setLevel(10)
+        file_path = (
+            Path(__file__).parent.parent.with_name("storage")
+            / "run"
+            / f"{run_id}"
+            / "patternson.log"
+        )
+        handler = FileHandler(file_path)
+        handler.setLevel("DEBUG")
+        log.addHandler(handler)
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(exist_ok=True, parents=True)
+    output_file = output_dir / f"patterns.json"
+    process_reports(input_dir, output_file, total_reports)
 
 
 def process_reports(input_dir, output_file, total_reports=None):
