@@ -32,6 +32,8 @@ def is_gibberish(string):
         return False
     if has_file_ending(string) and len(".".join(string.split(".")[:-1])) <= 3:
         return False
+    if string.isdecimal():
+        return True
     return not avg_transition_prob(string, gibberish_model_mat) > gibberish_threshold
 
 
