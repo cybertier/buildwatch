@@ -4,8 +4,7 @@ import pickle
 import re
 
 from simple_settings import LazySettings
-
-from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
+from gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
 conf = LazySettings(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf.yml"))
@@ -100,30 +99,3 @@ def delete_leaf_from_nested_dict(nested_dict, leaf):
         except KeyError:
             pass
     return nested_dict
-
-
-class FileData:
-    def __init__(self, _dir, name):
-        self.dir = _dir
-        self.name = name
-
-    def __hash__(self):
-        return hash(repr(self))
-
-
-class ProcessData:
-    def __init__(self, name, cmd_line):
-        self.name = name
-        self.cmd = cmd_line
-
-    def __hash__(self):
-        return hash(repr(self))
-
-
-class DomainData:
-    def __init__(self, name, ip):
-        self.name = name
-        self.ip = ip
-
-    def __hash__(self):
-        return hash(repr(self))

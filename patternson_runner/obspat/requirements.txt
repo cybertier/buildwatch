@@ -1,6 +1,6 @@
 stix2
 stix2-patterns
-pyyaml==5.3.1
+pyyaml
 simple_settings==0.13
 alignment==1.0.10
 numpy
