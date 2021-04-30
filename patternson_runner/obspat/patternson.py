@@ -28,9 +28,7 @@ log.addHandler(ch)
     "--input",
     "input_dir",
     required=True,
-    help="Specify the input"
-    " directory. This program expects a structure like "
-    '"input_dir/specimen_dir/runtime_instances_dir/stix2.json".',
+    help="Specify the input directory.",
 )
 @click.option(
     "-o",
