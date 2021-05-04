@@ -9,6 +9,7 @@ def start(run_id: int):
     p = Process(target=child, args=(run_id,))
     p.daemon = False
     p.start()
+    return p
 
 
 def child(run_id):

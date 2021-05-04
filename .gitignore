@@ -4,3 +4,6 @@ venv
 storage
 *.db
 **__pycache__**
+cuckoo
+buildwatch-vm-packer/vm/packer_cache
+buildwatch-vm-packer/vm/packer

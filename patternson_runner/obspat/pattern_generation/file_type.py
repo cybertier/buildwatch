@@ -18,6 +18,7 @@ def process_file_type(files: List[str], objects_per_run: Dict[int, Dict[str, Lis
             del same_across_reports[obj]
         else:
             finished_regexes.append("/".join([re.escape(x) for x in obj.split("/")]))
+    saved_finished_regexes = finished_regexes[:]
 
     # build regexes on file paths
     tree = build_tree(files, same_across_reports)
@@ -26,7 +27,7 @@ def process_file_type(files: List[str], objects_per_run: Dict[int, Dict[str, Lis
 
     # get secondary features
     finished_regexes = sanitize_regexes(finished_regexes, files)
-    return finished_regexes
+    return list(set(finished_regexes) - set(saved_finished_regexes))
 
 
 def get_same_files_across_reports(

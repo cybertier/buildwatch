@@ -20,9 +20,11 @@ def process_process_type(
         if process not in same_cmd_lines:
             cmd_lines.append(process)
 
-    regex_cmd_lines = get_cmd_line_regexes(cmd_lines, same_cmd_lines)
+    regex_cmd_lines = get_cmd_line_regexes(cmd_lines, [])
     finished_regexes = sanitize_regexes(regex_cmd_lines, processes)
     return finished_regexes
+    #list(set(
+    #) - set([re.escape(a) for a in same_cmd_lines]))
 
 
 def get_same_processes_across_reports(

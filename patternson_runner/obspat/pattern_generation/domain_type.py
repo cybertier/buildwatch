@@ -21,9 +21,9 @@ def process_domain_type(
             nested_set_for_files(tree, domain.split("."))
     regex_from_tree(tree, regex_domains, seperator=".")
 
-    for cmd in same_domains:
-        regex_domains.append(re.escape(cmd))
-
+    # for cmd in same_domains:
+    #     regex_domains.append(re.escape(cmd))
+    regex_domains = sanitize_regexes(regex_domains, domains)
     return regex_domains
 
 
@@ -57,3 +57,20 @@ def filter_too_rare_objects(
         else:
             same_cmd_lines.append(obj)
     return same_cmd_lines
+
+# resolve quantifier and remove named capture groups
+def sanitize_regexes(finished_regexes: List[str], files: List[str]):
+    str_lengths = {}
+    for regex in finished_regexes:
+        for file in files:
+            match = re.match(regex, file)
+            if match:
+                for group_id, string in match.groupdict().items():
+                    lengths = str_lengths.get(group_id, [])
+                    if len(string) not in lengths:
+                        lengths.append(len(string))
+                    str_lengths[group_id] = lengths
+    cleaned_regexes = []
+    for regex in finished_regexes:
+        cleaned_regexes.append(resolve_quantifier(regex, str_lengths))
+    return cleaned_regexes

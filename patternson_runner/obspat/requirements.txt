@@ -1,4 +1,4 @@
-pyyaml
+pyyaml==5.4
 simple_settings==0.13
 alignment==1.0.10
 numpy

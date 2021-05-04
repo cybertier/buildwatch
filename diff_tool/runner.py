@@ -2,6 +2,7 @@ import glob
 import json
 import logging
 import os
+import re
 import shutil
 import sys
 import time
@@ -12,13 +13,22 @@ import stix2
 
 from app import app
 from db import db
-from diff_tool.html_report.html_report_builder import build_html_report
-from diff_tool.stix_from_stix_substractor.substractor import subtract as stix_from_stix_subtract
-from diff_tool.stix_pattern_subtractor.pattern_subtractor import (
-    subtract_pattern_after_loading_files,
-)
 from models.project import Project
 from models.run import Run
+
+def merge_reports(output_folder:str, merge_clean=False):
+    if merge_clean:
+        all_json_files = glob.glob(f"{output_folder}/*_cleaned.json")
+    else:
+        all_json_files = glob.glob(f"{output_folder}/*.json")
+    merged_artifacts = {}
+
+    for key in json.load(open(all_json_files[0], 'r')).keys():
+        for artifact_file in all_json_files:
+            merged_artifacts[key] = merged_artifacts.get(key, []) + json.load(open(artifact_file, 'r'))[key]
+        merged_artifacts[key] = list(set(merged_artifacts[key]))
+
+    return merged_artifacts
 
 
 def run(run_id: int):
@@ -42,23 +52,44 @@ def init():
 def actual_procedure(run: Run):
     set_run_status(run, "diff_tool_running")
     previous_run: Optional[Run] = run.previous_run
-    if not previous_run:
-        logging.info(f"There is no previous run, so no need for the diff tool to run")
-        if app.config["REPORT_FOR_FIRST_RUN"]:
-            path_of_current_report: str = get_path_current_report(run)
-            stix = stix2.parse(json.load(Path(path_of_current_report).open()), allow_custom=True)
-            write_result(stix, run)
-        set_run_status(run, "first_finished_unprepared")
-        return
-    assure_correct_status_of_previous_run(previous_run)
-    path_of_current_report: str = get_path_current_report(run)
-    path_of_reports: List[str] = get_list_of_reports_from_previous_run(run)
-    output_path = subtract_observables_from_old_run(path_of_current_report, path_of_reports, run)
-    if not run.project.patternson_off:
-        pattern_paths: List[str] = get_pattern_of_previous_run(run)
-        subtract_pattern_from_old_runs(output_path, pattern_paths, run)
-    set_run_status(run, "finished_unprepared")
+    new_reports = glob.glob(f"{run.cuckoo_output_path}/*.json")
 
+    if previous_run:
+        assure_correct_status_of_previous_run(previous_run)
+
+        # load everything
+        known_artifacts = merge_reports(run.previous_run.cuckoo_output_path)
+        with open(f'{run.previous_run.patterson_output_path}/patterns.json', 'r') as patternfile:
+            known_patterns = json.load(patternfile)
+
+        # compile patterns
+        for key in known_patterns:
+            known_patterns[key] = [re.compile(pattern) for pattern in known_patterns[key]]
+    else:
+        # we know nothing
+        known_artifacts = {}
+        known_patterns = {}
+
+    # this will hold the cleaned report
+    clean = {}
+
+    # for each report remove exact and pattern matches
+    keys = json.load(open(new_reports[0], 'r')).keys()
+    for new_report in new_reports:
+        for key in keys:
+            clean[key] = []
+            current_report = json.load(open(new_report, 'r'))
+            for artifact in current_report[key]:
+                if artifact in known_artifacts.get(key, []) or any([re.search(pattern, artifact) for pattern in known_patterns.get(key, [])]):
+                    continue
+                clean[key].append(artifact)
+
+        with open(f'{new_report.split(".json")[0]}_cleaned.json', 'w') as outfile:
+            json.dump(clean, outfile, indent=2)
+
+    write_result(merge_reports(run.cuckoo_output_path, merge_clean=True), run)
+    set_run_status(run, "finished_unprepared")
+    logging.info('diff tool done')
 
 def set_run_status(run, status):
     run.status = status
@@ -86,102 +117,11 @@ def assure_correct_status_of_previous_run(previous_run: Run):
             f"Timeout exceeded for waiting for previous run to get prepared status, status:{previous_run.status}"
         )
 
-
-def get_pattern_of_previous_run(run: Run):
-    all_json_files = []
-    project: Project = run.project
-    for i in range(project.old_runs_considered):
-        run = run.previous_run
-        if not run:
-            break
-        add_pattern_files_for_run(all_json_files, run)
-    return all_json_files
-
-
-def add_pattern_files_for_run(all_json_files, previous_run):
-    path_pattern_dir = previous_run.patterson_output_path
-    pattern_files = glob.glob(f"{path_pattern_dir}/*.json")
-    if len(pattern_files) != 1:
-        raise Exception(
-            f"Expected 1 json pattern file in {path_pattern_dir} but found the following files: {all_json_files}"
-        )
-    all_json_files.append(pattern_files[0])
-
-
-def get_list_of_reports_from_previous_run(run: Run):
-    all_json_files = []
-    project: Project = run.project
-    for i in range(project.old_runs_considered):
-        run = run.previous_run
-        if not run:
-            break
-        add_cuckoo_report_files_for_run(all_json_files, run)
-    if len(all_json_files) < 3:
-        raise Exception(f"Found less than 3 json files." f"Only found {all_json_files}")
-    return all_json_files
-
-
-def add_cuckoo_report_files_for_run(all_json_files, run):
-    cuckoo_output_path: str = run.cuckoo_output_path
-    all_json_files.extend(glob.glob(f"{cuckoo_output_path}/*.json"))
-
-
-def subtract_observables_from_old_run(path_of_current_report, path_of_reports, run):
-    output_path = os.path.join(
-        app.config["PROJECT_STORAGE_DIRECTORY"],
-        "run",
-        str(run.id),
-        "diff_tool_out_put",
-        "simple_subtraction.json",
-    )
-    logging.info(f"Subtracting {path_of_reports} from {path_of_current_report}")
-    stix_from_stix_subtract(path_of_current_report, path_of_reports, output_path)
-    return output_path
-
-
-def get_path_current_report(run: Run):
-    cuckoo_output_path = run.cuckoo_output_path
-    all_json_files = glob.glob(f"{cuckoo_output_path}/*.json")
-    if len(all_json_files) < 3:
-        raise Exception(
-            f"Found less than 3 json files in the cuckoo_output_path({cuckoo_output_path})."
-            f"Something is wrong with current run of id {run.id}."
-            f"Only found {all_json_files}"
-        )
-    input_report = all_json_files[0]
-    return create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run)
-
-
-def create_copy_in_diff_tool_out_put_path_and_return_path(input_report, run: Run):
-    diff_tool_output_dir = os.path.join(
-        app.config["PROJECT_STORAGE_DIRECTORY"], "run", str(run.id), "diff_tool_out_put"
-    )
-    if not os.path.exists(diff_tool_output_dir):
-        os.makedirs(diff_tool_output_dir)
-    copied_to = os.path.join(diff_tool_output_dir, "original_stix.json")
-    shutil.copy2(input_report, copied_to)
-    return copied_to
-
-
-def subtract_pattern_from_old_runs(current_report_path, pattern_paths, run):
-    result = subtract_pattern_after_loading_files(
-        Path(current_report_path), Path(pattern_paths[0])
-    )
-    for i in range(len(pattern_paths) - 1):
-        if "objects" not in result:
-            break
-        result = subtract_pattern_after_loading_files(result, Path(pattern_paths[i + 1]))
-    write_result(result, run)
-
-
 def write_result(result, run):
-    output_path = os.path.join(
-        app.config["PROJECT_STORAGE_DIRECTORY"], "run", str(run.id), "diff_tool_out_put"
-    )
-    file_path = os.path.join(output_path, "stix_report_final.json")
-    with Path(file_path).open("w") as file:
-        file.write(result.serialize(pretty=False, indent=4))
-    build_html_report(result, run)
+    output_path = os.path.join(app.config["PROJECT_STORAGE_DIRECTORY"], "run", str(run.id))
+    file_path = os.path.join(output_path, "final_report.json")
+    with Path(file_path).open("w") as outfile:
+        json.dump(result, outfile, indent=2)
     run.diff_tool_output_path = output_path
     db.session.commit()
 

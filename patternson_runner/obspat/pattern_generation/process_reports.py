@@ -20,42 +20,42 @@ def pattern_generation(
 
     print(yaml.dump(patterns))
     with open(output_file, "w") as f:
-        f.write(json.dumps(patterns))
+        f.write(json.dumps(patterns, indent=2))
 
 
 def get_patterns(
     objects_per_type: Dict[str, List], objects_per_run: Dict[int, Dict[str, List]]
 ) -> Dict[str, List]:
     patterns = {
-        "new_files_patterns": [],
-        "read_files_patterns": [],
-        "removed_files_patterns": [],
-        "process_patterns": [],
-        "domain_patterns": [],
+        "files_written": [],
+        "files_read": [],
+        "files_removed": [],
+        "processes_created": [],
+        "hosts_connected": [],
     }
     if objects_per_type["files_written"]:
         log.info("Startet generating patterns for files_written")
-        patterns["new_files_patterns"] = process_file_type(
+        patterns["files_written"] = process_file_type(
             objects_per_type["files_written"], objects_per_run, "files_written"
         )
     if objects_per_type["files_read"]:
         log.info("Startet generating patterns for files_read")
-        patterns["read_files_patterns"] = process_file_type(
+        patterns["files_read"] = process_file_type(
             objects_per_type["files_read"], objects_per_run, "files_read"
         )
     if objects_per_type["files_removed"]:
         log.info("Startet generating patterns for files_removed")
-        patterns["removed_files_patterns"] = process_file_type(
+        patterns["files_removed"] = process_file_type(
             objects_per_type["files_removed"], objects_per_run, "files_removed"
         )
     if objects_per_type["processes_created"]:
         log.info("Startet generating patterns for processes")
-        patterns["process_patterns"] = process_process_type(
+        patterns["processes_created"] = process_process_type(
             objects_per_type["processes_created"], objects_per_run
         )
     if objects_per_type["domains_connected"]:
         log.info("Startet generating patterns for domains")
-        patterns["domain_patterns"] = process_domain_type(
+        patterns["hosts_connected"] = process_domain_type(
             objects_per_type["domains_connected"], objects_per_run
         )
     return patterns

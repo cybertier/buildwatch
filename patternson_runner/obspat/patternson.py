@@ -90,7 +90,7 @@ def load_input(input_dir) -> Tuple[Dict[str, List], Dict[int, Dict[str, List]]]:
     }
     objects_per_run = {}
     run_counter = 1
-    for runtime in Path(input_dir).glob("*.json"):
+    for runtime in Path(input_dir).glob("*_cleaned.json"):
         data = json.load(runtime.open())
 
         objects_per_run.update({run_counter: data})
