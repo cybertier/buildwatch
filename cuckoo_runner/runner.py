@@ -32,7 +32,10 @@ def actual_procedure(lock, run):
     set_run_status_to_cuckoo_running(run)
     output_cuckoo_path = set_output_cuckoo_path(run)
     cuckoo_communicator.busy_waiting_for_task_completion_and_fetch_results(task_ids, output_cuckoo_path)
-    start_diff_tool(run.id)
+    # remove aleady known artifacts
+    differ = start_diff_tool(run.id)
+    differ.join()
+    # learn new patterns
     run_patternson(run.id)
 
 

@@ -4,7 +4,6 @@ import pickle
 import re
 
 from simple_settings import LazySettings
-
 from ..gibberish_detector.gib_detect_train import train, avg_transition_prob
 
 log = logging.getLogger(__name__)
@@ -33,6 +32,8 @@ def is_gibberish(string):
         return False
     if has_file_ending(string) and len(".".join(string.split(".")[:-1])) <= 3:
         return False
+    if string.isdecimal():
+        return True
     return not avg_transition_prob(string, gibberish_model_mat) > gibberish_threshold
 
 
@@ -100,30 +101,3 @@ def delete_leaf_from_nested_dict(nested_dict, leaf):
         except KeyError:
             pass
     return nested_dict
-
-
-class FileData:
-    def __init__(self, _dir, name):
-        self.dir = _dir
-        self.name = name
-
-    def __hash__(self):
-        return hash(repr(self))
-
-
-class ProcessData:
-    def __init__(self, name, cmd_line):
-        self.name = name
-        self.cmd = cmd_line
-
-    def __hash__(self):
-        return hash(repr(self))
-
-
-class DomainData:
-    def __init__(self, name, ip):
-        self.name = name
-        self.ip = ip
-
-    def __hash__(self):
-        return hash(repr(self))

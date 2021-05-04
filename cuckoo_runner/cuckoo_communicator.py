@@ -78,20 +78,19 @@ def check_tasks_states_and_fetch_data_if_finished(pending_task_ids: List[int], o
 
 
 def save_artifacts(task_id: int, output_folder: str):
-    url = f"{base_url}/tasks/report/{task_id}/stix"
+    url = f"{base_url}/tasks/report/{task_id}/artifacts"
     response = requests.get(url, headers=headers)
     if response.status_code == 404:
-        raise Exception(f"No stix report for task{task_id} even after status was reported")
+        raise Exception(f"No artifacts extracted for task{task_id} even after status was reported")
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
-    file = open(os.path.join(output_folder, f"stix_{task_id}.json"), "wb")
-    file.write(response.content)
+    with open(os.path.join(output_folder, f"artifacts_{task_id}.json"), "wb") as outfile:
+        outfile.write(response.content)
 
     url = f"{base_url}/tasks/report/{task_id}/programlog"
     response = requests.get(url, headers=headers)
     if response.status_code == 404:
         logging.info(f"No program log found for task with id {task_id}")
         return
-    file = open(os.path.join(output_folder, f"program_log_{task_id}.log"), "wb")
-    file.write(response.content)
-    file.close()
+    with open(os.path.join(output_folder, f"program_log_{task_id}.log"), "wb") as outfile:
+        outfile.write(response.content)
