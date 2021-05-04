@@ -92,8 +92,7 @@ class Run(Resource):
         Get the html report of buildwatch
         """
         type_to_data = {
-            "html": ("report.html", 'text/html'),
-            "stix": ("stix_report_final.json", "application/json")
+            "json": ("final_report.json", "application/json")
         }
         if type not in type_to_data:
             abort(404, "This type does not exist")

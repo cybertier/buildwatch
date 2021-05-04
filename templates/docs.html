@@ -46,7 +46,7 @@ git_url-> git repo urls, for private repos the url can should contain username a
     \"cuckoo_analysis_per_run\": 3,
     \"old_runs_considered\": 1
 }
-", "You are returned the project with the coresponsding id", 
+", "You are returned the project with the coresponsding id",
 "
 {
     \"cuckoo_analysis_per_run\": 3,
@@ -216,13 +216,13 @@ finished_prepared: patterson sets this once the pattern generation is complete.
 ]
 ", "If parameter id is set to an id only the project of this id is returned.", 7) }}
 
-        {{ macros.tableCall("Get the stix report", "GET", "Get the reported about new behaviour of your program in the STIX 2.0 format.", "/run/{id}/report/stix", "The request body should be empty.
+        {{ macros.tableCall("Get the JSON report", "GET", "Get the reported about new behaviour of your program in the JSON format.", "/run/{id}/report/json", "The request body should be empty.
 ",
-"" , "You are returned the stix(json) file
+"" , "You are returned the json(json) file
 ",
 "", "There are no parameters", 8) }}
 
-        {{ macros.tableCall("Get the html report", "GET", "Get the reported about new behaviour of your program in a nice website. This is better to look at than STIX 2.0.", "/run/{id}/report/html", "The request body should be empty.
+        {{ macros.tableCall("Get the html report", "GET", "Get the reported about new behaviour of your program in a nice website. This is better to look at than JSON.", "/run/{id}/report/html", "The request body should be empty.
 ",
 "" , "You are returned the html file
 ",

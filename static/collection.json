@@ -179,12 +179,12 @@
       "response": []
     },
     {
-      "name": "Get stix report",
+      "name": "Get json report",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{BASE_URL}}/run/2/report/stix",
+          "raw": "{{BASE_URL}}/run/2/report/json",
           "host": [
             "{{BASE_URL}}"
           ],
@@ -192,7 +192,7 @@
             "run",
             "2",
             "report",
-            "stix"
+            "json"
           ]
         },
         "description": "From a finished run get the report html"

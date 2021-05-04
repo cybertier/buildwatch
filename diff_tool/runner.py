@@ -9,8 +9,6 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
-import stix2
-
 from app import app
 from db import db
 from models.project import Project
