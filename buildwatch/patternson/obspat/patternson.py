@@ -45,19 +45,19 @@ def main(input_dir, output_dir, verbose):
     process_reports(input_dir, output_file)
 
 
-def start_patternson(input_dir, output_dir, run_id, verbose=True):
+def start_patternson(input_dir, output_dir, run_id, old_patterns_file, verbose=True):
     if verbose:
         log.setLevel(10)
 
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / 'patterns.json'
-    process_reports(input_dir, output_file)
+    process_reports(input_dir, output_file, old_patterns_file)
 
 
-def process_reports(input_dir, output_file):
+def process_reports(input_dir, output_file, old_patterns_file):
     objects_per_type, objects_per_run = load_input(input_dir)
-    pattern_generation(objects_per_type, objects_per_run, output_file)
+    pattern_generation(objects_per_type, objects_per_run, output_file, old_patterns_file)
 
 
 def load_input(

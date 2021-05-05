@@ -34,9 +34,19 @@ def init():
 def generate_pattern(run: Run):
     path_of_current_reports: Path = Path(run.cuckoo_output_path)
     create_patternson_path(run)
+
+    # do not lose old patterns
+    if run.previous_run:
+        old_patterns_file = f'{run.previous_run.patterson_output_path}/patterns.json'
+    else:
+        old_patterns_file = None
+
     patternson.start_patternson(
         path_of_current_reports,
-        path_of_current_reports.with_name('patternson-output'), run.id)
+        path_of_current_reports.with_name('patternson-output'),
+        run.id,
+        old_patterns_file)
+
     set_status_for_run_and_wait(run)
 
 

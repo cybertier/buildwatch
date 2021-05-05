@@ -13,11 +13,21 @@ def pattern_generation(
     objects_per_type: Dict[str, List],
     objects_per_run: Dict[int, Dict[str, List]],
     output_file: Path,
+    old_patterns_file: Path
 ):
     patterns = get_patterns(objects_per_type, objects_per_run)
     # import yaml
 
     # print(yaml.dump(patterns))
+
+    if old_patterns_file:
+        log.info('Merging old patterns from %s', old_patterns_file)
+        with open(old_patterns_file, "r") as f:
+            old_patterns = json.load(f)
+            for key in patterns:
+                patterns[key] += old_patterns[key]
+
+
     with open(output_file, "w") as f:
         f.write(json.dumps(patterns, indent=2))
 
