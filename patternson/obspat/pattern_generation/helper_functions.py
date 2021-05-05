@@ -38,9 +38,9 @@ def is_gibberish(string):
 
 
 # HELPER FUNCTIONS
-def safe_list_get(l, i, default):
+def safe_list_get(list_to_look_at, index, default):
     try:
-        return l[i]
+        return list_to_look_at[index]
     except KeyError:
         return default
 

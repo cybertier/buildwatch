@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 from pathlib import Path
 
 from app import app
@@ -59,7 +58,7 @@ def set_status_for_run_and_wait(run):
         if run.status == 'finished_unprepared':
             set_run_status(run, 'finished_prepared')
             return
-        elif run.status == 'first_finished_unprepared':
+        if run.status == 'first_finished_unprepared':
             set_run_status(run, 'first_finished_prepared')
             return
 

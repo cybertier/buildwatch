@@ -15,7 +15,7 @@ from models.run import Run
 def checkout_correct_commit(repo: Repo, run: Run):
     repo.git.fetch()
     repo.git.checkout(run.user_set_identifier)
-    logging.info(f'Checked out commit {repo.head.commit}')
+    logging.info('Checked out commit %s', repo.head.commit)
 
 
 def zip_repo(repo: Repo, run: Run) -> str:
@@ -24,7 +24,7 @@ def zip_repo(repo: Repo, run: Run) -> str:
     if not os.path.exists(os.path.dirname(target_zip)):
         os.makedirs(os.path.dirname(target_zip))
     zip_file = zipfile.ZipFile(target_zip, 'w', zipfile.ZIP_DEFLATED)
-    for root, dirs, files in os.walk(repo.working_dir):
+    for root, _, files in os.walk(repo.working_dir):
         zip_file.write(root, os.path.relpath(root, repo.working_dir))
         for file in files:
             zip_file.write(
@@ -55,7 +55,7 @@ def initialize_git_if_needed(project: Project) -> Repo:
 
 def clone_repo(project: Project, repo_dir: str) -> Repo:
     logging.info(
-        f'Repo for project {project.name} did not yet exist, creating it.')
+        'Repo for project %s did not yet exist, creating it.', project.name)
     os.makedirs(repo_dir)
     project.git_checkout_path = repo_dir
     git.Git(project.git_checkout_path).clone(project.git_url, '.')
@@ -64,22 +64,20 @@ def clone_repo(project: Project, repo_dir: str) -> Repo:
 
 
 def determine_previous_commit_for_git_run(run: Run, repo: Repo):
-    commit_to_id_dictionary = get_id_and_commit_hash_for_runs_in_project(
-        run.project)
+    commit_to_id_dictionary = get_id_and_commit_hash_for_runs_in_project()
     commits = repo.iter_commits(rev='HEAD')
     next(commits)
     for item in commits:
         if str(item) in commit_to_id_dictionary:
             previous_run_id = commit_to_id_dictionary[str(item)]
-            logging.info(f'Identified previous commit as {previous_run_id}')
+            logging.info('Identified previous commit as %s', previous_run_id)
             run.previous_run_id = previous_run_id
             db.session.commit()
             return
     logging.info('No previous commit found that was a run')
 
 
-def get_id_and_commit_hash_for_runs_in_project(
-        project: Project) -> typing.Dict[str, int]:
+def get_id_and_commit_hash_for_runs_in_project() -> typing.Dict[str, int]:
     commit_to_id: typing.Dict[str, int] = {}
     all_runs = Run.query.all()
     for run in all_runs:
