@@ -16,9 +16,9 @@ def pattern_generation(
     output_file: Path,
 ):
     patterns = get_patterns(objects_per_type, objects_per_run)
-    import yaml
+    # import yaml
 
-    print(yaml.dump(patterns))
+    # print(yaml.dump(patterns))
     with open(output_file, "w") as f:
         f.write(json.dumps(patterns, indent=2))
 

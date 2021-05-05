@@ -1,5 +1,6 @@
 *.sql
 venv
+cuckoo_venv
 .idea
 storage
 *.db

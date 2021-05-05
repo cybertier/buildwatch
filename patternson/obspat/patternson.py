@@ -75,7 +75,6 @@ def start_patternson(input_dir, output_dir, run_id, verbose=True):
 
 
 def process_reports(input_dir, output_file, total_reports=None):
-    log.info(f"Processing {total_reports} files : {os.listdir(input_dir)}")
     objects_per_type, objects_per_run = load_input(input_dir)
     pattern_generation(objects_per_type, objects_per_run, output_file)
 
