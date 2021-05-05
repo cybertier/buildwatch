@@ -1,7 +1,6 @@
 .git
 .github
 buildwatch-vm-packer
-chart
 cuckoo
 cuckoo_venv
 storage

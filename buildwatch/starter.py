@@ -20,14 +20,14 @@ def start(run_id: int):
 
 
 def child(run_id, git_lock):
-    from cuckoo_runner.runner import run
+    from buildwatch.runner import run
     import logging
     from app import app
     target_dir = os.path.join(app.config['PROJECT_STORAGE_DIRECTORY'], 'run',
                               str(run_id))
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    logging.info('Cuckoo runner running in fork for id %s', run_id)
+    logging.info('buildwatch running in fork for id %s', run_id)
     run(run_id, git_lock)
-    logging.info('Cuckoo runner finished and is now terminating')
+    logging.info('buildwatch finished and is now terminating')
     sys.exit(0)

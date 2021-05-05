@@ -3,11 +3,11 @@ import os
 from multiprocessing import Lock
 
 from app import app
-from cuckoo_runner import cuckoo_communicator
-from cuckoo_runner.git_repo_preparer import package_zip_for_upload
+from buildwatch import cuckoo_communicator
+from buildwatch import differ
+from buildwatch.patternson import pattern_generator
+from buildwatch.git_repo_preparer import package_zip_for_upload
 from db import db
-from differ import differ
-from patternson import pattern_generator
 from models.project import Project
 from models.run import Run
 
@@ -21,8 +21,8 @@ def run(run_id: int, lock: Lock):
         run.status = 'error'
         run.error = str(e)
         db.session.commit()
-        logging.error('Something went wrong in the cuckoo runner: %s', e)
-        raise Exception('cuckoo runner terminated') from e
+        logging.error('Something went wrong in buildwatch: %s', e)
+        raise Exception('buildwatch terminated') from e
 
 
 def actual_procedure(lock, run):

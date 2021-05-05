@@ -2,23 +2,17 @@ import json
 import logging
 import click
 import sys
-from logging import FileHandler
 from pathlib import Path
 from typing import List, Dict, Tuple
 from .pattern_generation.helper_functions import conf
 from .pattern_generation.process_reports import pattern_generation
 
 # setup logging
-fh = logging.handlers.RotatingFileHandler(conf.log_file,
-                                          maxBytes=conf.max_log_size)
-fh.setLevel(conf.log_level_logfile)
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(conf.log_level_stdout)
-fh.setFormatter(logging.Formatter(conf.log_format))
 ch.setFormatter(logging.Formatter(conf.log_format))
 log = logging.getLogger()
 log.setLevel(conf.log_level_stdout)
-log.addHandler(fh)
 log.addHandler(ch)
 
 
@@ -54,11 +48,6 @@ def main(input_dir, output_dir, verbose):
 def start_patternson(input_dir, output_dir, run_id, verbose=True):
     if verbose:
         log.setLevel(10)
-        file_path = (Path(__file__).parent.parent.with_name('storage') /
-                     'run' / f'{run_id}' / 'patternson.log')
-        handler = FileHandler(file_path)
-        handler.setLevel('DEBUG')
-        log.addHandler(handler)
 
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)

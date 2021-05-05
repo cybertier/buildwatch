@@ -8,7 +8,7 @@ from flask_restful import Resource, reqparse
 from werkzeug.utils import secure_filename
 
 from app import app
-from cuckoo_runner.starter import start
+from buildwatch.starter import start
 from db import db
 from models.project import Project as ProjectModel
 from models.run import Run as RunModel
