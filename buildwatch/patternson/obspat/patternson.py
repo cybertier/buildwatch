@@ -42,7 +42,10 @@ def main(input_dir, output_dir, verbose):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
     output_file = output_dir / 'patterns.json'
-    process_reports(input_dir, output_file)
+    log.info('working on reports in %s', input_dir)
+    files = [str(_) for _ in Path(input_dir).glob('*_cleaned.json')]
+    log.debug('found these files: %s', files)
+    process_reports(input_dir, output_file, None)
 
 
 def start_patternson(input_dir, output_dir, run_id, old_patterns_file, verbose=True):
