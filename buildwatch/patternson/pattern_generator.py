@@ -36,24 +36,10 @@ def init():
 def generate_pattern(run: Run):
     path_of_current_reports: Path = Path(run.cuckoo_output_path)
     create_patternson_path(run)
+    old_patterns_file = None
 
-    # write empty pattern file if we are called the first time, i.e. no previous run
-    if not run.previous_run:
-        # TODO: calculate symmetric difference on input reports. run patternson on that
-        logging.info('This is a new analysis, I will not run patternson')
-        empty = {
-            "files_written": [],
-            "files_read": [],
-            "files_removed": [],
-            "processes_created": [],
-            "hosts_connected": []
-        }
-        with open(f'{run.patterson_output_path}/patterns.json', "w") as f:
-            json.dump(empty, f, indent=2)
-        set_status_for_run_and_wait(run)
-        return
-
-    old_patterns_file = f'{run.previous_run.patterson_output_path}/patterns.json'
+    if run.previous_run:
+        old_patterns_file = f'{run.previous_run.patterson_output_path}/patterns.json'
 
     patternson.start_patternson(
         path_of_current_reports,

@@ -32,6 +32,20 @@ def merge_reports(output_folder: str, merge_clean=False):
     return merged_artifacts
 
 
+def cross_known(output_folder: str):
+    merged_artifacts = {}
+    all_json_files = glob.glob(f'{output_folder}/*.json')
+
+    for key in json.load(open(all_json_files[0], 'r')).keys():
+        tmp = []
+        for index, artifact_file in enumerate(all_json_files):
+            tmp.append(set(json.load(open(artifact_file, 'r'))[key]))
+
+        merged_artifacts[key] = list(set.intersection(*tmp))
+
+    return merged_artifacts
+
+
 def set_run_status(run, status):
     run.status = status
     db.session.commit()
@@ -52,7 +66,6 @@ def assure_correct_status_of_previous_run(previous_run: Run):
         time.sleep(app.config['DELAY_CHECKING_PREVIOUS_TASK_STATUS'])
         logging.info('Previous run has not yet finished, status: %s',
                      previous_run.status)
-                     
     logging.warning(
         'Timeout exceeded for waiting for previous run to get prepared status, status: %s',
         previous_run.status)
@@ -92,26 +105,34 @@ def calculate_diff(run: Run):
         known_artifacts = {}
         known_patterns = {}
 
+    cross_known_artifacts = cross_known(run.cuckoo_output_path)
     # this will hold the cleaned report
     clean = {}
+    cross_checked = {}
 
     # for each report remove exact and pattern matches
     keys = json.load(open(new_reports[0], 'r')).keys()
     for new_report in new_reports:
         for key in keys:
             clean[key] = []
+            cross_checked[key] = []
             current_report = json.load(open(new_report, 'r'))
             for artifact in current_report[key]:
-                if artifact in known_artifacts.get(key, []) or any([
-                        re.search(pattern, artifact)
+                if not artifact in known_artifacts.get(key, []) and not any([
+                        re.match(pattern, artifact)
                         for pattern in known_patterns.get(key, [])
                 ]):
-                    continue
-                clean[key].append(artifact)
+                    clean[key].append(artifact)
+                    if not artifact in cross_known_artifacts.get(key, []):
+                        cross_checked[key].append(artifact)
 
         with open(f'{new_report.split(".json")[0]}_cleaned.json',
                   'w') as outfile:
             json.dump(clean, outfile, indent=2)
+
+        with open(f'{new_report.split(".json")[0]}_cross_cleaned.json',
+                  'w') as outfile:
+            json.dump(cross_checked, outfile, indent=2)
 
     write_result(merge_reports(run.cuckoo_output_path, merge_clean=True), run)
     set_run_status(run, 'finished_unprepared')

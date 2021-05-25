@@ -16,7 +16,7 @@ def upload_zip():
     return Run.upload_zip()
 
 
-@app.route("/run/<id>/report/<type>", methods=["GET"])
+@app.route("/run/<report_id>/report/<report_type>", methods=["GET"])
 def get_report(report_id, report_type):
     return Run.get_report(report_id, report_type)
 

@@ -89,7 +89,7 @@ class Run(Resource):
     @staticmethod
     def get_report(id, type):
         """
-        Get the html report of buildwatch
+        Get the json report of buildwatch
         """
         type_to_data = {
             "json": ("final_report.json", "application/json")

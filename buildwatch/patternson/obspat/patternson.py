@@ -74,7 +74,7 @@ def load_input(
     }
     objects_per_run = {}
     run_counter = 1
-    for runtime in Path(input_dir).glob('*_cleaned.json'):
+    for runtime in Path(input_dir).glob('*_cross_cleaned.json'):
         data = json.load(runtime.open())
 
         objects_per_run.update({run_counter: data})
