@@ -96,6 +96,7 @@
           "script/networking.sh",
           "script/sudoers.sh",
           "script/virtualbox.sh",
+          "script/maven.sh",
           "script/cleanup.sh",
           "script/minimize.sh"
       ],
