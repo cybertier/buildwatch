@@ -64,13 +64,15 @@ class Run(Resource):
                 abort(404, {'message': 'Reference a previously uploaded zip with zip_filename'})
 
         if model.previous_run_id is not None:
-            previous_run = RunModel.query.filter(RunModel.id == model.previous_run_id)[0]
-            if not previous_run:
-                abort(400, {'message': 'Previous run not found'})
+            try:
+                previous_run = RunModel.query.filter(RunModel.id == model.previous_run_id)[0]
+                project_previous = ProjectModel.query.filter(ProjectModel.id == previous_run.project_id)[0]
+                if project_previous.id != project.id:
+                    abort(400, {'message': 'Previous run does not belong to the same project'})
+            except BaseException:
+                model.previous_run_id = None
+                # abort(400, {'message': 'Previous run not found'})
 
-            project_previous = ProjectModel.query.filter(ProjectModel.id == previous_run.project_id)[0]
-            if project_previous.id != project.id:
-                abort(400, {'message': 'Previous run does not belong to the same project'})
 
     @staticmethod
     def upload_zip():
