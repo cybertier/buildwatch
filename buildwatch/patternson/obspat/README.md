@@ -1,6 +1,6 @@
 # Patternson
 
-Creating (Inter) Observable Patterns
+Creating Observable Patterns
 
 ### Setup
  * `virtualenv -p python3.6 venv`
