@@ -1,6 +1,6 @@
 flask_restful==0.3.8
 flask_sqlalchemy==2.5.1
-gitpython==3.1.14
+gitpython==3.1.30
 requests==2.25.1
 pyyaml==5.4
 simple_settings==0.13
